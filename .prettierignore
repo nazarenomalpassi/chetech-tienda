@@ -1,0 +1,10 @@
+.next
+.vercel
+node_modules
+outputs
+reports
+tmp
+public
+supabase/migrations
+*.log
+*.tsbuildinfo

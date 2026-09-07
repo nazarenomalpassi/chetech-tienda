@@ -1,0 +1,59 @@
+{
+  "name": "storefront",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
+    "start": "next start",
+    "lint": "eslint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "admin:manage": "node scripts/manage-storefront-admin.mjs",
+    "images:import": "node scripts/import-product-images.mjs",
+    "images:pending": "node scripts/export-pending-product-images.mjs",
+    "images:import-sku": "node scripts/import-sku-named-product-images.mjs",
+    "images:normalize": "node scripts/catalog-images/catalog-images.mjs",
+    "images:normalize:inventory": "node scripts/catalog-images/catalog-images.mjs --dry-run",
+    "images:normalize:pilot": "node scripts/catalog-images/catalog-images.mjs --pilot",
+    "images:unify": "node scripts/catalog-images/unify-storefront.mjs",
+    "images:unify:check": "node scripts/catalog-images/unify-storefront.mjs --check",
+    "images:edge-upload": "node scripts/catalog-images/edge-upload.mjs",
+    "images:normalize:sql": "node scripts/catalog-images/sql-publication.mjs",
+    "test:image-normalization": "node --test scripts/catalog-images/edge-upload.test.mjs scripts/catalog-images/inventory.test.mjs scripts/catalog-images/report.test.mjs scripts/catalog-images/sql-publication.test.mjs scripts/catalog-images/storage.test.mjs scripts/catalog-images/unify-storefront.test.mjs supabase/functions/catalog-image-upload-temporary/handler.test.mjs && .codex-tmp\\catalog-images-venv\\Scripts\\python.exe -m unittest discover -s scripts/catalog-images/python -p \"test_*.py\" -v",
+    "test:catalog-edge-function": "node --test supabase/functions/catalog-image-upload-temporary/handler.test.mjs",
+    "test:image-import": "node --test scripts/product-image-import.test.mjs",
+    "test:repair-portal": "node --test scripts/repair-portal-contract.test.mjs",
+    "test:storefront-ui": "node --test scripts/storefront-ui-contract.test.mjs"
+  },
+  "dependencies": {
+    "@supabase/ssr": "0.12.3",
+    "@supabase/supabase-js": "2.110.7",
+    "lucide-react": "0.511.0",
+    "next": "15.5.20",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "sharp": "0.35.3",
+    "tesseract.js": "7.0.0",
+    "unzipper": "0.12.5"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.20",
+    "postcss": "8.5.10",
+    "prettier": "3.9.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  },
+  "overrides": {
+    "postcss": "$postcss"
+  }
+}

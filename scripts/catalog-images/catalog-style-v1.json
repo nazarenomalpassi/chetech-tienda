@@ -1,0 +1,79 @@
+{
+  "pipeline_version": "catalog-style-v1",
+  "canvas": {
+    "width": 1600,
+    "height": 1600,
+    "background": "#F4F4F2",
+    "radial_highlight": "#F8F8F6",
+    "subject_max_fraction": 0.78,
+    "minimum_margin_fraction": 0.08,
+    "vertical_center_fraction": 0.47
+  },
+  "segmentation": {
+    "model": "isnet-general-use",
+    "alpha_matting": false,
+    "alpha_bbox_threshold": 8,
+    "mask_warning_threshold": 16
+  },
+  "color": {
+    "brightness": 1.0,
+    "contrast": 1.025,
+    "saturation": 1.01,
+    "sharpness": 1.04
+  },
+  "shadow": {
+    "enabled": true,
+    "opacity": 0.11,
+    "blur_radius": 28,
+    "vertical_scale": 0.14,
+    "horizontal_scale": 0.94,
+    "offset_y": 24
+  },
+  "brand_mark": {
+    "enabled": false,
+    "reason": "El producto queda limpio; la marca oficial ya está presente en la interfaz de la tienda."
+  },
+  "exports": {
+    "master": {
+      "format": "png",
+      "width": 1600,
+      "height": 1600
+    },
+    "catalog": {
+      "format": "webp",
+      "width": 1600,
+      "height": 1600,
+      "quality": 86,
+      "method": 6
+    },
+    "card": {
+      "format": "webp",
+      "width": 1000,
+      "height": 1000,
+      "quality": 84,
+      "method": 6
+    },
+    "thumbnail": {
+      "format": "webp",
+      "width": 500,
+      "height": 500,
+      "quality": 80,
+      "method": 6
+    }
+  },
+  "quality": {
+    "minimum_source_short_edge": 800,
+    "minimum_foreground_fraction": 0.025,
+    "maximum_foreground_fraction": 0.92,
+    "maximum_uncertain_alpha_fraction": 0.18,
+    "maximum_significant_components": 12,
+    "minimum_dominant_component_fraction": 0.86,
+    "maximum_satellite_foreground_fraction": 0.14,
+    "maximum_opened_significant_components": 1,
+    "minimum_secondary_cluster_fraction": 0.05,
+    "maximum_soft_bbox_extension_fraction": 0.04,
+    "minimum_soft_bbox_fill_fraction": 0.45,
+    "maximum_core_edge_run_fraction": 0.02,
+    "minimum_edge_margin_pixels": 3
+  }
+}

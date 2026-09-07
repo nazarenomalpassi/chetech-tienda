@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "sku": "EJEMPLO-001",
+      "image_id": null,
+      "production_storage_path": null,
+      "source_path": null,
+      "pre_crop": null,
+      "mask_path": null,
+      "notes": "Usar source_path, pre_crop [left, top, right, bottom] o una máscara L/PNG revisada. No completar partes faltantes."
+    }
+  ]
+}
