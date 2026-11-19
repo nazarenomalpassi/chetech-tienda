@@ -97,6 +97,11 @@
   margin: 0;
 }
 
+.sectionHead > a {
+  flex: none;
+  white-space: nowrap;
+}
+
 .section > :global(.page) > .sectionTitle {
   margin-bottom: 20px;
 }
