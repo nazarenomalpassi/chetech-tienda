@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { LegalCrumbs } from "@/components/legal-document-page";
+import styles from "@/components/legal.module.css";
 import { LegalRequestForm } from "@/components/legal-request-form";
 import { legalConfig } from "@/config/legal";
 
@@ -17,32 +19,33 @@ export default async function WithdrawalPage({ searchParams }: Props) {
   const requested = typeof query.pedido === "string" ? query.pedido.trim().toUpperCase() : "";
   const orderReference = /^CHT-\d{6}$/.test(requested) ? requested : "";
   return (
-    <section className="section shell legal-form-page">
-      <p className="eyebrow">Derecho de arrepentimiento</p>
-      <h1>Iniciá tu solicitud.</h1>
-      <p className="lead">
-        No necesitás registrarte, iniciar sesión, indicar un motivo ni realizar una llamada.
-        Completá los datos mínimos para que podamos identificar la operación y responderte.
-      </p>
-      <div className="legal-form-layout">
+    <div className={`page ${styles.page}`}>
+      <LegalCrumbs current="Botón de arrepentimiento" />
+      <header className={styles.head}>
+        <h1>Botón de arrepentimiento</h1>
+        <p>
+          Si compraste a distancia, tenés 10 días desde que recibís el producto para arrepentirte. No hace falta cuenta,
+          motivo ni llamada: completá lo justo para ubicar la compra.
+        </p>
+      </header>
+      <div className={styles.formLayout}>
         <LegalRequestForm kind="withdrawal" orderReference={orderReference} />
-        <aside>
-          <h2>Qué ocurre después</h2>
+        <aside className={styles.side}>
+          <h2>Qué pasa después</h2>
           <ol>
-            <li>Registramos fecha y hora.</li>
-            <li>Generamos una constancia.</li>
-            <li>Revisamos la operación sin rechazo automático.</li>
-            <li>Te respondemos por el canal elegido.</li>
+            <li>Queda registrada con fecha y hora.</li>
+            <li>Te damos un número de constancia.</li>
+            <li>Revisamos la compra, sin rechazos automáticos.</li>
+            <li>Te respondemos por el canal que elegiste.</li>
           </ol>
           <p>
-            También podés escribir a <a href={`mailto:${legalConfig.email}`}>{legalConfig.email}</a>
-            .
+            También podés escribir a <a href={`mailto:${legalConfig.email}`}>{legalConfig.email}</a>.
           </p>
-          <Link className="text-link" href="/cambios-y-devoluciones">
-            Ver cambios y devoluciones
-          </Link>
+          <p>
+            <Link href="/cambios-y-devoluciones">Cambios y devoluciones</Link>
+          </p>
         </aside>
       </div>
-    </section>
+    </div>
   );
 }

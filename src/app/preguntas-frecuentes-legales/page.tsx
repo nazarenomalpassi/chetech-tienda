@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { legalConfig } from "@/config/legal";
+import { LegalCrumbs, LegalHelp } from "@/components/legal-document-page";
+import styles from "@/components/legal.module.css";
 
 export const metadata: Metadata = {
   title: "Preguntas frecuentes legales y comerciales",
@@ -36,29 +36,23 @@ const questions = [
 
 export default function LegalFaqPage() {
   return (
-    <section className="section shell legal-page">
-      <p className="eyebrow">Ayuda comercial</p>
-      <h1>Preguntas frecuentes</h1>
-      <div className="faq-list">
-        {questions.map(([question, answer]) => (
-          <details key={question}>
-            <summary>
-              {question}
-              <span>+</span>
-            </summary>
-            <p>{answer}</p>
-          </details>
-        ))}
+    <div className={`page ${styles.page}`}>
+      <LegalCrumbs current="Preguntas frecuentes" />
+      <header className={styles.head}>
+        <h1>Preguntas frecuentes</h1>
+        <p>Respuestas cortas sobre compras, envíos, garantías y datos personales.</p>
+      </header>
+      <div className={styles.article}>
+        <div className={styles.faq}>
+          {questions.map(([question, answer]) => (
+            <details key={question}>
+              <summary>{question}</summary>
+              <p>{answer}</p>
+            </details>
+          ))}
+        </div>
+        <LegalHelp title="¿No encontraste la respuesta?" />
       </div>
-      <aside className="legal-contact">
-        <strong>¿No encontraste la respuesta?</strong>
-        <p>
-          Escribinos a <a href={`mailto:${legalConfig.email}`}>{legalConfig.email}</a>.
-        </p>
-        <Link className="text-link" href="/contacto">
-          Ver contacto
-        </Link>
-      </aside>
-    </section>
+    </div>
   );
 }

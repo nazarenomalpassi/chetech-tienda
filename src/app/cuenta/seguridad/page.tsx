@@ -2,26 +2,24 @@ import Link from "next/link";
 import { updatePasswordAction } from "@/app/auth-actions";
 import { AuthForm } from "@/components/auth-form";
 import { requireAccount } from "@/lib/auth";
+import { AccountHeading } from "../account-heading";
+import styles from "../account.module.css";
 
 export default async function SecurityPage() {
   const account = await requireAccount("/cuenta/seguridad");
   return (
     <>
-      <div className="account-heading">
-        <p className="eyebrow">Seguridad</p>
-        <h1>Protegé tu acceso</h1>
-        <p>
-          {account.emailVerified
-            ? "Tu correo está verificado."
-            : "Tu correo todavía no fue verificado."}
-        </p>
-      </div>
-      <div className="embedded-auth-form">
-        <AuthForm mode="update" action={updatePasswordAction} />
-      </div>
-      <p className="account-help">
-        Si no recordás tu contraseña,{" "}
-        <Link href="/recuperar-contrasena">solicitá un enlace de recuperación</Link>.
+      <AccountHeading title="Contraseña">
+        {account.emailVerified ? "Tu mail está confirmado." : "Todavía no confirmaste tu mail."} Cambiá la contraseña
+        cuando quieras.
+      </AccountHeading>
+      <AuthForm mode="update" action={updatePasswordAction} embedded />
+      <p className={styles.rowMeta}>
+        ¿No recordás la actual? No hace falta: si entraste, podés elegir una nueva. Si no podés entrar, pedí un{" "}
+        <Link href="/recuperar-contrasena" className="enlace">
+          enlace de recuperación
+        </Link>
+        .
       </p>
     </>
   );

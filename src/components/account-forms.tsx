@@ -4,11 +4,12 @@ import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import type { AccountActionState } from "@/app/account-actions";
 import { saveAddressAction, updateProfileAction } from "@/app/account-actions";
+import styles from "@/app/cuenta/account.module.css";
 
 function Submit({ children }: { children: React.ReactNode }) {
   const { pending } = useFormStatus();
   return (
-    <button className="button primary" disabled={pending}>
+    <button className="btn" disabled={pending} aria-busy={pending}>
       {pending ? "Guardando…" : children}
     </button>
   );
@@ -17,16 +18,16 @@ function Submit({ children }: { children: React.ReactNode }) {
 function Feedback({ state }: { state: AccountActionState }) {
   return (
     <>
-      {state.error && (
-        <p className="form-message error" role="alert">
+      {state.error ? (
+        <p className="aviso" role="alert">
           {state.error}
         </p>
-      )}
-      {state.message && (
-        <p className="form-message success" role="status">
+      ) : null}
+      {state.message ? (
+        <p className="aviso" data-tipo="ok" role="status">
           {state.message}
         </p>
-      )}
+      ) : null}
     </>
   );
 }
@@ -44,10 +45,10 @@ export function ProfileForm({
 }) {
   const [state, action] = useActionState(updateProfileAction, {});
   return (
-    <form className="account-form" action={action}>
-      <div className="account-form-grid">
-        <label>
-          Nombre
+    <form className={styles.form} action={action}>
+      <div className={styles.grid}>
+        <label className="field">
+          <span>Nombre</span>
           <input
             name="firstName"
             defaultValue={profile.firstName}
@@ -56,8 +57,8 @@ export function ProfileForm({
             required
           />
         </label>
-        <label>
-          Apellido
+        <label className="field">
+          <span>Apellido</span>
           <input
             name="lastName"
             defaultValue={profile.lastName}
@@ -66,19 +67,20 @@ export function ProfileForm({
             required
           />
         </label>
-        <label>
-          Correo electrónico
-          <input value={profile.email} readOnly aria-readonly="true" />
+        <label className="field">
+          <span>Mail</span>
+          <input value={profile.email} readOnly aria-readonly="true" aria-describedby="mail-fijo" />
+          <small id="mail-fijo">Para cambiarlo, escribinos.</small>
         </label>
-        <label>
-          Teléfono
+        <label className="field">
+          <span>Teléfono</span>
           <input name="phone" defaultValue={profile.phone} maxLength={40} autoComplete="tel" />
         </label>
       </div>
-      <label className="check-row">
+      <label className={styles.check}>
         <input type="checkbox" name="marketingConsent" defaultChecked={profile.marketingConsent} />
         <span>
-          Quiero recibir novedades comerciales. Puedo retirar este consentimiento cuando quiera.
+          Quiero recibir ofertas por mail o WhatsApp. Me puedo dar de baja cuando quiera.
         </span>
       </label>
       <Feedback state={state} />
@@ -105,22 +107,20 @@ export type AddressRecord = {
 
 export function AddressForm({
   address = {},
-  compact = false,
 }: {
   address?: AddressRecord;
-  compact?: boolean;
 }) {
   const [state, action] = useActionState(saveAddressAction, {});
   return (
-    <form className={`account-form address-form${compact ? " compact" : ""}`} action={action}>
+    <form className={styles.form} action={action}>
       {address.id && <input type="hidden" name="id" value={address.id} />}
-      <div className="account-form-grid">
-        <label>
-          Etiqueta
+      <div className={styles.grid}>
+        <label className="field">
+          <span>Etiqueta</span>
           <input name="label" defaultValue={address.label ?? "Casa"} maxLength={40} required />
         </label>
-        <label>
-          Persona que recibe
+        <label className="field">
+          <span>Persona que recibe</span>
           <input
             name="recipientName"
             defaultValue={address.recipient_name ?? ""}
@@ -129,8 +129,8 @@ export function AddressForm({
             required
           />
         </label>
-        <label>
-          Teléfono
+        <label className="field">
+          <span>Teléfono</span>
           <input
             name="phone"
             defaultValue={address.phone ?? ""}
@@ -139,8 +139,8 @@ export function AddressForm({
             required
           />
         </label>
-        <label>
-          Calle
+        <label className="field">
+          <span>Calle</span>
           <input
             name="street"
             defaultValue={address.street ?? ""}
@@ -149,8 +149,8 @@ export function AddressForm({
             required
           />
         </label>
-        <label>
-          Número
+        <label className="field">
+          <span>Número</span>
           <input
             name="streetNumber"
             defaultValue={address.street_number ?? ""}
@@ -158,16 +158,16 @@ export function AddressForm({
             required
           />
         </label>
-        <label>
-          Piso
+        <label className="field">
+          <span>Piso</span>
           <input name="floor" defaultValue={address.floor ?? ""} maxLength={30} />
         </label>
-        <label>
-          Departamento
+        <label className="field">
+          <span>Departamento</span>
           <input name="apartment" defaultValue={address.apartment ?? ""} maxLength={30} />
         </label>
-        <label>
-          Ciudad
+        <label className="field">
+          <span>Ciudad</span>
           <input
             name="city"
             defaultValue={address.city ?? "Río Tercero"}
@@ -176,8 +176,8 @@ export function AddressForm({
             required
           />
         </label>
-        <label>
-          Provincia
+        <label className="field">
+          <span>Provincia</span>
           <input
             name="province"
             defaultValue={address.province ?? "Córdoba"}
@@ -186,8 +186,8 @@ export function AddressForm({
             required
           />
         </label>
-        <label>
-          Código postal
+        <label className="field">
+          <span>Código postal</span>
           <input
             name="postalCode"
             defaultValue={address.postal_code ?? ""}
@@ -197,8 +197,8 @@ export function AddressForm({
           />
         </label>
       </div>
-      <label>
-        Información adicional
+      <label className="field">
+        <span>Indicaciones para la entrega (opcional)</span>
         <textarea
           name="additionalInfo"
           defaultValue={address.additional_info ?? ""}
@@ -206,9 +206,9 @@ export function AddressForm({
           rows={3}
         />
       </label>
-      <label className="check-row">
+      <label className={styles.check}>
         <input type="checkbox" name="isDefault" defaultChecked={address.is_default} />
-        <span>Usar como dirección predeterminada</span>
+        <span>Usar esta dirección por defecto</span>
       </label>
       <Feedback state={state} />
       <Submit>{address.id ? "Actualizar dirección" : "Guardar dirección"}</Submit>

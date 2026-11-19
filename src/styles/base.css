@@ -10,6 +10,19 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   scroll-padding-top: calc(var(--header-height) + 16px);
+  /* La barra de desplazamiento reserva su lugar: el contenido no salta al abrir el carrito. */
+  scrollbar-gutter: stable;
+}
+
+/* Nada se sale de costado en el celular. */
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+button:disabled {
+  cursor: not-allowed;
 }
 
 body {
@@ -305,6 +318,12 @@ p {
   box-shadow: 0 0 0 2px var(--color-tinta);
 }
 
+.field input[readonly] {
+  border-style: dashed;
+  background: var(--color-pared);
+  color: var(--color-tinta-2);
+}
+
 .field [aria-invalid="true"] {
   border-width: 2px;
   border-color: var(--color-tinta);
@@ -316,6 +335,23 @@ p {
 }
 
 /* Código de barras del sello de garantía, como tira. Toma el color del texto. */
+/* Aviso de un formulario: error o confirmación. En grises, como toda la tienda: el borde y el peso
+   distinguen el error de la confirmación. */
+.aviso {
+  margin: 0;
+  padding: 10px 12px;
+  border-left: 3px solid var(--color-tinta);
+  background: var(--color-pared-2);
+  color: var(--color-tinta);
+  font-weight: 600;
+}
+
+.aviso[data-tipo="ok"] {
+  border-left-color: var(--color-acero);
+  background: var(--color-blanco);
+  font-weight: 500;
+}
+
 .barras {
   height: 14px;
   background: var(--barras);
