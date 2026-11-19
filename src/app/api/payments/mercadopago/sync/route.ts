@@ -1,7 +1,7 @@
 import { after, NextResponse } from "next/server";
 import { applyMercadoPagoPayment } from "@/lib/commerce/payments";
 import { getCustomerOrder } from "@/lib/commerce/customer-order";
-import { processOutbox } from "@/lib/mail/outbox";
+import { afterOrderChange } from "@/lib/commerce/after-order-change";
 import { rateLimit } from "@/lib/rate-limit";
 
 // Al volver de Mercado Pago el cliente trae el número de pago: se consulta y se aplica sin esperar el
@@ -16,9 +16,7 @@ export async function POST(request: Request) {
   try {
     const result = await applyMercadoPagoPayment(body.paymentId);
     if (result.ok && result.order.id !== order.id) return NextResponse.json({ error: "Pago de otro pedido." }, { status: 400 });
-    after(async () => {
-      await processOutbox(10).catch(() => undefined);
-    });
+    after(() => afterOrderChange(result.ok ? result.order.id : null));
     return NextResponse.json({ ok: result.ok });
   } catch {
     return NextResponse.json({ error: "Todavía no pudimos confirmar el pago." }, { status: 502 });

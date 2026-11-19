@@ -2,13 +2,16 @@
 
 import Image from "next/image";
 import { ViewTransition, useRef, useState } from "react";
+import { isDirectVideo, lqip, markLoaded } from "@/lib/images";
 import styles from "./gallery.module.css";
 
 type Props = { slug: string; name: string; images: string[]; videoUrl?: string };
 
 // Galería de la ficha. La foto principal comparte nombre con la de la tarjeta, así crece desde la
 // grilla hasta acá al abrir el producto (E5).
-export function ProductGallery({ slug, name, images, videoUrl }: Props) {
+export function ProductGallery({ slug, name, images, videoUrl: rawVideoUrl }: Props) {
+  // Solo un archivo de video entra en la galería; Instagram y YouTube se muestran como enlace en la ficha.
+  const videoUrl = isDirectVideo(rawVideoUrl) ? rawVideoUrl : undefined;
   const [active, setActive] = useState(0);
   const touch = useRef<number | null>(null);
   const total = images.length + (videoUrl ? 1 : 0);
@@ -32,7 +35,14 @@ export function ProductGallery({ slug, name, images, videoUrl }: Props) {
         }}
       >
         <ViewTransition name={`producto-${slug}`} share="morph">
-          <div className={styles.bubble}>
+          <div
+            className={styles.bubble}
+            style={
+              !showingVideo && images[active]
+                ? ({ "--lqip": lqip(images[active]) } as React.CSSProperties)
+                : undefined
+            }
+          >
             {showingVideo && videoUrl ? (
               <video className={styles.video} src={videoUrl} controls playsInline preload="metadata" aria-label={`Video de ${name}`} />
             ) : images[active] ? (
@@ -44,6 +54,7 @@ export function ProductGallery({ slug, name, images, videoUrl }: Props) {
                 priority={active === 0}
                 sizes="(min-width: 960px) 560px, 92vw"
                 className={styles.image}
+                onLoad={markLoaded}
               />
             ) : (
               <span className={styles.placeholder}>Foto en preparación</span>

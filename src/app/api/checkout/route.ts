@@ -94,6 +94,12 @@ export async function POST(request: Request) {
         campaign: text(attribution.campaign, 80),
         content: text(attribution.content, 80),
         landing: text(attribution.landing, 120),
+        // Permiso de medición elegido en el aviso de cookies, y los identificadores del píxel de Meta
+        // (solo si aceptó). Sirven para informar la compra desde el servidor.
+        ads: attribution.ads === "accepted" ? "accepted" : "rejected",
+        ...(attribution.ads === "accepted"
+          ? { fbp: text(attribution.fbp, 120), fbc: text(attribution.fbc, 200) }
+          : {}),
       },
     },
   });

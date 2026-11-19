@@ -42,6 +42,17 @@ export function attributionFromLocation(href: string, referrer: string): Attribu
       at: Date.now(),
     };
   }
+  // La página /ig es el enlace de la biografía de Instagram: entrar ahí ya dice de dónde viene.
+  if (url.pathname === "/ig") {
+    return {
+      source: "instagram",
+      medium: "bio",
+      campaign: clean(params.get("campana")) || "-",
+      content: clean(params.get("pieza")) || "-",
+      landing: "/ig",
+      at: Date.now(),
+    };
+  }
   if (!referrer) return null;
   try {
     const host = new URL(referrer).hostname.replace(/^www\./, "");
@@ -77,4 +88,21 @@ export function saveAttribution(value: Attribution) {
   } catch {
     // Navegación privada o almacenamiento lleno: el pedido sale como "directo".
   }
+}
+
+/** Permiso de medición (aviso de cookies) y cookies del píxel de Meta, para informar la compra. */
+export function measurementContext() {
+  let ads: "accepted" | "rejected" = "rejected";
+  try {
+    ads = localStorage.getItem("chetech-cookies-v1") === "accepted" ? "accepted" : "rejected";
+  } catch {
+    ads = "rejected";
+  }
+  if (ads !== "accepted") return { ads };
+  const cookie = (name: string) =>
+    document.cookie
+      .split("; ")
+      .find((part) => part.startsWith(`${name}=`))
+      ?.slice(name.length + 1) ?? "";
+  return { ads, fbp: cookie("_fbp"), fbc: cookie("_fbc") };
 }

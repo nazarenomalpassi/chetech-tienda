@@ -261,3 +261,40 @@
     transform: none;
   }
 }
+
+/* E10: la versión borrosa de la misma foto ocupa el lugar hasta que llega la real. */
+.bubble::before {
+  content: "";
+  position: absolute;
+  inset: 9%;
+  background: var(--lqip, none) center / contain no-repeat;
+  filter: blur(10px);
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.bubble:has(.image[data-loaded])::before {
+  opacity: 0;
+}
+
+.image[data-loaded] {
+  animation: foto-aparece 0.2s var(--ease-out);
+}
+
+@keyframes foto-aparece {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image[data-loaded] {
+    animation: none;
+  }
+
+  .bubble::before {
+    transition: none;
+  }
+}

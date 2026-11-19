@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useCart } from "@/components/cart-provider";
-import { readAttribution } from "@/lib/attribution";
+import { measurementContext, readAttribution } from "@/lib/attribution";
 import { formatPrice } from "@/lib/format";
 import type { StoreSettings } from "@/lib/store-settings";
 import { trackEvent } from "@/lib/track";
@@ -164,7 +164,7 @@ export function CheckoutClient({ payments, delivery }: Props) {
           payment_method: payment,
           notes,
           marketing_consent: consent,
-          attribution,
+          attribution: { ...attribution, ...measurementContext() },
         }),
       });
       const payload = (await response.json().catch(() => ({}))) as {

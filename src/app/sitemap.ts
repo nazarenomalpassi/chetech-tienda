@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { serviceCategories } from "@/config/service-categories";
 import { siteConfig } from "@/config/site";
 import { getProducts } from "@/lib/catalog";
+import { isSellable } from "@/lib/catalog-query";
 
 const routes = [
   "",
@@ -25,7 +26,7 @@ const routes = [
 ] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const products = await getProducts();
+  const products = (await getProducts()).filter(isSellable);
   const staticEntries: MetadataRoute.Sitemap = routes.map((route) => ({
     url: `${siteConfig.baseUrl}${route}`,
     changeFrequency: "weekly",
@@ -33,6 +34,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
   const productEntries: MetadataRoute.Sitemap = products.map((product) => ({
     url: `${siteConfig.baseUrl}/productos/${product.slug}`,
+    lastModified: product.publishedAt ? new Date(product.publishedAt) : undefined,
+    images: product.image ? [product.image] : undefined,
     changeFrequency: "weekly",
     priority: 0.7,
   }));

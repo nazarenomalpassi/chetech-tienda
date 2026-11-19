@@ -52,6 +52,18 @@ export function WaitlistForm({ kind, productId, query, cta }: Props) {
 
   return (
     <form className={styles.form} onSubmit={submit}>
+      {kind !== "product" && !query ? (
+        <label className="field">
+          <span>{kind === "board" ? "Modelo de la tele o código de la placa" : "Qué equipo buscás"}</span>
+          <input
+            name="query"
+            required={kind === "board"}
+            maxLength={200}
+            autoComplete="off"
+            placeholder={kind === "board" ? "32LB561B" : "Tele de 43 pulgadas"}
+          />
+        </label>
+      ) : null}
       <div className={styles.row}>
         <label className="field">
           <span>Tu nombre</span>

@@ -1,7 +1,7 @@
 import { after, NextResponse } from "next/server";
 import { mercadoPagoConfig, verifySignature } from "@/lib/commerce/mercadopago";
 import { applyMercadoPagoPayment } from "@/lib/commerce/payments";
-import { processOutbox } from "@/lib/mail/outbox";
+import { afterOrderChange } from "@/lib/commerce/after-order-change";
 import { createServiceClient } from "@/lib/supabase/service";
 
 // Aviso de pago de Mercado Pago. Solo se acepta con firma válida, cada aviso se procesa una vez y el
@@ -38,9 +38,7 @@ export async function POST(request: Request) {
 
   try {
     const result = await applyMercadoPagoPayment(dataId);
-    after(async () => {
-      await processOutbox(10).catch(() => undefined);
-    });
+    after(() => afterOrderChange(result.ok ? result.order.id : null));
     return NextResponse.json({ ok: result.ok });
   } catch (cause) {
     console.error("Error al procesar el aviso de Mercado Pago", cause);

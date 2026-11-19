@@ -8,6 +8,7 @@ import { familyBySlug } from "@/config/catalog";
 import { useCart } from "@/components/cart-provider";
 import { StockStatus } from "@/components/store/stock-status";
 import { formatPrice } from "@/lib/format";
+import { lqip, markLoaded } from "@/lib/images";
 import { trackEvent } from "@/lib/track";
 import type { Product } from "@/lib/types";
 import styles from "./product-card.module.css";
@@ -47,7 +48,11 @@ export function ProductCard({ product, index = 0, priority = false, sizes }: Pro
       </div>
       <Link href={`/productos/${product.slug}`} className={styles.media} aria-label={product.name}>
         <ViewTransition name={`producto-${product.slug}`} share="morph">
-          <div className={styles.bubble} ref={imageRef}>
+          <div
+            className={styles.bubble}
+            ref={imageRef}
+            style={product.image ? ({ "--lqip": lqip(product.image) } as React.CSSProperties) : undefined}
+          >
             {product.image ? (
               <Image
                 src={product.image}
@@ -56,6 +61,7 @@ export function ProductCard({ product, index = 0, priority = false, sizes }: Pro
                 priority={priority}
                 sizes={sizes ?? "(min-width: 1100px) 260px, (min-width: 700px) 30vw, 45vw"}
                 className={styles.image}
+                onLoad={markLoaded}
               />
             ) : null}
             {second ? (

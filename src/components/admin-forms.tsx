@@ -7,6 +7,7 @@ import {
   updateStorefrontProductAction,
   type AdminActionState,
 } from "@/app/admin-actions";
+import { families } from "@/config/catalog";
 import { orderStatusLabels, orderStatuses } from "@/lib/orders";
 
 function Submit({ children }: { children: React.ReactNode }) {
@@ -116,6 +117,66 @@ export function AdminProductForm({ product }: { product: ProductRecord }) {
         </label>
       </section>
       <section>
+        <h2>Para que se venda solo</h2>
+        <p className="admin-source-note">
+          Estos datos arman la etiqueta técnica de la ficha, los filtros del catálogo y las opciones de envío.
+        </p>
+        <div className="account-form-grid">
+          <label>
+            Familia
+            <select name="familyOverride" defaultValue={String(product.family_override ?? "")}>
+              <option value="">Según la categoría de la gestión</option>
+              {families.map((family) => (
+                <option key={family.slug} value={family.slug}>
+                  {family.name}
+                </option>
+              ))}
+              <option value="otros">Otros</option>
+            </select>
+          </label>
+          <label>
+            Tamaño de envío
+            <select name="shippingSize" defaultValue={String(product.shipping_size ?? "")}>
+              <option value="">Sin definir</option>
+              <option value="chico">Chico (entra en una caja de zapatos)</option>
+              <option value="mediano">Mediano</option>
+              <option value="grande">Grande</option>
+              <option value="no_viaja">No viaja por correo</option>
+            </select>
+          </label>
+          <label>
+            Garantía en meses
+            <input
+              name="warrantyMonths"
+              type="number"
+              min={0}
+              max={60}
+              inputMode="numeric"
+              defaultValue={product.warranty_months === null || product.warranty_months === undefined ? "" : String(product.warranty_months)}
+              placeholder="Vacío: mínimo legal (6 nuevo, 3 usado)"
+            />
+          </label>
+          <label>
+            Video (Instagram o YouTube)
+            <input name="videoUrl" type="url" defaultValue={String(product.video_url ?? "")} maxLength={500} placeholder="https://" />
+          </label>
+        </div>
+        <label>
+          Qué trae la caja
+          <textarea name="boxContents" defaultValue={String(product.box_contents ?? "")} rows={2} maxLength={1000} placeholder="Control, cable HDMI, fuente" />
+        </label>
+        <label>
+          Sirve con, uno por línea
+          <textarea
+            name="compatibleWith"
+            defaultValue={Array.isArray(product.compatible_with) ? product.compatible_with.join("\n") : ""}
+            rows={3}
+            maxLength={2000}
+            placeholder={"Smart TV con HDMI\niPhone 15"}
+          />
+        </label>
+      </section>
+      <section>
         <h2>Publicación e imagen</h2>
         <label>
           URL de imagen principal
@@ -216,7 +277,7 @@ export function AdminProductForm({ product }: { product: ProductRecord }) {
         </label>
       </section>
       <Feedback state={state} />
-      <Submit>Guardar presentación pública</Submit>
+      <Submit>Guardar producto</Submit>
     </form>
   );
 }

@@ -23,6 +23,15 @@ export function whatsappUrl(message: string) {
   return `https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(message.slice(0, 4000))}`;
 }
 
+/** Enlace para escribirle a un cliente desde Administración. Acepta números argentinos cargados a mano. */
+export function customerWhatsAppUrl(phone: string, message: string) {
+  let digits = phone.replace(/\D/g, "").replace(/^00/, "");
+  if (digits.startsWith("54")) digits = digits.slice(2);
+  if (digits.startsWith("9")) digits = digits.slice(1);
+  digits = digits.replace(/^0/, "");
+  return `https://wa.me/549${digits}?text=${encodeURIComponent(message.slice(0, 1000))}`;
+}
+
 export function productWhatsApp(product: Product, compatibility = false) {
   const lines = [
     "Hola, CheTech.",

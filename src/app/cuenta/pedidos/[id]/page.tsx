@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { formatDate } from "@/lib/date";
 import { formatPrice } from "@/lib/format";
 import { deliveryMethodLabels, orderStatusLabels } from "@/lib/orders";
@@ -33,6 +33,8 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
       .order("created_at", { ascending: false }),
   ]);
   if (!order) notFound();
+  // Los pedidos de la compra nueva tienen su propia página, con pago, retiro y seguimiento.
+  if (order.payment_method) redirect(`/pedido/${encodeURIComponent(order.order_number)}`);
   const items = (
     Array.isArray(order.storefront_order_items) ? order.storefront_order_items : []
   ) as OrderItemRow[];

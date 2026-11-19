@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/store/product-card";
 import { BuyBox } from "@/components/store/product/buy-box";
 import { ProductGallery } from "@/components/store/product/gallery";
+import { isDirectVideo, videoSourceName } from "@/lib/images";
 import { PickupLine } from "@/components/store/product/pickup-line";
 import { StockStatus } from "@/components/store/stock-status";
 import { familyBySlug } from "@/config/catalog";
@@ -112,6 +113,11 @@ export default async function ProductPage({ params }: Props) {
         <div className={styles.layout}>
           <div className={styles.galleryColumn} data-product-stage>
             <ProductGallery slug={product.slug} name={product.name} images={product.images} videoUrl={product.videoUrl} />
+            {product.videoUrl && !isDirectVideo(product.videoUrl) ? (
+              <a className={`enlace ${styles.videoLink}`} href={product.videoUrl} target="_blank" rel="noreferrer">
+                Mirá cómo funciona en {videoSourceName(product.videoUrl)}
+              </a>
+            ) : null}
           </div>
 
           <div className={styles.info}>

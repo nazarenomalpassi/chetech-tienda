@@ -292,3 +292,10 @@
     gap: 20px;
   }
 }
+
+.videoLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch);
+  margin-top: 8px;
+}

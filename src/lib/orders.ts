@@ -71,3 +71,26 @@ export function orderSteps(order: { status: string; delivery_method: string; pay
   const current = position[order.status] ?? -1;
   return { steps, current, closed: ["cancelled", "expired", "returned"].includes(order.status) };
 }
+
+/** Color del estado en Administración (ver orders.module.css). */
+export function orderTone(status: string, needsAttention?: string | null) {
+  if (needsAttention) return "atencion";
+  if (["awaiting_payment", "pending_whatsapp", "pending_confirmation", "confirmed"].includes(status))
+    return "espera";
+  if (status === "paid") return "cobrado";
+  if (status === "preparing") return "preparando";
+  if (["ready_for_pickup", "shipped"].includes(status)) return "listo";
+  if (status === "returned") return "devuelto";
+  return "cerrado";
+}
+
+/** Vistas del listado de pedidos en Administración. */
+export const adminOrderViews = [
+  { key: "atender", label: "Para atender" },
+  { key: "pago", label: "Esperando pago" },
+  { key: "listos", label: "Listos y en viaje" },
+  { key: "cerrados", label: "Cerrados" },
+  { key: "todos", label: "Todos" },
+] as const;
+
+export type AdminOrderView = (typeof adminOrderViews)[number]["key"];
