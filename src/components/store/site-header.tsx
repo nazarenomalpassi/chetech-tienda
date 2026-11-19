@@ -91,7 +91,7 @@ export function SiteHeader({ announcement, showWorkshop }: Props) {
             </a>
           </div>
         </div>
-        <div className={styles.bar}>
+        <div className={`oscuro ${styles.bar}`}>
           <div className={`page ${styles.barInner}`}>
             <button
               type="button"
@@ -104,7 +104,7 @@ export function SiteHeader({ announcement, showWorkshop }: Props) {
               <Menu aria-hidden size={22} />
             </button>
             <Link href="/" className={styles.brand} aria-label="CheTech, inicio">
-              <Image src="/brand/chetech-logo-tinta.svg" alt="" width={160} height={28} priority />
+              <Image src="/brand/chetech-logo-blanco.svg" alt="" width={160} height={28} priority />
             </Link>
             <nav className={styles.nav} aria-label="Principal">
               <Suspense fallback={null}>

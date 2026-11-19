@@ -1,19 +1,23 @@
 /* Sistema de diseño CheTech: la papelería del local llevada a la web.
-   Escala de grises tomada de las piezas del manual de marca (tarjeta, sello de garantía y plantillas):
-   papel casi blanco, formas en gris claro, negro de tinta. El color no decora: en la tienda no hay
-   ninguno. Los tonos de estado del final son solo para Administración y para errores de formulario. */
+   Escala de grises tomada de las piezas del manual de marca (perfil, placas de Instagram, tarjeta y
+   sello de garantía): negro de fondo, formas en gris plata, blanco para lo que se lee. La página
+   descansa sobre gris, no sobre blanco: el blanco queda para las tarjetas y las fotos, así resaltan.
+   El color no decora: en la tienda no hay ninguno. Los tonos de estado del final son solo para
+   Administración y para errores de formulario. */
 
 @theme {
-  --color-pared: #f8f8f8;
-  --color-pared-2: #efefef;
+  --color-pared: #e4e4e4;
+  --color-pared-2: #d6d6d6;
   --color-tinta: #101010;
-  --color-tinta-2: #3a3d3d;
-  --color-tinta-3: #626767;
+  --color-tinta-2: #333636;
+  --color-tinta-3: #565b5b;
   --color-pantalla: #000000;
-  --color-carbon: #181818;
-  --color-linea: #e0e0e0;
+  --color-negro: #0a0a0a;
+  --color-carbon: #161616;
+  --color-grafito: #222222;
+  --color-linea: #c6c6c6;
   --color-plata: #d0d0d0;
-  --color-acero: #8a9090;
+  --color-acero: #7d8383;
   --color-blanco: #ffffff;
 
   /* Estados: solo Administración (puntos de estado de pedidos) y errores de formulario. */

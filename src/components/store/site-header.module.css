@@ -2,20 +2,20 @@
   position: sticky;
   top: 0;
   z-index: 40;
-  background: var(--color-pared);
+  background: var(--color-negro);
 }
 
+/* Franja de avisos en gris plata sobre el encabezado negro, como el sello sobre la placa. */
 .strip {
-  --foco: var(--color-blanco);
-  background: var(--color-tinta);
-  color: var(--color-blanco);
+  background: var(--color-plata);
+  color: var(--color-tinta);
   font-size: var(--text-14);
 }
 
 .stripInner p::before {
   content: ">>>";
   margin-right: 8px;
-  color: var(--color-acero);
+  color: var(--color-tinta-3);
   font-family: var(--font-display);
   font-size: 0.8em;
   font-weight: 300;
@@ -38,10 +38,10 @@
 
 .stripLink {
   flex: none;
-  color: var(--color-blanco);
+  color: var(--color-tinta);
   font-weight: 600;
   text-decoration: underline;
-  text-decoration-color: color-mix(in srgb, var(--color-blanco) 40%, transparent);
+  text-decoration-color: color-mix(in srgb, var(--color-tinta) 40%, transparent);
   text-underline-offset: 3px;
 }
 
@@ -51,10 +51,11 @@
   }
 }
 
+/* La barra lleva la clase global "oscuro": adentro, tinta es blanco y las superficies son carbón. */
 .bar {
   border-bottom: 1px solid var(--color-linea);
-  background: color-mix(in srgb, var(--color-pared) 92%, transparent);
-  backdrop-filter: saturate(1.4) blur(10px);
+  background: color-mix(in srgb, var(--color-pared) 88%, transparent);
+  backdrop-filter: blur(12px);
 }
 
 .barInner {
