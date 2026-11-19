@@ -164,8 +164,8 @@ html {
   color: var(--ink);
 }
 .button.whatsapp {
-  background: #d9ff43;
-  color: #0b0d0e;
+  background: var(--color-verde);
+  color: var(--color-tinta);
 }
 .tech-frame {
   position: relative;

@@ -272,7 +272,13 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
                 </>
               ) : null}
               <dt>Venta en la gestión</dt>
-              <dd>{sale?.sale_number ?? (order.payment_status === "approved" ? "Sin registrar" : "Se registra al cobrar")}</dd>
+              <dd>
+                {order.gestion_sale_id
+                  ? (sale?.sale_number ?? "Registrada")
+                  : order.payment_status === "approved"
+                    ? "Sin registrar"
+                    : "Se registra al cobrar"}
+              </dd>
             </dl>
             {(payments as PaymentRow[] | null)?.length ? (
               <ul className={styles.items} style={{ marginTop: "var(--space-4)" }}>
