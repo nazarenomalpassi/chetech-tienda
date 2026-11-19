@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { notFound, redirect } from "next/navigation";
 import { RepairFocusRefresh } from "@/components/repair-focus-refresh";
+import { TvCompanions } from "@/components/store/taller/tv-companions";
 import { siteConfig } from "@/config/site";
 import { requireAccount } from "@/lib/auth";
 import { formatDate, formatDateOnly } from "@/lib/date";
@@ -240,6 +241,8 @@ export default async function RepairDetailPage({ params }: { params: Promise<{ i
           </p>
         )}
       </section>
+
+      <TvCompanions deviceType={repair.deviceType} />
 
       <section className="repair-contact-panel" aria-labelledby="repair-contact-title">
         <div>

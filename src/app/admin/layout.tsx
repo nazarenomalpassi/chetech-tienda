@@ -7,6 +7,7 @@ import {
   Cpu,
   FolderTree,
   PackageCheck,
+  QrCode,
   UsersRound,
 } from "lucide-react";
 import { requireAdmin } from "@/lib/auth";
@@ -19,6 +20,7 @@ const links = [
   ["/admin/categorias", "Categorías", FolderTree],
   ["/admin/pedidos", "Pedidos", ClipboardList],
   ["/admin/clientes", "Clientes", UsersRound],
+  ["/admin/enlaces", "Enlaces y QR", QrCode],
   ["/admin/configuracion", "Configuración", Cog],
 ] as const;
 

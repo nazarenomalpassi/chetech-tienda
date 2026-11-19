@@ -1,0 +1,131 @@
+.layout {
+  display: grid;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+@media (min-width: 980px) {
+  .layout {
+    grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+  }
+}
+
+.form {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--color-linea);
+  background: var(--color-blanco);
+}
+
+.presets {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.presets legend {
+  margin-bottom: var(--space-2);
+  padding: 0;
+  font-weight: 600;
+}
+
+.preset {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-height: 64px;
+  padding: var(--space-3);
+  border: 1px solid var(--color-plata);
+  cursor: pointer;
+}
+
+.preset[data-active="true"] {
+  border-color: var(--color-tinta);
+  box-shadow: inset 0 0 0 1px var(--color-tinta);
+}
+
+.preset input {
+  margin-top: 4px;
+  accent-color: var(--color-tinta);
+}
+
+.preset strong,
+.preset small {
+  display: block;
+}
+
+.preset small {
+  color: var(--color-tinta-3);
+  font-size: var(--text-14);
+}
+
+.field {
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--text-14);
+  font-weight: 600;
+}
+
+.field input,
+.field select {
+  min-height: var(--touch);
+  padding: 0 var(--space-3);
+  border: 1.5px solid var(--color-acero);
+  background: var(--color-blanco);
+  font: inherit;
+  font-weight: 400;
+}
+
+.result {
+  position: sticky;
+  top: var(--space-4);
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: 1.5px solid var(--color-tinta);
+  background: var(--color-blanco);
+}
+
+.result h2 {
+  margin: 0;
+  font-size: var(--titulo-3);
+}
+
+.url {
+  margin: 0;
+  padding: var(--space-3);
+  background: var(--color-pared-2);
+  font-size: var(--text-14);
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.qr {
+  width: 240px;
+  height: 240px;
+  border: 1px solid var(--color-linea);
+}
+
+.note {
+  margin: 0;
+  color: var(--color-tinta-3);
+  font-size: var(--text-14);
+}
+
+.error {
+  margin: 0;
+  padding: var(--space-3);
+  border-left: 3px solid var(--color-tinta);
+  background: var(--color-pared-2);
+  font-weight: 600;
+}
