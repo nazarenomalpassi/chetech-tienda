@@ -1,0 +1,94 @@
+.box {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--color-linea);
+  border-radius: var(--radius-card);
+  background: var(--color-blanco);
+}
+
+.box :global(.btn) {
+  justify-self: start;
+}
+
+.lead {
+  font-size: var(--text-18);
+}
+
+.copies {
+  display: grid;
+  border: 1px solid var(--color-linea);
+  border-radius: var(--radius-button);
+}
+
+.copyRow {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 6px 10px 6px 14px;
+  border-bottom: 1px solid var(--color-linea);
+}
+
+.copyRow:last-child {
+  border-bottom: 0;
+}
+
+.copyLabel {
+  color: var(--color-tinta-3);
+  font-size: var(--text-14);
+  font-weight: 600;
+}
+
+.copyValue {
+  overflow-wrap: anywhere;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.copyButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1.5px solid var(--color-linea);
+  border-radius: var(--radius-button);
+  background: var(--color-blanco);
+  font-weight: 600;
+}
+
+.copyButton:hover {
+  border-color: var(--color-tinta);
+}
+
+@media (max-width: 480px) {
+  .copyRow {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .copyLabel {
+    grid-column: 1 / -1;
+  }
+
+  .copyButton span {
+    display: none;
+  }
+}
+
+.ok {
+  padding: 12px 14px;
+  border-radius: var(--radius-button);
+  background: color-mix(in srgb, var(--color-verde) 12%, var(--color-blanco));
+  font-weight: 600;
+}
+
+.message,
+.error {
+  padding: 12px 14px;
+  border-radius: var(--radius-button);
+  background: color-mix(in srgb, var(--color-rojo) 10%, var(--color-blanco));
+  color: var(--color-rojo);
+  font-weight: 600;
+}
