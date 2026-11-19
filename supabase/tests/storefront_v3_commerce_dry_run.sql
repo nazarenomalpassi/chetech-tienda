@@ -44,7 +44,7 @@ begin
 
   select sp.id, sp.product_id, sp.name, p.stock, sp.public_price into v_product
   from public.storefront_products sp join public.products p on p.id = sp.product_id
-  where sp.is_published and p.is_active and p.stock >= 3 and sp.public_price > 0
+  where sp.is_published and p.is_active and p.stock between 3 and 11 and sp.public_price > 0
     and not exists (select 1 from public.repair_part_requests r where r.product_id = p.id and r.reserved_quantity > 0)
   order by p.stock desc limit 1;
   raise notice 'producto de prueba: % (stock %)', v_product.name, v_product.stock;
