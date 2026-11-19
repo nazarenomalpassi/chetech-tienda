@@ -35,6 +35,7 @@
 
 .finder {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 10px;
   max-width: 640px;
   margin-bottom: 28px;
@@ -153,8 +154,6 @@
   text-align: center;
 }
 
-
-
 .igHead p {
   max-width: 34ch;
   color: var(--color-tinta-2);
@@ -185,7 +184,9 @@
   background: var(--color-blanco);
   color: var(--color-tinta);
   text-decoration: none;
-  transition: border-color 0.15s var(--ease-out), transform 0.15s var(--ease-out);
+  transition:
+    border-color 0.15s var(--ease-out),
+    transform 0.15s var(--ease-out);
 }
 
 .links a:hover {

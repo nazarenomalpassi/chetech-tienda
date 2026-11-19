@@ -70,6 +70,20 @@
   border-bottom: 0;
 }
 
+/* En pantallas angostas la cantidad arranca debajo de la foto: al lado del nombre no le queda lugar
+   y se encimaba con el precio. */
+@media (max-width: 379px) {
+  .items li {
+    grid-template-areas:
+      "thumb text text"
+      "stepper stepper total";
+  }
+
+  .itemTotal {
+    font-size: var(--text-18);
+  }
+}
+
 @media (min-width: 640px) {
   .items li {
     grid-template-columns: 64px minmax(0, 1fr) auto auto;

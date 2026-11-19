@@ -130,7 +130,7 @@ button:disabled {
   border: 1px solid #ccd1cd;
   background: #eef0ed;
   color: #4f575a;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -208,7 +208,7 @@ button:disabled {
 .repair-card-topline {
   margin-bottom: 22px;
   color: #5b6366;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -231,7 +231,7 @@ button:disabled {
   align-items: center;
   gap: 6px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
 }
 .repair-card-date svg {
   width: 14px;
@@ -308,7 +308,7 @@ button:disabled {
 .repair-detail-data dt,
 .repair-budget-panel dt {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -414,7 +414,7 @@ button:disabled {
 }
 .repair-detail-summary > div > span:first-child {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -607,7 +607,7 @@ button:disabled {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 10px;
+  font-size: 11px;
   text-transform: uppercase;
   --acid: var(--color-tinta);
   --acid-ink: var(--color-blanco);
@@ -726,7 +726,7 @@ button:disabled {
   font-size: 11px;
 }
 .status-history span {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
 }
 @media (max-width: 900px) {
@@ -834,4 +834,90 @@ body {
   display: grid;
   gap: var(--space-6);
   min-width: 0;
+}
+
+/* Movimiento en "Seguí tu reparación": las tarjetas y los bloques entran en cascada, y la última
+   novedad del historial late. Con "reducir movimiento" la regla general de la tienda lo apaga. */
+@media (prefers-reduced-motion: no-preference) {
+  .repair-area .repair-card,
+  .repair-area .repair-action-banner,
+  .repair-area .repair-detail-summary,
+  .repair-area .repair-detail-panel,
+  .repair-area .repair-budget-panel,
+  .repair-area .repair-contact-panel {
+    animation: reparacion-entra 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+
+  .repair-area .repair-card:nth-child(1),
+  .repair-area .repair-action-banner {
+    animation-delay: 0.06s;
+  }
+
+  .repair-area .repair-card:nth-child(2),
+  .repair-area .repair-detail-summary {
+    animation-delay: 0.13s;
+  }
+
+  .repair-area .repair-card:nth-child(3),
+  .repair-area .repair-detail-panel {
+    animation-delay: 0.2s;
+  }
+
+  .repair-area .repair-card:nth-child(n + 4),
+  .repair-area .repair-detail-panel + .repair-detail-panel {
+    animation-delay: 0.27s;
+  }
+
+  .repair-area .repair-budget-panel {
+    animation-delay: 0.32s;
+  }
+
+  .repair-area .repair-timeline > li:first-child .repair-timeline-marker::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border: 2px solid var(--color-tinta);
+    border-radius: inherit;
+    opacity: 0;
+    animation: reparacion-late 2s ease-out infinite;
+  }
+
+  .repair-area .repair-card-link svg {
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .repair-area .repair-card > a:hover .repair-card-link svg {
+    transform: translateX(5px);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .repair-area .repair-timeline > li {
+      animation: reparacion-entra linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 45%;
+    }
+  }
+}
+
+@keyframes reparacion-entra {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+@keyframes reparacion-late {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.9);
+  }
 }

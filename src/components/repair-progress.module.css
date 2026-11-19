@@ -1,0 +1,195 @@
+/* Riel de avance de una reparación: cinco marcas, la línea se llena hasta la etapa actual y la marca
+   actual late. */
+.progress {
+  --mark: 14px;
+  --progress: 0;
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.progress[data-boxed] {
+  margin-bottom: 16px;
+  padding: 20px 20px 16px;
+  border: 1px solid var(--color-linea);
+  background: var(--color-blanco);
+}
+
+.progress[data-compact] {
+  margin: 4px 0 2px;
+}
+
+.rail {
+  position: relative;
+}
+
+.rail::before,
+.fill {
+  content: "";
+  position: absolute;
+  top: calc(var(--mark) / 2 - 1px);
+  right: 10%;
+  left: 10%;
+  height: 2px;
+}
+
+.rail::before {
+  background: var(--color-linea);
+}
+
+.fill {
+  background: var(--color-tinta);
+  transform: scaleX(var(--progress));
+  transform-origin: 0 50%;
+}
+
+.stages {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stages li {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  min-width: 0;
+  color: var(--color-tinta-3);
+}
+
+.mark {
+  position: relative;
+  width: var(--mark);
+  height: var(--mark);
+  border: 2px solid var(--color-plata);
+  background: var(--color-blanco);
+}
+
+.mark::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border: 2px solid var(--color-tinta);
+  opacity: 0;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.stages li[data-state="hecho"] {
+  color: var(--color-tinta-2);
+}
+
+.stages li[data-state="hecho"] .mark,
+.stages li[data-state="actual"] .mark {
+  border-color: var(--color-tinta);
+  background: var(--color-tinta);
+}
+
+.stages li[data-state="actual"] {
+  color: var(--color-tinta);
+}
+
+.stages li[data-state="actual"] .mark {
+  transform: scale(1.25);
+}
+
+.caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  color: var(--color-tinta-3);
+  font-size: var(--text-14);
+}
+
+.caption strong {
+  color: var(--color-tinta);
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  letter-spacing: 0.05em;
+}
+
+/* Con lugar, cada marca lleva su nombre y el rótulo de abajo sobra. */
+@media (min-width: 620px) {
+  .progress:not([data-compact]) .caption {
+    display: none;
+  }
+}
+
+/* En el celular y en las tarjetas del listado los cinco nombres no entran: queda el rótulo de abajo. */
+@media (max-width: 619px) {
+  .name {
+    display: none;
+  }
+}
+
+.progress[data-compact] .name {
+  display: none;
+}
+
+.progress[data-compact] {
+  --mark: 12px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fill {
+    animation: avance-llena 1s var(--ease-out) 0.2s backwards;
+  }
+
+  .stages li[data-state="hecho"] .mark,
+  .stages li[data-state="actual"] .mark {
+    animation: avance-marca 0.4s var(--ease-out) backwards;
+    animation-delay: calc(var(--i, 0) * 0.16s + 0.2s);
+  }
+
+  .stages li[data-state="actual"] .mark::after {
+    animation: avance-late 1.8s ease-out 1.2s infinite;
+  }
+
+  .caption strong {
+    animation: avance-texto 0.4s var(--ease-out) 0.7s backwards;
+  }
+}
+
+@keyframes avance-llena {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes avance-marca {
+  from {
+    border-color: var(--color-plata);
+    background: var(--color-blanco);
+    transform: scale(0.6);
+  }
+}
+
+@keyframes avance-late {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(2.2);
+  }
+}
+
+@keyframes avance-texto {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}

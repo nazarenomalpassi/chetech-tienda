@@ -291,6 +291,18 @@ p {
   line-height: 1.2;
 }
 
+/* En el celular un botón nunca es más ancho que su lugar: si el texto es largo, pasa a dos líneas. */
+@media (max-width: 480px) {
+  .btn {
+    max-width: 100%;
+    padding-block: 10px;
+    white-space: normal;
+    text-align: center;
+    text-wrap: balance;
+    line-height: 1.2;
+  }
+}
+
 /* Enlace de texto */
 .enlace {
   color: var(--color-tinta);
@@ -304,6 +316,17 @@ p {
 
 .enlace:hover {
   text-decoration-color: var(--color-tinta);
+}
+
+/* En pantallas táctiles, los enlaces de texto y las migas tienen un área de toque más alta que su
+   renglón. El margen negativo compensa donde el enlace es un bloque, así el diseño no se mueve. */
+@media (pointer: coarse) {
+  .enlace,
+  nav[aria-label="Ruta"] a,
+  nav[aria-label="Ubicación"] a {
+    padding-block: 11px;
+    margin-block: -11px;
+  }
 }
 
 /* Campos de formulario */

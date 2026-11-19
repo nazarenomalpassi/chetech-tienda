@@ -15,7 +15,8 @@ type Flight = { key: number; image: string; from: DOMRect; to: DOMRect };
 
 // E6 · Agregado al carrito: la miniatura viaja al ícono, el contador sube y se abre el panel.
 export function CartDrawer() {
-  const { items, count, subtotal, drawerOpen, closeDrawer, lastAdded, update, remove, add } = useCart();
+  const { items, count, subtotal, drawerOpen, closeDrawer, lastAdded, update, remove, add } =
+    useCart();
   const reduce = useReducedMotion();
   const pathname = usePathname();
   const [flight, setFlight] = useState<Flight | null>(null);
@@ -35,7 +36,12 @@ export function CartDrawer() {
     const recent = lastAdded && Date.now() - lastAdded.at < 700;
     const target = document.querySelector("[data-cart-target]")?.getBoundingClientRect();
     if (recent && lastAdded?.origin && lastAdded.product.image && target && !reduce) {
-      setFlight({ key: lastAdded.at, image: lastAdded.product.image, from: lastAdded.origin, to: target });
+      setFlight({
+        key: lastAdded.at,
+        image: lastAdded.product.image,
+        from: lastAdded.origin,
+        to: target,
+      });
       const timer = window.setTimeout(() => setPanelVisible(true), 420);
       return () => window.clearTimeout(timer);
     }
@@ -55,11 +61,16 @@ export function CartDrawer() {
     };
   }, [panelVisible, closeDrawer]);
 
-  const idsKey = items.map((item) => item.product.id).sort().join(",");
+  const idsKey = items
+    .map((item) => item.product.id)
+    .sort()
+    .join(",");
   useEffect(() => {
     if (!panelVisible || !idsKey) return;
     const controller = new AbortController();
-    fetch(`/api/cart/suggestions?exclude=${encodeURIComponent(idsKey)}`, { signal: controller.signal })
+    fetch(`/api/cart/suggestions?exclude=${encodeURIComponent(idsKey)}`, {
+      signal: controller.signal,
+    })
       .then((response) => (response.ok ? response.json() : { products: [] }))
       .then((payload: { products: Product[] }) => setSuggestions(payload.products ?? []))
       .catch(() => undefined);
@@ -129,7 +140,13 @@ export function CartDrawer() {
                     {count} {count === 1 ? "producto" : "productos"}
                   </span>
                 </h2>
-                <button ref={closeRef} type="button" className={styles.close} onClick={closeDrawer} aria-label="Cerrar carrito">
+                <button
+                  ref={closeRef}
+                  type="button"
+                  className={styles.close}
+                  onClick={closeDrawer}
+                  aria-label="Cerrar carrito"
+                >
                   <X aria-hidden size={22} />
                 </button>
               </div>
@@ -143,77 +160,125 @@ export function CartDrawer() {
                 </div>
               ) : (
                 <>
-                  <ul className={styles.items}>
-                    {items.map(({ product, quantity }) => (
-                      <li key={product.id} className={styles.item} data-new={lastAdded?.product.id === product.id || undefined}>
-                        <Link href={`/productos/${product.slug}`} className={styles.thumb} onClick={closeDrawer}>
-                          {product.image ? <Image src={product.image} alt="" fill sizes="72px" /> : null}
-                        </Link>
-                        <div className={styles.itemBody}>
-                          <Link href={`/productos/${product.slug}`} className={styles.itemName} onClick={closeDrawer}>
-                            {product.name}
+                  {/* Los productos y las sugerencias se desplazan juntos; el total y los botones quedan fijos abajo. */}
+                  <div className={styles.scroll}>
+                    <ul className={styles.items}>
+                      {items.map(({ product, quantity }) => (
+                        <li
+                          key={product.id}
+                          className={styles.item}
+                          data-new={lastAdded?.product.id === product.id || undefined}
+                        >
+                          <Link
+                            href={`/productos/${product.slug}`}
+                            className={styles.thumb}
+                            onClick={closeDrawer}
+                          >
+                            {product.image ? (
+                              <Image src={product.image} alt="" fill sizes="72px" />
+                            ) : null}
                           </Link>
-                          <div className={styles.itemRow}>
-                            <div className={styles.stepper} role="group" aria-label={`Cantidad de ${product.name}`}>
+                          <div className={styles.itemBody}>
+                            <Link
+                              href={`/productos/${product.slug}`}
+                              className={styles.itemName}
+                              onClick={closeDrawer}
+                            >
+                              {product.name}
+                            </Link>
+                            <div className={styles.itemRow}>
+                              <div
+                                className={styles.stepper}
+                                role="group"
+                                aria-label={`Cantidad de ${product.name}`}
+                              >
+                                <button
+                                  type="button"
+                                  aria-label="Quitar una unidad"
+                                  onClick={() =>
+                                    quantity > 1
+                                      ? update(product.id, quantity - 1)
+                                      : remove(product.id)
+                                  }
+                                >
+                                  {quantity > 1 ? (
+                                    <Minus aria-hidden size={16} />
+                                  ) : (
+                                    <Trash2 aria-hidden size={16} />
+                                  )}
+                                </button>
+                                <output aria-live="polite">{quantity}</output>
+                                <button
+                                  type="button"
+                                  aria-label="Sumar una unidad"
+                                  disabled={quantity >= 10}
+                                  onClick={() => update(product.id, quantity + 1)}
+                                >
+                                  <Plus aria-hidden size={16} />
+                                </button>
+                              </div>
+                              <span className={`price ${styles.itemPrice}`}>
+                                {formatPrice(product.price * quantity)}
+                              </span>
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+
+                    {suggestions.length ? (
+                      <div className={styles.suggest}>
+                        <p className={styles.suggestTitle}>Sumá también</p>
+                        <ul>
+                          {suggestions.slice(0, 3).map((product) => (
+                            <li key={product.id}>
+                              <span className={styles.suggestThumb}>
+                                {product.image ? (
+                                  <Image src={product.image} alt="" fill sizes="48px" />
+                                ) : null}
+                              </span>
+                              <span className={styles.suggestName}>{product.name}</span>
                               <button
                                 type="button"
-                                aria-label="Quitar una unidad"
-                                onClick={() => (quantity > 1 ? update(product.id, quantity - 1) : remove(product.id))}
+                                className={styles.suggestAdd}
+                                onClick={() => add(product, 1, { silent: true })}
+                                aria-label={`Agregar ${product.name} por ${formatPrice(product.price)}`}
                               >
-                                {quantity > 1 ? <Minus aria-hidden size={16} /> : <Trash2 aria-hidden size={16} />}
-                              </button>
-                              <output aria-live="polite">{quantity}</output>
-                              <button
-                                type="button"
-                                aria-label="Sumar una unidad"
-                                disabled={quantity >= 10}
-                                onClick={() => update(product.id, quantity + 1)}
-                              >
+                                <span className="price">{formatPrice(product.price)}</span>
                                 <Plus aria-hidden size={16} />
                               </button>
-                            </div>
-                            <span className={`price ${styles.itemPrice}`}>{formatPrice(product.price * quantity)}</span>
-                          </div>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-
-                  {suggestions.length ? (
-                    <div className={styles.suggest}>
-                      <p className={styles.suggestTitle}>Sumá también</p>
-                      <ul>
-                        {suggestions.slice(0, 3).map((product) => (
-                          <li key={product.id}>
-                            <span className={styles.suggestThumb}>
-                              {product.image ? <Image src={product.image} alt="" fill sizes="48px" /> : null}
-                            </span>
-                            <span className={styles.suggestName}>{product.name}</span>
-                            <button
-                              type="button"
-                              className={styles.suggestAdd}
-                              onClick={() => add(product, 1, { silent: true })}
-                              aria-label={`Agregar ${product.name} por ${formatPrice(product.price)}`}
-                            >
-                              <span className="price">{formatPrice(product.price)}</span>
-                              <Plus aria-hidden size={16} />
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ) : null}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null}
+                  </div>
 
                   <div className={styles.foot}>
                     <div className={styles.total}>
                       <span>Subtotal</span>
                       <span className="price">{formatPrice(subtotal)}</span>
                     </div>
-                    <p className={styles.note}>La entrega y el pago se eligen en el próximo paso. Retirar en el local es gratis.</p>
-                    <Link href="/carrito" className="btn" data-size="large" data-block="true" onClick={closeDrawer}>
+                    <p className={styles.note}>
+                      La entrega y el pago se eligen en el próximo paso. Retirar en el local es
+                      gratis.
+                    </p>
+                    <Link
+                      href="/carrito"
+                      className="btn"
+                      data-size="large"
+                      data-block="true"
+                      onClick={closeDrawer}
+                    >
                       Finalizar compra
                     </Link>
-                    <button type="button" className="btn" data-variant="quiet" data-block="true" onClick={closeDrawer}>
+                    <button
+                      type="button"
+                      className="btn"
+                      data-variant="quiet"
+                      data-block="true"
+                      onClick={closeDrawer}
+                    >
                       Seguir comprando
                     </button>
                   </div>

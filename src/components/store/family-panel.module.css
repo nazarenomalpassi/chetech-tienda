@@ -14,7 +14,7 @@
     visibility 0s 0.2s;
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 1200px) {
   .panel {
     display: block;
   }
@@ -251,7 +251,10 @@
   overflow: hidden;
   background: #f3f4f1;
   clip-path: polygon(0 0, calc(100% - var(--chaflan)) 0, 100% var(--chaflan), 100% 100%, 0 100%);
-  transform: translate(calc(var(--x) * (var(--i) + 1) * -4px), calc(var(--y) * (var(--i) + 1) * -3px));
+  transform: translate(
+    calc(var(--x) * (var(--i) + 1) * -4px),
+    calc(var(--y) * (var(--i) + 1) * -3px)
+  );
   transition: transform 0.4s var(--ease-out);
 }
 
@@ -288,7 +291,11 @@
   position: absolute;
   inset: 0;
   z-index: 4;
-  background: repeating-linear-gradient(to bottom, rgb(255 255 255 / 0.045) 0 1px, transparent 1px 3px);
+  background: repeating-linear-gradient(
+    to bottom,
+    rgb(255 255 255 / 0.045) 0 1px,
+    transparent 1px 3px
+  );
   pointer-events: none;
 }
 
@@ -296,7 +303,12 @@
   position: absolute;
   inset: -20% -40%;
   z-index: 5;
-  background: linear-gradient(105deg, transparent 42%, rgb(255 255 255 / 0.07) 50%, transparent 58%);
+  background: linear-gradient(
+    105deg,
+    transparent 42%,
+    rgb(255 255 255 / 0.07) 50%,
+    transparent 58%
+  );
   pointer-events: none;
   transform: translateX(calc(var(--x) * 22%));
   transition: transform 0.4s var(--ease-out);

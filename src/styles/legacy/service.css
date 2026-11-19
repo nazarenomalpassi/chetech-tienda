@@ -456,7 +456,7 @@ body {
   gap: 6px;
 }
 .service-tech-lab-facts li {
-  font-size: 9px;
+  font-size: 11px;
 }
 .service-tech-scanline {
   position: absolute;
@@ -700,7 +700,8 @@ body {
   position: relative;
   padding: clamp(88px, 8vw, 126px) 0;
   overflow: hidden;
-  background: radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.08), transparent 26%), #090b0d;
+  background:
+    radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.08), transparent 26%), #090b0d;
   color: white;
 }
 .service-tech-trust::before,
@@ -1233,7 +1234,7 @@ body {
 }
 .service-tech-warranty-link small {
   color: #969ea2;
-  font-size: 10px;
+  font-size: 11px;
 }
 .service-tech-related {
   padding-top: 36px;
@@ -1283,7 +1284,7 @@ body {
   width: 20px;
 }
 .service-tech-related-grid > a > div > svg:first-child {
-  color: #5f6e11;
+  color: var(--color-tinta);
 }
 .service-tech-related-grid > a > div > svg:last-child {
   width: 16px;
@@ -1463,7 +1464,7 @@ body {
     flex: 0 0 auto;
     min-height: 28px;
     padding-inline: 8px;
-    font-size: 9px;
+    font-size: 11px;
   }
   .service-tech-lab-panel {
     width: calc(100% - 16px);
@@ -1482,7 +1483,7 @@ body {
   .service-tech-lab-actions .button,
   .service-tech-lab-account .button {
     padding-inline: 8px;
-    font-size: 10px;
+    font-size: 11px;
   }
   .service-tech-lab-facts {
     display: flex;
@@ -1676,4 +1677,16 @@ body {
     transform: translate3d(0, 620px, 0);
     opacity: 0;
   }
+}
+
+/* En tablet tres tarjetas por fila dejaban al nombre sin lugar ("Mantenimiento preventivo" se
+   encimaba con la flecha): pasan a dos por fila y el nombre puede cortarse si hace falta. */
+@media (min-width: 601px) and (max-width: 980px) {
+  .service-tech-related-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.service-tech-related-grid strong {
+  overflow-wrap: anywhere;
 }

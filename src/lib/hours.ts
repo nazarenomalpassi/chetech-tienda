@@ -39,13 +39,18 @@ export function pickupWindow(date = new Date()): PickupWindow {
   const { day, minutes } = cordobaNow(date);
   for (const [start, end] of schedule[day]) {
     if (minutes >= start && minutes < end - 15) return { kind: "open", closesAt: clock(end) };
-    if (minutes < start) return { kind: "later-today", opensAt: clock(start), closesAt: clock(end) };
+    if (minutes < start)
+      return { kind: "later-today", opensAt: clock(start), closesAt: clock(end) };
   }
   for (let offset = 1; offset <= 7; offset += 1) {
     const next = (day + offset) % 7;
     const spans = schedule[next];
     if (spans.length) {
-      return { kind: "next-day", day: offset === 1 ? "mañana" : `el ${dayNames[next]}`, opensAt: clock(spans[0][0]) };
+      return {
+        kind: "next-day",
+        day: offset === 1 ? "mañana" : `el ${dayNames[next]}`,
+        opensAt: clock(spans[0][0]),
+      };
     }
   }
   return { kind: "next-day", day: "el lunes", opensAt: "09:30" };
@@ -55,4 +60,45 @@ export function pickupSentence(window: PickupWindow) {
   if (window.kind === "open") return `Retirás hoy hasta las ${window.closesAt}`;
   if (window.kind === "later-today") return `Retirás hoy desde las ${window.opensAt}`;
   return `Retirás ${window.day} desde las ${window.opensAt}`;
+}
+
+export type StoreStatus =
+  | { open: true; closesAt: string; minutesLeft: number }
+  | { open: false; opensAt: string; day: string };
+
+/** Si el local está abierto en este momento y hasta cuándo, o cuándo vuelve a abrir. */
+export function storeStatus(date = new Date()): StoreStatus {
+  const { day, minutes } = cordobaNow(date);
+  for (const [start, end] of schedule[day]) {
+    if (minutes >= start && minutes < end)
+      return { open: true, closesAt: clock(end), minutesLeft: end - minutes };
+    if (minutes < start) return { open: false, opensAt: clock(start), day: "hoy" };
+  }
+  for (let offset = 1; offset <= 7; offset += 1) {
+    const next = (day + offset) % 7;
+    const spans = schedule[next];
+    if (spans.length) {
+      return {
+        open: false,
+        day: offset === 1 ? "mañana" : `el ${dayNames[next]}`,
+        opensAt: clock(spans[0][0]),
+      };
+    }
+  }
+  return { open: false, day: "el lunes", opensAt: "09:30" };
+}
+
+/** El día de hoy en el local: qué día es, la hora en minutos y sus tramos de atención. */
+export function todayAtStore(date = new Date()) {
+  const { day, minutes } = cordobaNow(date);
+  return {
+    day,
+    minutes,
+    spans: schedule[day].map(([start, end]) => ({
+      start,
+      end,
+      opens: clock(start),
+      closes: clock(end),
+    })),
+  };
 }

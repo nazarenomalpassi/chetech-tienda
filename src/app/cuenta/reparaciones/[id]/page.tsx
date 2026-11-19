@@ -14,6 +14,7 @@ import {
 import { notFound, redirect } from "next/navigation";
 import { AccountHeading } from "../../account-heading";
 import { RepairFocusRefresh } from "@/components/repair-focus-refresh";
+import { RepairProgress } from "@/components/repair-progress";
 import { TvCompanions } from "@/components/store/taller/tv-companions";
 import { siteConfig } from "@/config/site";
 import { requireAccount } from "@/lib/auth";
@@ -73,6 +74,8 @@ export default async function RepairDetailPage({ params }: { params: Promise<{ i
           </div>
         </aside>
       )}
+
+      <RepairProgress status={repair.status} boxed />
 
       <section className="repair-detail-summary" aria-label="Resumen de la reparación">
         <div>
@@ -261,7 +264,8 @@ export default async function RepairDetailPage({ params }: { params: Promise<{ i
           </span>
         </div>
         <a
-          className="btn" data-variant="whatsapp"
+          className="btn"
+          data-variant="whatsapp"
           href={repairWhatsAppUrl(repair)}
           target="_blank"
           rel="noreferrer"

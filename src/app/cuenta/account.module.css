@@ -495,3 +495,10 @@ a.row:hover .rowTitle {
   color: var(--color-tinta-3);
   font-size: var(--text-14);
 }
+
+@media (pointer: coarse) {
+  .back {
+    padding-block: 11px;
+    margin-block: -11px calc(var(--space-2) - 11px);
+  }
+}

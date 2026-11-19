@@ -65,15 +65,26 @@
   height: var(--header-height);
 }
 
+/* El logo es lo único que cede en pantallas angostas: los botones del menú, la búsqueda, la cuenta y
+   el carrito conservan su tamaño de toque. */
 .brand {
   display: flex;
-  flex: none;
+  flex: 0 1 140px;
   align-items: center;
+  min-width: 0;
+  min-height: var(--touch);
 }
 
 .brand img {
-  width: 140px;
+  width: 100%;
+  max-width: 140px;
   height: auto;
+}
+
+@media (max-width: 389px) {
+  .barInner {
+    gap: 8px;
+  }
 }
 
 .nav {
@@ -159,21 +170,32 @@
   transition: opacity 0.35s ease;
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 1200px) {
   .panelScrim {
     display: block;
   }
 }
 
+/* En el celular los tres botones no ceden (cede el logo). Desde 760 px, con el buscador ancho, este
+   grupo sí puede achicarse: el buscador cede lugar y los íconos no se salen del ancho de la página. */
 .actions {
   display: flex;
+  flex: none;
   align-items: center;
   gap: 4px;
   margin-left: auto;
 }
 
+@media (min-width: 760px) {
+  .actions {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+}
+
 .iconButton {
   position: relative;
+  flex: none;
   display: inline-grid;
   place-items: center;
   width: var(--touch);
@@ -194,6 +216,7 @@
 }
 
 .searchButton {
+  flex: none;
   display: inline-grid;
   place-items: center;
   width: var(--touch);
@@ -251,7 +274,10 @@
 }
 
 @media (min-width: 760px) {
+  /* Con el menú completo a la vista, el buscador es lo que cede: se achica y corta su texto. */
   .searchButton {
+    flex: 0 1 auto;
+    min-width: 96px;
     display: inline-flex;
     gap: 10px;
     width: clamp(200px, 26vw, 320px);
@@ -268,9 +294,20 @@
     border-color: var(--color-tinta-3);
   }
 
+  /* En tablet el texto no entra entero en el buscador: se corta con puntos suspensivos en una línea. */
   .searchPlaceholder {
-    display: inline;
+    display: block;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
     font-size: var(--text-16);
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .searchButton svg {
+    flex: none;
   }
 
   .kbd {
@@ -287,7 +324,7 @@
   }
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 1200px) {
   .nav {
     display: flex;
   }
@@ -296,8 +333,13 @@
     display: none;
   }
 
+  .brand {
+    flex: none;
+  }
+
   .brand img {
     width: 160px;
+    max-width: none;
   }
 }
 
@@ -508,5 +550,22 @@
   .menu[data-open="true"] .menuFoot {
     transform: none;
     transition: opacity 0.15s ease;
+  }
+}
+
+/* Entre 1200 y 1319 px el menú completo deja poco lugar: el buscador queda como un botón con la lupa
+   y el atajo, sin el texto. */
+@media (min-width: 1200px) and (max-width: 1319px) {
+  .searchButton {
+    min-width: 0;
+    width: auto;
+  }
+
+  .searchPlaceholder {
+    display: none;
+  }
+
+  .kbd {
+    margin-left: 0;
   }
 }

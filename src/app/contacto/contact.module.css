@@ -1,0 +1,619 @@
+/* Contacto: franja negra con el estado del local en vivo, cuatro canales con su ícono y la tabla de
+   horarios con la línea de tiempo del día. */
+.wrap {
+  padding-bottom: 8px;
+}
+
+.banner {
+  position: relative;
+  overflow: hidden;
+  padding: 18px 0 30px;
+}
+
+.banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgb(255 255 255 / 0.09) 1px, transparent 1.4px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(70% 130% at 88% 30%, #000 0%, transparent 76%);
+  pointer-events: none;
+}
+
+.bannerShape {
+  position: absolute;
+  top: -170px;
+  right: -200px;
+  width: 640px;
+  height: 640px;
+  background: url("/brand/trama-oscura.svg") no-repeat center / contain;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.bannerInner {
+  position: relative;
+}
+
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--color-tinta-3);
+  font-size: var(--text-14);
+}
+
+.crumbs a:hover {
+  color: var(--color-tinta);
+  text-decoration: underline;
+}
+
+.head {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.head h1 {
+  overflow: hidden;
+  margin-top: -0.2em;
+  padding: 0.2em 0 0.06em;
+  font-size: var(--titulo-hero);
+  line-height: 1.02;
+}
+
+.head h1 span {
+  display: block;
+}
+
+.head > p:not([class]) {
+  max-width: 56ch;
+  color: var(--color-tinta-2);
+  font-size: var(--text-18);
+}
+
+.body {
+  display: grid;
+  gap: 16px;
+  padding-top: 20px;
+}
+
+@media (min-width: 960px) {
+  .banner {
+    padding: 22px 0 40px;
+  }
+
+  .head {
+    margin-top: 28px;
+  }
+
+  .body {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: 20px;
+    align-items: start;
+    padding-top: 28px;
+  }
+}
+
+/* Canales */
+.channels {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 620px) {
+  .channels {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+.channel {
+  --chaflan: 16px;
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    "icon text"
+    "foot foot";
+  gap: 14px 14px;
+  align-items: center;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--color-linea);
+  background: var(--color-blanco);
+  color: var(--color-tinta);
+  transition:
+    border-color 0.15s ease,
+    transform 0.35s var(--ease-out);
+}
+
+/* Luz que acompaña al cursor por adentro de la tarjeta. */
+.channel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle 260px at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--color-tinta) 11%, transparent),
+    transparent 70%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.iconWrap {
+  position: relative;
+  grid-area: icon;
+  width: fit-content;
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  background: var(--color-tinta);
+  color: var(--color-pared);
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+  transition: transform 0.35s var(--ease-out);
+}
+
+.icon svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 1.75;
+}
+
+.channelText {
+  grid-area: text;
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.channelLink {
+  font-family: var(--font-display);
+  font-size: var(--titulo-3);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+}
+
+/* Toda la tarjeta es el enlace; el botón de copiar queda por encima. */
+.channelLink::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.channelLink:focus-visible {
+  outline: none;
+}
+
+.channel:has(.channelLink:focus-visible) {
+  outline: 3px solid var(--foco, var(--color-tinta));
+  outline-offset: 2px;
+}
+
+.channelText small {
+  overflow-wrap: break-word;
+  color: var(--color-tinta-2);
+  font-size: var(--text-16);
+}
+
+@media (max-width: 380px) {
+  .channelText small {
+    font-size: var(--text-14);
+  }
+}
+
+.channelFoot {
+  grid-area: foot;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 36px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-linea);
+}
+
+.channelAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.channelAction::after {
+  content: ">>>";
+  color: var(--color-acero);
+  font-weight: 300;
+  transition:
+    transform 0.3s var(--ease-out),
+    color 0.2s ease;
+}
+
+.copy {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--color-plata);
+  background: transparent;
+  color: var(--color-tinta);
+  font-size: var(--text-14);
+  font-weight: 600;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s var(--ease-out);
+}
+
+.copy:hover {
+  border-color: var(--color-tinta);
+}
+
+.copy:active {
+  transform: scale(0.94);
+}
+
+.copy[data-copied="true"] {
+  border-color: var(--color-tinta);
+  background: var(--color-tinta);
+  color: var(--color-pared);
+}
+
+.channel:active {
+  transform: scale(0.985);
+}
+
+@media (min-width: 620px) {
+  .channel {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "icon"
+      "text"
+      "foot";
+    grid-template-rows: auto 1fr auto;
+    gap: 16px;
+    min-height: 228px;
+    padding: 20px;
+  }
+
+  .channelText {
+    align-self: start;
+  }
+
+  .icon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .icon svg {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .channel:hover {
+    border-color: var(--color-tinta);
+    transform: perspective(900px) rotateX(calc(var(--py, 0) * -3deg))
+      rotateY(calc(var(--px, 0) * 4deg));
+  }
+
+  .channel:hover::after {
+    opacity: 1;
+  }
+
+  .channel:hover .icon {
+    transform: translate(calc(var(--px, 0) * 5px), calc(var(--py, 0) * 4px)) scale(1.06);
+  }
+
+  .channel:hover .channelAction::after {
+    color: var(--color-tinta);
+    transform: translateX(6px);
+  }
+}
+
+/* WhatsApp es el canal principal: un anillo late alrededor de su ícono. */
+.channel[data-kind="whatsapp"] .iconWrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--color-tinta);
+  opacity: 0;
+}
+
+/* Horarios */
+.hours {
+  display: grid;
+  gap: 14px;
+  padding: 0 20px 20px;
+  border: 1.5px solid var(--color-tinta);
+  background: var(--color-blanco);
+}
+
+.hours > :global(.barras) {
+  width: 148px;
+  height: 18px;
+}
+
+.hours h2 {
+  font-size: var(--titulo-3);
+}
+
+.hoursNote {
+  color: var(--color-tinta-2);
+  font-size: var(--text-14);
+}
+
+/* Atajos */
+.shortcuts {
+  margin-top: 40px;
+}
+
+.shortcuts h2 {
+  margin-bottom: 14px;
+  font-size: var(--titulo-2);
+}
+
+.shortcuts ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 760px) {
+  .shortcuts {
+    margin-top: 56px;
+  }
+
+  .shortcuts ul {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+.shortcuts a {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  height: 100%;
+  min-height: 72px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-linea);
+  background: var(--color-blanco);
+  transition:
+    border-color 0.15s ease,
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s var(--ease-out);
+}
+
+.shortcuts a::after {
+  content: ">>>";
+  color: var(--color-acero);
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 300;
+  transition:
+    transform 0.3s var(--ease-out),
+    color 0.2s ease;
+}
+
+.shortcuts svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 1.75;
+  transition: transform 0.35s var(--ease-out);
+}
+
+.shortcuts strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  letter-spacing: 0.03em;
+}
+
+.shortcuts small {
+  display: block;
+  color: var(--color-tinta-2);
+  font-size: var(--text-14);
+  transition: color 0.2s ease;
+}
+
+.shortcuts a:active {
+  transform: scale(0.985);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .shortcuts a:hover {
+    border-color: var(--color-tinta);
+    background: var(--color-tinta);
+    color: var(--color-blanco);
+  }
+
+  .shortcuts a:hover small {
+    color: var(--color-plata);
+  }
+
+  .shortcuts a:hover::after {
+    color: var(--color-blanco);
+    transform: translateX(6px);
+  }
+
+  .shortcuts a:hover svg {
+    transform: rotate(-12deg) scale(1.12);
+  }
+}
+
+/* Movimiento */
+@media (prefers-reduced-motion: no-preference) {
+  .head h1 span {
+    animation: contacto-titulo 0.7s var(--ease-out) both;
+  }
+
+  .head > p {
+    animation: contacto-sube 0.6s var(--ease-out) 0.12s both;
+  }
+
+  .head > p:last-child {
+    animation-delay: 0.22s;
+  }
+
+  .bannerShape {
+    animation: contacto-deriva 22s ease-in-out infinite alternate;
+  }
+
+  .channel {
+    animation: contacto-sube 0.6s var(--ease-out) backwards;
+    animation-delay: calc(var(--i, 0) * 70ms + 120ms);
+  }
+
+  .hours {
+    animation: contacto-sube 0.6s var(--ease-out) 0.3s backwards;
+  }
+
+  .shortcuts li {
+    animation: contacto-sube 0.55s var(--ease-out) backwards;
+    animation-delay: calc(var(--i, 0) * 70ms + 420ms);
+  }
+
+  .channel[data-kind="whatsapp"] .iconWrap::before {
+    animation: contacto-anillo 2.6s ease-out 1.2s infinite;
+  }
+
+  /* Cada ícono reacciona a su manera: el globo salta, la cámara dispara, el sobre sale volando y el
+     pin rebota. Con mouse al apoyar el cursor; al tacto, al tocar. */
+  .channel:active[data-kind="whatsapp"] .icon svg {
+    animation: icono-salto 0.6s var(--ease-out);
+  }
+
+  .channel:active[data-kind="instagram"] .icon svg {
+    animation: icono-disparo 0.5s var(--ease-out);
+  }
+
+  .channel:active[data-kind="mail"] .icon svg {
+    animation: icono-vuela 0.7s var(--ease-in-out);
+  }
+
+  .channel:active[data-kind="mapa"] .icon svg {
+    animation: icono-rebote 0.7s var(--ease-out);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .channel:hover[data-kind="whatsapp"] .icon svg {
+    animation: icono-salto 0.6s var(--ease-out);
+  }
+
+  .channel:hover[data-kind="instagram"] .icon svg {
+    animation: icono-disparo 0.5s var(--ease-out);
+  }
+
+  .channel:hover[data-kind="mail"] .icon svg {
+    animation: icono-vuela 0.7s var(--ease-in-out);
+  }
+
+  .channel:hover[data-kind="mapa"] .icon svg {
+    animation: icono-rebote 0.7s var(--ease-out);
+  }
+}
+
+@keyframes contacto-titulo {
+  from {
+    transform: translateY(105%);
+  }
+}
+
+@keyframes contacto-sube {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+@keyframes contacto-deriva {
+  to {
+    transform: translate(-18px, 14px) rotate(3deg);
+  }
+}
+
+@keyframes contacto-anillo {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.55);
+  }
+}
+
+@keyframes icono-salto {
+  30% {
+    transform: translateY(-5px) rotate(-10deg);
+  }
+  60% {
+    transform: translateY(0) rotate(7deg);
+  }
+}
+
+@keyframes icono-disparo {
+  35% {
+    transform: scale(0.82);
+  }
+  70% {
+    transform: scale(1.14);
+  }
+}
+
+@keyframes icono-vuela {
+  40% {
+    opacity: 0;
+    transform: translate(16px, -16px);
+  }
+  41% {
+    opacity: 0;
+    transform: translate(-16px, 16px);
+  }
+}
+
+@keyframes icono-rebote {
+  25% {
+    transform: translateY(-8px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  70% {
+    transform: translateY(-3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .channel:hover,
+  .channel:hover .icon {
+    transform: none;
+  }
+}

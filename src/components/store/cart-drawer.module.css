@@ -76,9 +76,19 @@
   padding: 28px 20px;
 }
 
-.items {
+/* Una sola zona con scroll para los productos y las sugerencias. Antes cada bloque ocupaba su lugar
+   fijo y, en un celular, las sugerencias dejaban a la lista de productos casi sin altura. */
+.scroll {
+  display: flex;
   flex: 1;
+  flex-direction: column;
+  min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.items {
+  flex: none;
   margin: 0;
   padding: 8px 20px;
   list-style: none;
@@ -133,13 +143,40 @@
 
 .itemRow {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 6px 12px;
 }
 
 .itemPrice {
+  margin-left: auto;
   font-size: var(--text-22);
+}
+
+/* En pantallas angostas la foto y el precio se achican un poco para que entren con la cantidad. */
+@media (max-width: 359px) {
+  .thumb {
+    width: 56px;
+    height: 56px;
+  }
+
+  .itemPrice {
+    font-size: var(--text-18);
+  }
+
+  .items,
+  .suggest {
+    padding-inline: 16px;
+  }
+
+  .head {
+    padding-left: 16px;
+  }
+
+  .foot {
+    padding-inline: 16px;
+  }
 }
 
 .stepper {
@@ -172,6 +209,7 @@
 }
 
 .suggest {
+  margin-top: auto;
   padding: 14px 20px;
   border-top: 1px solid var(--color-linea);
   background: var(--color-pared-2);
@@ -184,6 +222,9 @@
 
 .suggest ul {
   display: grid;
+  /* Sin esto la columna toma el ancho del nombre más largo y el botón con el precio queda fuera de
+     la pantalla. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 8px;
   margin: 0;
   padding: 0;
@@ -194,6 +235,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
 }
 
 .suggestThumb {
@@ -211,18 +253,25 @@
 }
 
 .suggestName {
+  display: -webkit-box;
   flex: 1;
   min-width: 0;
   overflow: hidden;
   font-size: var(--text-14);
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.25;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .suggestAdd {
   display: inline-flex;
+  flex: none;
   align-items: center;
   gap: 6px;
+  white-space: nowrap;
+  transition:
+    border-color 0.15s ease,
+    transform 0.15s var(--ease-out);
   min-height: 40px;
   padding: 0 10px;
   border: 1.5px solid var(--color-linea);
@@ -233,6 +282,10 @@
 
 .suggestAdd:hover {
   border-color: var(--color-tinta);
+}
+
+.suggestAdd:active {
+  transform: scale(0.95);
 }
 
 .foot {
@@ -257,4 +310,21 @@
 .note {
   color: var(--color-tinta-3);
   font-size: var(--text-14);
+}
+
+/* En pantallas bajas (un celular chico o con el teclado abierto) el pie se compacta para dejarle
+   lugar a la lista. */
+@media (max-height: 640px) {
+  .head {
+    min-height: 56px;
+  }
+
+  .foot {
+    gap: 8px;
+    padding-top: 12px;
+  }
+
+  .note {
+    display: none;
+  }
 }
