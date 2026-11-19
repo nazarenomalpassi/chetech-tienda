@@ -31,32 +31,27 @@ export default async function InstagramPage() {
       href: "/productos",
       title: "Ver todos los productos",
       hint: "Con precio, stock y retiro hoy en el local",
-      signal: "amarillo",
     },
     {
       href: "/productos?familia=para-tu-tele",
       title: "Todo para tu tele",
       hint: "ONN, TV Stick, controles, soportes y cables",
-      signal: "cian",
     },
     {
       href: whatsappUrl("Hola, CheTech. Vengo de Instagram y quiero un presupuesto para arreglar mi tele."),
       title: "Presupuesto para tu tele",
       hint: "Mandanos una foto por WhatsApp",
-      signal: "verde",
       external: true,
     },
     {
       href: "/cuenta/reparaciones",
       title: "Seguí tu reparación",
       hint: "Con el mail que dejaste en el local",
-      signal: "magenta",
     },
     {
       href: siteConfig.mapsUrl,
       title: "Cómo llegar",
       hint: `${siteConfig.address}, ${siteConfig.location}`,
-      signal: "azul",
       external: true,
     },
   ];
@@ -65,8 +60,9 @@ export default async function InstagramPage() {
     <div className="page">
       <div className={styles.ig}>
         <header className={styles.igHead}>
-          <span className={styles.carta} aria-hidden="true" />
-          <h1>CheTech</h1>
+          <h1 className={styles.igLogo}>
+            <Image src="/brand/chetech-logo-tinta.svg" alt="CheTech" width={228} height={40} priority />
+          </h1>
           <p>Arreglamos tu tele. Y tenemos todo para que la disfrutes. {siteConfig.location}.</p>
         </header>
 
@@ -91,7 +87,6 @@ export default async function InstagramPage() {
               <li key={link.title}>
                 <a
                   href={link.href}
-                  data-signal={link.signal}
                   {...(link.external ? { target: "_blank", rel: "noreferrer" } : {})}
                 >
                   <span>

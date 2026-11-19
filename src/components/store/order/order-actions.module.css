@@ -80,7 +80,8 @@
 .ok {
   padding: 12px 14px;
   border-radius: var(--radius-button);
-  background: color-mix(in srgb, var(--color-verde) 12%, var(--color-blanco));
+  background: var(--color-pared-2);
+  border-left: 3px solid var(--color-tinta);
   font-weight: 600;
 }
 
@@ -88,7 +89,8 @@
 .error {
   padding: 12px 14px;
   border-radius: var(--radius-button);
-  background: color-mix(in srgb, var(--color-rojo) 10%, var(--color-blanco));
-  color: var(--color-rojo);
+  border-left: 3px solid var(--color-tinta);
+  background: var(--color-pared-2);
+  color: var(--color-tinta);
   font-weight: 600;
 }

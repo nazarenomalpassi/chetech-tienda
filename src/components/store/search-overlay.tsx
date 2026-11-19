@@ -85,7 +85,6 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
             exit={reduce ? undefined : { y: -16 }}
             transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div className="carta" aria-hidden />
             <form className={`page ${styles.form}`} role="search" onSubmit={submit}>
               <Search aria-hidden size={22} className={styles.icon} />
               <input

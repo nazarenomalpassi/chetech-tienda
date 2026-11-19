@@ -50,7 +50,7 @@
 .metrics dd {
   margin: var(--space-1) 0 0;
   font-family: var(--font-display);
-  font-size: var(--text-36);
+  font-size: var(--titulo-2);
   font-weight: 600;
   line-height: 1.1;
   font-variant-numeric: tabular-nums;
@@ -71,7 +71,7 @@
 .panel h2 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--text-28);
+  font-size: var(--titulo-3);
 }
 
 .panel > p {

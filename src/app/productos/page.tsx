@@ -106,7 +106,6 @@ export default async function CatalogPage({ searchParams }: { searchParams: Sear
                 key={item.slug}
                 href={hrefWith({ familia: item.slug, pagina: null })}
                 aria-current={family === item.slug ? "page" : undefined}
-                data-signal={familyBySlug.get(item.slug)?.signal ?? "gris"}
               >
                 {item.name}
                 <span>{item.count}</span>

@@ -1,14 +1,18 @@
+/* Título en dos pesos, como las placas de la marca: ">>>REPARAMOS" grueso y "TELEVISORES<<<" fino. */
 .title {
-  font-size: var(--text-hero);
+  font-size: var(--titulo-hero);
   font-weight: 700;
-  line-height: 0.95;
-  letter-spacing: -0.015em;
+  line-height: 1.06;
+  letter-spacing: 0.005em;
 }
 
 .title span {
   display: block;
-  color: var(--color-tinta-2);
-  font-weight: 600;
+  margin-top: 0.18em;
+  font-size: 0.62em;
+  font-weight: 300;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
 }
 
 .proofs {
@@ -23,32 +27,22 @@
 
 .proofs li {
   display: grid;
-  grid-template-columns: 12px 1fr;
+  grid-template-columns: auto 1fr;
   align-items: baseline;
-  gap: 12px;
+  gap: 10px;
 }
 
 .proofs li::before {
-  content: "";
-  width: 12px;
-  height: 12px;
-  border-radius: 3px;
-  background: var(--signal);
-  transform: translateY(1px);
+  content: ">>>";
+  color: var(--color-acero);
+  font-family: var(--font-display);
+  font-size: 0.8em;
+  font-weight: 300;
+  letter-spacing: 0.04em;
 }
 
 .proofs strong {
   color: var(--color-tinta);
-}
-
-.proofs [data-signal="verde"] {
-  --signal: var(--color-verde);
-}
-.proofs [data-signal="amarillo"] {
-  --signal: var(--color-amarillo);
-}
-.proofs [data-signal="cian"] {
-  --signal: var(--color-cian);
 }
 
 .heroActions {
@@ -90,7 +84,7 @@
 }
 
 .sectionTitle {
-  font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+  font-size: var(--titulo-2);
 }
 
 .sectionHead .sectionTitle {
@@ -150,24 +144,40 @@
   min-height: 112px;
   height: 100%;
   padding: 16px;
-  border: 1.5px solid var(--color-linea);
-  border-radius: var(--radius-card);
+  border: 1px solid var(--color-linea);
   background: var(--color-blanco);
   transition:
     border-color 0.15s ease,
-    transform 0.15s var(--ease-out);
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .need:hover {
   border-color: var(--color-tinta);
-  transform: translateY(-2px);
+  background: var(--color-tinta);
+  color: var(--color-blanco);
+}
+
+.need:hover .needHint {
+  color: var(--color-plata);
+}
+
+.need:focus-visible {
+  outline-offset: -5px;
 }
 
 .needLabel {
   font-family: var(--font-display);
-  font-size: clamp(1.35rem, 1.1rem + 1vw, 1.9rem);
+  font-size: clamp(0.9375rem, 0.82rem + 0.55vw, 1.2rem);
   font-weight: 700;
-  line-height: 1;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+}
+
+.needLabel::before {
+  content: ">>>";
+  font-weight: 300;
+  opacity: 0.55;
 }
 
 .needHint {
@@ -194,53 +204,16 @@
 }
 
 .family {
-  --signal: var(--color-gris-carta);
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
   border: 1px solid var(--color-linea);
-  border-radius: var(--radius-card);
   background: var(--color-blanco);
   transition: border-color 0.15s ease;
 }
 
 .family:hover {
   border-color: var(--color-tinta);
-}
-
-.family[data-signal="amarillo"] {
-  --signal: var(--color-amarillo);
-}
-.family[data-signal="cian"] {
-  --signal: var(--color-cian);
-}
-.family[data-signal="verde"] {
-  --signal: var(--color-verde);
-}
-.family[data-signal="magenta"] {
-  --signal: var(--color-magenta);
-}
-.family[data-signal="rojo"] {
-  --signal: var(--color-rojo);
-}
-.family[data-signal="azul"] {
-  --signal: var(--color-azul);
-}
-
-.familyHead {
-  display: grid;
-  place-items: center;
-  height: 22px;
-  background: var(--signal);
-}
-
-.familyHead span {
-  width: 30px;
-  height: 9px;
-  border-radius: 999px;
-  background: var(--color-pared);
-  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.25);
 }
 
 .familyImages {
@@ -254,14 +227,11 @@
   position: relative;
   aspect-ratio: 1;
   overflow: hidden;
-  border-radius: 8px;
-  background: var(--color-pared);
+  background: #f3f4f1;
 }
 
 .familyImages img {
-  object-fit: contain;
-  padding: 10%;
-  mix-blend-mode: multiply;
+  object-fit: cover;
 }
 
 .familyText {
@@ -272,8 +242,9 @@
 
 .familyText strong {
   font-family: var(--font-display);
-  font-size: var(--text-28);
-  line-height: 1;
+  font-size: var(--titulo-3);
+  line-height: 1.15;
+  letter-spacing: 0.02em;
 }
 
 .familyText span {
@@ -292,7 +263,7 @@
   }
 
   .familyText strong {
-    font-size: var(--text-22);
+    font-size: 0.9375rem;
   }
 }
 
@@ -310,23 +281,16 @@
 }
 
 .workshopCard {
-  --signal: var(--color-magenta);
   display: grid;
   align-content: start;
   gap: 14px;
   padding: 24px;
   border: 1px solid var(--color-linea);
-  border-top: 6px solid var(--signal);
-  border-radius: var(--radius-card);
   background: var(--color-blanco);
 }
 
-.workshopCard[data-signal="cian"] {
-  --signal: var(--color-cian);
-}
-
 .workshopCard h2 {
-  font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.25rem);
+  font-size: var(--titulo-2);
 }
 
 .workshopCard p {

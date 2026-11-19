@@ -11,16 +11,13 @@
   position: relative;
   aspect-ratio: 1;
   overflow: hidden;
-  border: 1px solid var(--color-linea);
-  border-radius: 18px;
-  background:
-    linear-gradient(140deg, rgb(255 255 255 / 0.95) 0%, rgb(255 255 255 / 0) 40%),
-    var(--color-blanco);
+  --chaflan: 28px;
+  background: #f3f4f1;
+  clip-path: polygon(0 0, calc(100% - var(--chaflan)) 0, 100% var(--chaflan), 100% 100%, 0 100%);
 }
 
 .image {
-  object-fit: contain;
-  padding: 7%;
+  object-fit: cover;
 }
 
 .video {
@@ -43,7 +40,7 @@
   right: 12px;
   bottom: 12px;
   padding: 4px 10px;
-  border-radius: 999px;
+  border-radius: 0;
   background: rgb(21 24 26 / 0.8);
   color: var(--color-blanco);
   font-size: var(--text-14);
@@ -64,7 +61,7 @@
   height: 68px;
   overflow: hidden;
   border: 1.5px solid var(--color-linea);
-  border-radius: 10px;
+  border-radius: 0;
   background: var(--color-blanco);
 }
 
@@ -87,7 +84,7 @@
 .bubble::before {
   content: "";
   position: absolute;
-  inset: 7%;
+  inset: 0;
   background: var(--lqip, none) center / contain no-repeat;
   filter: blur(10px);
   opacity: 0.8;

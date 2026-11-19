@@ -121,7 +121,7 @@ export default async function ProductPage({ params }: Props) {
           </div>
 
           <div className={styles.info}>
-            <div className={styles.titleBlock} data-signal={family?.signal ?? "gris"}>
+            <div className={styles.titleBlock}>
               <p className={styles.family}>{product.familyName}</p>
               <h1>{product.name}</h1>
               {product.brand || product.model ? (
@@ -145,24 +145,24 @@ export default async function ProductPage({ params }: Props) {
             <BuyBox product={product} whatsappHref={productWhatsApp(product, isPart)} />
 
             <ul className={styles.delivery}>
-              <li data-signal="verde">
+              <li>
                 <strong>
                   <PickupLine fallback={pickupSentence(pickupWindow())} />
                 </strong>
                 <span>Retiro gratis en {siteConfig.address}, Río Tercero.</span>
               </li>
               {ships ? (
-                <li data-signal="azul">
+                <li>
                   <strong>Envío por Correo Argentino</strong>
                   <span>El costo se calcula en el carrito.</span>
                 </li>
               ) : product.shippingSize === "no_viaja" ? (
-                <li data-signal="gris">
+                <li>
                   <strong>Se retira en el local</strong>
                   <span>Este producto no se envía por correo.</span>
                 </li>
               ) : null}
-              <li data-signal="amarillo">
+              <li>
                 <strong>{product.warranty}</strong>
                 <span>
                   {product.warrantyIsLegalMinimum
@@ -224,7 +224,7 @@ export default async function ProductPage({ params }: Props) {
                   <p>{product.boxContents}</p>
                 </div>
               ) : null}
-              <div className="carta" aria-hidden />
+              <div className="barras" aria-hidden />
             </div>
           </section>
         </div>

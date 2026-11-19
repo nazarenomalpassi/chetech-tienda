@@ -175,7 +175,7 @@
 .head h1 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--text-36);
+  font-size: var(--titulo-2);
   line-height: 1.05;
 }
 

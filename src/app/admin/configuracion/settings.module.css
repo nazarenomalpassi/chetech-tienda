@@ -53,7 +53,7 @@
 .form h2 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--text-28);
+  font-size: var(--titulo-3);
 }
 
 .form > p {

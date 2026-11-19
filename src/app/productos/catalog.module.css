@@ -22,7 +22,7 @@
 }
 
 .head h1 {
-  font-size: clamp(2.25rem, 1.6rem + 2.8vw, 4rem);
+  font-size: var(--titulo-1);
 }
 
 .head p {
@@ -43,17 +43,18 @@
 }
 
 .families a {
-  --signal: var(--color-tinta);
   display: inline-flex;
   flex: none;
   align-items: center;
   gap: 8px;
   min-height: var(--touch);
   padding: 0 14px;
-  border: 1.5px solid var(--color-linea);
-  border-radius: 999px;
+  border: 1px solid var(--color-plata);
   background: var(--color-blanco);
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
   font-weight: 600;
+  letter-spacing: 0.05em;
   white-space: nowrap;
   transition: border-color 0.15s ease;
 }
@@ -64,8 +65,7 @@
 
 .families a span {
   color: var(--color-tinta-3);
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
+  font-weight: 300;
 }
 
 .families a[aria-current="page"] {
@@ -76,36 +76,6 @@
 
 .families a[aria-current="page"] span {
   color: rgb(255 255 255 / 0.7);
-}
-
-.families a[data-signal]::before {
-  content: "";
-  width: 9px;
-  height: 9px;
-  border-radius: 2px;
-  background: var(--signal);
-}
-
-.families a[data-signal="amarillo"] {
-  --signal: var(--color-amarillo);
-}
-.families a[data-signal="cian"] {
-  --signal: var(--color-cian);
-}
-.families a[data-signal="verde"] {
-  --signal: var(--color-verde);
-}
-.families a[data-signal="magenta"] {
-  --signal: var(--color-magenta);
-}
-.families a[data-signal="rojo"] {
-  --signal: var(--color-rojo);
-}
-.families a[data-signal="azul"] {
-  --signal: var(--color-azul);
-}
-.families a[data-signal="gris"] {
-  --signal: var(--color-gris-carta);
 }
 
 .toolbar {
@@ -178,7 +148,7 @@
   min-height: 40px;
   padding: 0 14px;
   border: 1.5px solid var(--color-linea);
-  border-radius: 999px;
+  border-radius: 0;
   font-weight: 500;
 }
 
@@ -206,7 +176,7 @@
   gap: 8px;
   min-height: 36px;
   padding: 0 12px;
-  border-radius: 999px;
+  border-radius: 0;
   background: var(--color-tinta);
   color: var(--color-blanco);
   font-size: var(--text-14);
@@ -241,7 +211,7 @@
 }
 
 .empty h2 {
-  font-size: var(--text-36);
+  font-size: var(--titulo-2);
 }
 
 .empty p {

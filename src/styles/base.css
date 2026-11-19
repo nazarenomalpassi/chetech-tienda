@@ -55,9 +55,22 @@ h4 {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 700;
-  line-height: 1.02;
-  letter-spacing: -0.01em;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
   text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--titulo-1);
+}
+
+h2 {
+  font-size: var(--titulo-2);
+}
+
+h3,
+h4 {
+  font-size: var(--titulo-3);
 }
 
 p {
@@ -66,14 +79,22 @@ p {
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-azul);
-  outline-offset: 2px;
-  border-radius: 4px;
+  outline: 2px solid var(--foco);
+  outline-offset: 3px;
 }
 
 ::selection {
-  background: var(--color-amarillo);
-  color: var(--color-tinta);
+  background: var(--color-tinta);
+  color: var(--color-blanco);
+}
+
+/* Rótulo: texto corto en la letra de la marca (menú, etiquetas, datos). */
+.rotulo {
+  font-family: var(--font-display);
+  font-size: var(--rotulo);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
 }
 
 .skip-link {
@@ -112,11 +133,12 @@ p {
 .price {
   font-family: var(--font-display);
   font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
 }
 
-/* Botones. Cada uno dice lo que hace; ninguno lleva flecha. */
+/* Botones. Cada uno dice lo que hace. El principal es una pieza negra con dos esquinas en chaflán,
+   como las formas de la papelería; los secundarios son un contorno recto. */
 .btn {
   --btn-bg: var(--color-tinta);
   --btn-fg: var(--color-blanco);
@@ -131,11 +153,13 @@ p {
   border-radius: var(--radius-button);
   background: var(--btn-bg);
   color: var(--btn-fg);
-  font-family: var(--font-body);
-  font-size: var(--text-16);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
   font-weight: 600;
+  letter-spacing: 0.06em;
   line-height: 1;
   white-space: nowrap;
+  --chaflan: 9px;
   transition:
     background-color 0.15s ease,
     color 0.15s ease,
@@ -143,8 +167,19 @@ p {
     transform 0.15s var(--ease-out);
 }
 
+.btn:not([data-variant]),
+.btn[data-variant="screen"] {
+  clip-path: var(--corte);
+}
+
+.btn:focus-visible {
+  outline-offset: -5px;
+  outline-color: var(--btn-fg);
+}
+
 .btn:hover {
-  --btn-bg: #000;
+  --btn-bg: var(--color-tinta-2);
+  --btn-border: var(--color-tinta-2);
 }
 
 .btn:active {
@@ -166,30 +201,20 @@ p {
 .btn[data-variant="secondary"]:hover {
   --btn-bg: var(--color-tinta);
   --btn-fg: var(--color-blanco);
-}
-
-.btn[data-variant="quiet"] {
-  --btn-bg: transparent;
-  --btn-fg: var(--color-tinta);
-  --btn-border: var(--color-linea);
-}
-
-.btn[data-variant="quiet"]:hover {
   --btn-border: var(--color-tinta);
 }
 
+.btn[data-variant="quiet"],
 .btn[data-variant="whatsapp"] {
   --btn-bg: transparent;
   --btn-fg: var(--color-tinta);
-  --btn-border: var(--color-linea);
+  --btn-border: var(--color-plata);
 }
 
-.btn[data-variant="whatsapp"] svg {
-  color: var(--color-verde);
-}
-
+.btn[data-variant="quiet"]:hover,
 .btn[data-variant="whatsapp"]:hover {
-  --btn-border: var(--color-verde);
+  --btn-bg: transparent;
+  --btn-border: var(--color-tinta);
 }
 
 .btn[data-variant="screen"] {
@@ -199,14 +224,14 @@ p {
 }
 
 .btn[data-variant="screen"]:hover {
-  --btn-bg: var(--color-amarillo);
-  --btn-border: var(--color-amarillo);
+  --btn-bg: var(--color-plata);
+  --btn-border: var(--color-plata);
 }
 
 .btn[data-size="large"] {
   min-height: 52px;
   padding: 0 26px;
-  font-size: var(--text-18);
+  font-size: 0.9375rem;
 }
 
 .btn[data-block="true"] {
@@ -215,11 +240,17 @@ p {
 
 /* Enlace de texto */
 .enlace {
-  color: var(--color-azul);
+  color: var(--color-tinta);
   font-weight: 600;
   text-decoration: underline;
+  text-decoration-color: var(--color-acero);
   text-decoration-thickness: 1.5px;
-  text-underline-offset: 3px;
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.15s ease;
+}
+
+.enlace:hover {
+  text-decoration-color: var(--color-tinta);
 }
 
 /* Campos de formulario */
@@ -240,7 +271,7 @@ p {
   width: 100%;
   min-height: var(--touch);
   padding: 10px 14px;
-  border: 1.5px solid var(--color-linea);
+  border: 1.5px solid var(--color-acero);
   border-radius: var(--radius-button);
   background: var(--color-blanco);
   color: var(--color-tinta);
@@ -256,19 +287,20 @@ p {
 .field input:hover,
 .field select:hover,
 .field textarea:hover {
-  border-color: var(--color-tinta-3);
+  border-color: var(--color-tinta);
 }
 
 .field input:focus-visible,
 .field select:focus-visible,
 .field textarea:focus-visible {
   outline: none;
-  border-color: var(--color-azul);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-azul) 22%, transparent);
+  border-color: var(--color-tinta);
+  box-shadow: 0 0 0 2px var(--color-tinta);
 }
 
 .field [aria-invalid="true"] {
-  border-color: var(--color-rojo);
+  border-width: 2px;
+  border-color: var(--color-tinta);
 }
 
 .field small {
@@ -276,10 +308,17 @@ p {
   font-size: var(--text-14);
 }
 
-/* Carta de ajuste como tira */
-.carta {
-  height: 6px;
-  background: var(--carta);
+/* Código de barras del sello de garantía, como tira. Toma el color del texto. */
+.barras {
+  height: 14px;
+  background: var(--barras);
+}
+
+/* Secciones sobre negro: el foco pasa a blanco. */
+.oscuro {
+  --foco: var(--color-blanco);
+  background: var(--color-tinta);
+  color: var(--color-blanco);
 }
 
 /* Movimiento reducido: todo aparece sin animación */

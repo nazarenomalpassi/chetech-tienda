@@ -25,7 +25,7 @@
 }
 
 .head h1 {
-  font-size: clamp(2.25rem, 1.6rem + 2.8vw, 4rem);
+  font-size: var(--titulo-1);
 }
 
 .head p {
@@ -62,7 +62,7 @@
 }
 
 .finderRow input:focus-visible {
-  outline: 3px solid var(--color-azul);
+  outline: 3px solid var(--color-tinta);
   outline-offset: 2px;
 }
 
@@ -113,25 +113,11 @@
   gap: 12px;
   padding: 20px;
   border: 1px solid var(--color-linea);
-  border-top: 6px solid var(--signal, var(--color-gris-carta));
-  border-radius: var(--radius-card);
   background: var(--color-blanco);
 }
 
-.card[data-signal="magenta"] {
-  --signal: var(--color-magenta);
-}
-
-.card[data-signal="cian"] {
-  --signal: var(--color-cian);
-}
-
-.card[data-signal="verde"] {
-  --signal: var(--color-verde);
-}
-
 .card h2 {
-  font-size: var(--text-28);
+  font-size: var(--titulo-3);
 }
 
 .card p {
@@ -167,20 +153,16 @@
   text-align: center;
 }
 
-.igHead h1 {
-  font-size: var(--text-36);
-}
+
 
 .igHead p {
   max-width: 34ch;
   color: var(--color-tinta-2);
 }
 
-.carta {
-  width: 120px;
-  height: 8px;
-  border-radius: 2px;
-  background: var(--carta);
+.igLogo {
+  margin: 0;
+  line-height: 0;
 }
 
 .links {
@@ -193,7 +175,7 @@
 
 .links a {
   display: grid;
-  grid-template-columns: 10px 1fr auto;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 14px;
   min-height: 64px;
@@ -215,35 +197,17 @@
 }
 
 .links a:focus-visible {
-  outline: 3px solid var(--color-azul);
+  outline: 3px solid var(--color-tinta);
   outline-offset: 2px;
 }
 
 .links a::before {
-  content: "";
-  width: 10px;
-  height: 36px;
-  border-radius: 2px;
-  background: var(--signal, var(--color-gris-carta));
-}
-
-.links a[data-signal="amarillo"] {
-  --signal: var(--color-amarillo);
-}
-.links a[data-signal="cian"] {
-  --signal: var(--color-cian);
-}
-.links a[data-signal="verde"] {
-  --signal: var(--color-verde);
-}
-.links a[data-signal="magenta"] {
-  --signal: var(--color-magenta);
-}
-.links a[data-signal="azul"] {
-  --signal: var(--color-azul);
-}
-.links a[data-signal="rojo"] {
-  --signal: var(--color-rojo);
+  content: ">>>";
+  color: var(--color-acero);
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 300;
+  letter-spacing: 0.04em;
 }
 
 .links strong {

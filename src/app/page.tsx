@@ -73,17 +73,17 @@ export default async function HomePage() {
         }
       >
         <ul className={styles.proofs}>
-          <li data-signal="verde">
+          <li>
             <span>
               <strong>Lo retirás hoy</strong> en {siteConfig.address}, sin costo.
             </span>
           </li>
-          <li data-signal="amarillo">
+          <li>
             <span>
               <strong>Garantía escrita</strong> en cada producto, con plazo en meses.
             </span>
           </li>
-          <li data-signal="cian">
+          <li>
             <span>
               <strong>Lo prueba un técnico:</strong> lo del taller sale revisado.
             </span>
@@ -149,10 +149,7 @@ export default async function HomePage() {
                 const summary = summaries.get(family.slug);
                 return (
                   <li key={family.slug}>
-                    <Link href={`/productos?familia=${family.slug}`} className={styles.family} data-signal={family.signal}>
-                      <span className={styles.familyHead} aria-hidden>
-                        <span />
-                      </span>
+                    <Link href={`/productos?familia=${family.slug}`} className={styles.family}>
                       <span className={styles.familyImages} aria-hidden>
                         {summary?.images.map((image) => (
                           <span key={image}>
@@ -177,7 +174,7 @@ export default async function HomePage() {
 
       <section className={styles.section} aria-labelledby="del-taller-titulo">
         <div className={`page ${styles.workshop}`}>
-          <div className={styles.workshopCard} data-signal="magenta">
+          <div className={styles.workshopCard}>
             <h2 id="del-taller-titulo">Teles revisadas del taller</h2>
             {refurbished.length ? (
               <>
@@ -202,7 +199,7 @@ export default async function HomePage() {
             )}
           </div>
 
-          <div className={styles.workshopCard} data-signal="cian">
+          <div className={styles.workshopCard}>
             <h2>Buscá la placa de tu tele</h2>
             <p>
               Escribí el modelo de tu televisor o el código de la placa. Está en la etiqueta de atrás de la tele o

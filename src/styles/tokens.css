@@ -1,43 +1,51 @@
-/* Sistema de diseño CheTech: "el banco de pruebas".
-   Los colores de señal salen de la carta de ajuste de un televisor en prueba. Marcan un estado
-   o una familia; nunca decoran. Solo Tinta y Azul se usan como color de texto. */
+/* Sistema de diseño CheTech: la papelería del local llevada a la web.
+   Escala de grises tomada de las piezas del manual de marca (tarjeta, sello de garantía y plantillas):
+   papel casi blanco, formas en gris claro, negro de tinta. El color no decora: en la tienda no hay
+   ninguno. Los tonos de estado del final son solo para Administración y para errores de formulario. */
 
 @theme {
-  --color-pared: #f4f5f3;
-  --color-pared-2: #eaece8;
-  --color-tinta: #15181a;
-  --color-tinta-2: #3d4347;
-  --color-tinta-3: #5d6569;
+  --color-pared: #f8f8f8;
+  --color-pared-2: #efefef;
+  --color-tinta: #101010;
+  --color-tinta-2: #3a3d3d;
+  --color-tinta-3: #626767;
   --color-pantalla: #000000;
-  --color-linea: #d5d8d5;
+  --color-carbon: #181818;
+  --color-linea: #e0e0e0;
+  --color-plata: #d0d0d0;
+  --color-acero: #8a9090;
   --color-blanco: #ffffff;
+
+  /* Estados: solo Administración (puntos de estado de pedidos) y errores de formulario. */
   --color-azul: #1f4fd8;
   --color-amarillo: #f5c400;
   --color-verde: #1e9e4a;
-  --color-rojo: #d93025;
+  --color-rojo: #c22b21;
   --color-magenta: #c2268f;
   --color-cian: #00a7c7;
   --color-gris-carta: #c9ccc8;
 
-  --font-display: var(--font-barlow-condensed), "Arial Narrow", sans-serif;
-  --font-body: var(--font-barlow), "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-montech), "Arial Narrow", Arial, sans-serif;
+  --font-body: var(--font-plex), "Helvetica Neue", Arial, sans-serif;
 
-  --radius-card: 10px;
-  --radius-button: 6px;
-  --radius-tv: 14px;
+  --radius-card: 0px;
+  --radius-button: 0px;
+  --radius-tv: 6px;
 }
 
 :root {
-  /* Escala tipográfica: 14, 16, 18, 22, 28, 36, 48, 64 */
+  /* Texto corrido: 14, 16, 18, 22 */
   --text-14: 0.875rem;
   --text-16: 1rem;
   --text-18: 1.125rem;
   --text-22: 1.375rem;
-  --text-28: 1.75rem;
-  --text-36: 2.25rem;
-  --text-48: 3rem;
-  --text-64: 4rem;
-  --text-hero: clamp(2.25rem, 1.4rem + 3.6vw, 4rem);
+
+  /* Títulos en MONTECH. Es una letra ancha y solo de mayúsculas: va más chica que una condensada. */
+  --titulo-hero: clamp(1.7rem, 1rem + 3.2vw, 3.4rem);
+  --titulo-1: clamp(1.55rem, 1.1rem + 2vw, 2.6rem);
+  --titulo-2: clamp(1.3rem, 1.05rem + 1.1vw, 1.9rem);
+  --titulo-3: clamp(1.0625rem, 0.95rem + 0.5vw, 1.3rem);
+  --rotulo: 0.8125rem;
 
   --space-1: 4px;
   --space-2: 8px;
@@ -57,28 +65,52 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 
-  /* Carta de ajuste: siete barras */
-  --carta: linear-gradient(
+  --foco: var(--color-tinta);
+
+  /* Esquina en chaflán, como las formas de las plantillas. */
+  --chaflan: 12px;
+  --corte: polygon(
+    0 0,
+    calc(100% - var(--chaflan)) 0,
+    100% var(--chaflan),
+    100% 100%,
+    var(--chaflan) 100%,
+    0 calc(100% - var(--chaflan))
+  );
+
+  /* Código de barras del sello de garantía: la única tira decorativa del sitio. */
+  --barras: repeating-linear-gradient(
     90deg,
-    var(--color-gris-carta) 0 14.28%,
-    var(--color-amarillo) 14.28% 28.57%,
-    var(--color-cian) 28.57% 42.85%,
-    var(--color-verde) 42.85% 57.14%,
-    var(--color-magenta) 57.14% 71.42%,
-    var(--color-rojo) 71.42% 85.71%,
-    var(--color-azul) 85.71% 100%
+    currentColor 0 2px,
+    transparent 2px 5px,
+    currentColor 5px 6px,
+    transparent 6px 8px,
+    currentColor 8px 12px,
+    transparent 12px 14px,
+    currentColor 14px 15px,
+    transparent 15px 19px,
+    currentColor 19px 21px,
+    transparent 21px 22px,
+    currentColor 22px 23px,
+    transparent 23px 27px,
+    currentColor 27px 30px,
+    transparent 30px 32px,
+    currentColor 32px 33px,
+    transparent 33px 36px
   );
 
   /* Compatibilidad con los estilos de cuenta, administración y páginas legales */
   --ink: var(--color-tinta);
-  --ink-2: #1d2124;
+  --ink-2: #1c1c1c;
   --paper: var(--color-pared);
   --white: var(--color-blanco);
   --muted: var(--color-tinta-3);
   --line: var(--color-linea);
-  --acid: var(--color-amarillo);
+  /* El acento de esos estilos es tinta sobre claro y blanco sobre oscuro (se ajusta solo según el fondo). */
+  --acid: var(--color-tinta);
+  --acid-ink: var(--color-blanco);
   --radius: var(--radius-button);
-  --display: var(--font-display);
+  --display: var(--font-montech-compacta), "Arial Narrow", Arial, sans-serif;
   --body: var(--font-body);
   --site-content-width: var(--page-width);
   --site-wide-content-width: 1360px;

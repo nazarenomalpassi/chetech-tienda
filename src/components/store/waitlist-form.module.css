@@ -36,12 +36,15 @@
 .done {
   padding: 14px 16px;
   border-radius: var(--radius-button);
-  background: color-mix(in srgb, var(--color-verde) 12%, var(--color-blanco));
+  background: var(--color-pared-2);
+  border-left: 3px solid var(--color-tinta);
   color: var(--color-tinta);
   font-weight: 600;
 }
 
 .error {
-  color: var(--color-rojo);
+  padding: 10px 12px;
+  border-left: 3px solid var(--color-tinta);
+  background: var(--color-pared-2);
   font-weight: 600;
 }

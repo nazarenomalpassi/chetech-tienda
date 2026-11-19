@@ -1,7 +1,9 @@
+/* Pie en negro con las formas de las plantillas oscuras y, al final, el código de barras del sello. */
 .footer {
+  --foco: var(--color-blanco);
   margin-top: var(--space-9);
-  background: var(--color-pantalla);
-  color: color-mix(in srgb, var(--color-blanco) 82%, transparent);
+  background: var(--color-tinta) url("/brand/trama-oscura.svg") no-repeat right -160px top -120px / 760px auto;
+  color: color-mix(in srgb, var(--color-blanco) 78%, transparent);
   font-size: var(--text-16);
 }
 
@@ -20,8 +22,9 @@
 .grid h2 {
   margin-bottom: 12px;
   color: var(--color-blanco);
-  font-size: var(--text-22);
+  font-size: 0.875rem;
   font-weight: 600;
+  letter-spacing: 0.08em;
 }
 
 .brand {
@@ -134,4 +137,19 @@
   border-top: 1px solid rgb(255 255 255 / 0.14);
   color: color-mix(in srgb, var(--color-blanco) 60%, transparent);
   font-size: var(--text-14);
+}
+
+.barcode {
+  width: 148px;
+  height: 20px;
+  margin-left: auto;
+  background: var(--barras);
+  color: color-mix(in srgb, var(--color-blanco) 55%, transparent);
+}
+
+@media (max-width: 759px) {
+  .barcode {
+    flex-basis: 100%;
+    margin: 8px 0 0;
+  }
 }

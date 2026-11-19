@@ -79,12 +79,12 @@ export default async function BoardsPage({ searchParams }: { searchParams: Promi
       )}
 
       <div className={styles.split}>
-        <section className={styles.card} data-signal="magenta" aria-labelledby="aviso-placa">
+        <section className={styles.card} aria-labelledby="aviso-placa">
           <h2 id="aviso-placa">Te avisamos cuando entre</h2>
           <p>Dejá el modelo de la tele y tu WhatsApp o mail. Te escribimos una sola vez, cuando la tengamos.</p>
           <WaitlistForm kind="board" query={query || undefined} cta="Avisarme" />
         </section>
-        <section className={styles.card} data-signal="cian" aria-labelledby="foto-placa">
+        <section className={styles.card} aria-labelledby="foto-placa">
           <h2 id="foto-placa">¿No sabés qué placa es?</h2>
           <ol className={styles.steps}>
             <li>Sacale una foto a la etiqueta de atrás de la tele.</li>
