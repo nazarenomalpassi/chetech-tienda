@@ -37,7 +37,8 @@ export async function middleware(request: NextRequest) {
     accountUrl.search = "?error=sin-permisos";
     response = redirectPreservingSession(accountUrl, session.response);
   }
-  if (process.env.VERCEL_ENV && process.env.VERCEL_ENV !== "production")
+  const deploymentEnvironment = process.env.RAILWAY_ENVIRONMENT_NAME;
+  if (deploymentEnvironment && deploymentEnvironment !== "production")
     response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
   if (pathname.startsWith("/api/") || protectedCustomerRoute || protectedAdminRoute)
     response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");

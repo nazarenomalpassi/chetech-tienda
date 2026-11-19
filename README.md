@@ -6,7 +6,7 @@ Catálogo, cuentas de clientes y pedidos por WhatsApp, con una interfaz adaptabl
 
 **Next.js 15 · React 19 · TypeScript · Tailwind CSS · Supabase / PostgreSQL**
 
-[Visitar la tienda](https://chetech-tienda.vercel.app/) · [Sistema administrativo](https://github.com/nazarenomalpassi/chetech-admin) · [Mi perfil](https://github.com/nazarenomalpassi)
+[Visitar la tienda](https://chetechstore.com/) · [Sistema administrativo](https://github.com/nazarenomalpassi/chetech-admin) · [Mi perfil](https://github.com/nazarenomalpassi)
 
 ## Funcionalidades
 
@@ -50,13 +50,22 @@ supabase/   Migraciones, funciones y pruebas de base de datos
 npm run lint
 npm run test:storefront-ui
 npm run test:repair-portal
+npm run test:railway-keys
 npm run build
 ```
 
 Las herramientas opcionales de normalización de imágenes requieren su entorno Python adicional, descrito por el script `scripts/catalog-images/catalog-images.mjs`.
 
+## Despliegue en Railway
+
+La tienda corre en el proyecto **chetech** de Railway, junto al sistema de gestión y la base que comparten (Postgres con el inicio de sesión, la API y los archivos de Supabase, alojados en el mismo proyecto).
+
+- `railway.json` define la construcción, el arranque, el control de salud (`/robots.txt`, que no consulta la base) y el modo Serverless: si nadie visita la tienda durante un rato, se duerme y deja de consumir; la primera visita después tarda unos segundos más.
+- `scripts/railway/with-supabase-keys.mjs` calcula la clave pública de la base a partir de `SUPABASE_ROOT_SECRET` al construir y al arrancar, con la misma derivación que el sistema de gestión. La clave no se copia a mano.
+- Variables del servicio: `NEXT_PUBLIC_SUPABASE_URL` (dirección pública de Envoy), `SUPABASE_ROOT_SECRET` (referencia a la variable de la base), `NEXT_PUBLIC_SITE_URL`, `LEGAL_REQUEST_HASH_SALT` y `NEXT_TELEMETRY_DISABLED=1`.
+
 ## Sobre el proyecto
 
-Desarrollado por **Nazareno Malpassi**, estudiante avanzado de Programación en UTN San Nicolás, con herramientas de IA como apoyo al desarrollo. La aplicación pública se despliega en Vercel.
+Desarrollado por **Nazareno Malpassi**, estudiante avanzado de Programación en UTN San Nicolás, con herramientas de IA como apoyo al desarrollo. La aplicación pública se despliega en Railway.
 
 Este repositorio contiene una copia del código preparada para el portfolio. Excluye credenciales, archivos de trabajo, reportes e inventarios del comercio. No concede acceso al entorno administrativo.
