@@ -23,6 +23,11 @@ export type OrderPayload = {
   subtotal: number;
   shipping_cost: number;
   discount_total: number;
+  coupon_code: string | null;
+  discount_detail: {
+    coupon?: { code: string; percent: number; scope: string; amount: number };
+    transfer?: { percent: number; amount: number };
+  } | null;
   total: number;
   reserved_until: string | null;
   paid_at: string | null;

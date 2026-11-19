@@ -10,7 +10,7 @@ type SubmitState = {
   message?: string;
 };
 
-export function LegalRequestForm({ kind }: { kind: RequestKind }) {
+export function LegalRequestForm({ kind, orderReference = "" }: { kind: RequestKind; orderReference?: string }) {
   const [state, setState] = useState<SubmitState>({ status: "idle" });
   const isWithdrawal = kind === "withdrawal";
 
@@ -92,7 +92,7 @@ export function LegalRequestForm({ kind }: { kind: RequestKind }) {
           <div className="form-row">
             <label>
               Número de pedido o referencia (si existe)
-              <input name="orderReference" maxLength={80} />
+              <input name="orderReference" maxLength={80} defaultValue={orderReference} />
             </label>
             <label>
               Fecha aproximada

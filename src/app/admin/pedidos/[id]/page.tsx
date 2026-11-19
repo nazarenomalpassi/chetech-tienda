@@ -1,7 +1,9 @@
+import { Fragment } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdminOrderForm } from "@/components/admin-forms";
 import { requireAdmin } from "@/lib/auth";
+import { discountLines } from "@/lib/commerce/discounts";
 import { formatDateTime, formatPrice, formatShortDateTime } from "@/lib/format";
 import {
   deliveryMethodLabels,
@@ -166,12 +168,12 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
               <dd>{formatPrice(Number(order.subtotal))}</dd>
               <dt>Entrega</dt>
               <dd>{Number(order.shipping_cost) > 0 ? formatPrice(Number(order.shipping_cost)) : "Sin cargo"}</dd>
-              {Number(order.discount_total) > 0 ? (
-                <>
-                  <dt>Descuento</dt>
-                  <dd>−{formatPrice(Number(order.discount_total))}</dd>
-                </>
-              ) : null}
+              {discountLines(order).map((discount) => (
+                <Fragment key={discount.label}>
+                  <dt>{discount.label}</dt>
+                  <dd>−{formatPrice(discount.amount)}</dd>
+                </Fragment>
+              ))}
               <dt className={styles.grand}>Total</dt>
               <dd className={styles.grand}>{formatPrice(Number(order.total))}</dd>
             </dl>

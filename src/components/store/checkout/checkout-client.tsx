@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Minus, Plus, Trash2 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useCart } from "@/components/cart-provider";
 import { measurementContext, readAttribution } from "@/lib/attribution";
 import { formatPrice } from "@/lib/format";
@@ -16,6 +16,7 @@ import styles from "./checkout.module.css";
 type Props = { payments: StoreSettings["payments"]; delivery: StoreSettings["delivery"] };
 type DeliveryKind = "pickup" | "local" | "shipping";
 type PaymentKind = "mercadopago" | "transfer" | "pickup";
+type AppliedCoupon = { code: string; percent: number; amount: number };
 
 const SAVED_KEY = "chetech-datos-compra-v1";
 const sizeRank = { chico: 1, mediano: 2, grande: 3, no_viaja: 4 } as const;
@@ -35,6 +36,12 @@ export function CheckoutClient({ payments, delivery }: Props) {
   const [consent, setConsent] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [couponOpen, setCouponOpen] = useState(false);
+  const [couponInput, setCouponInput] = useState("");
+  const [coupon, setCoupon] = useState<AppliedCoupon | null>(null);
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [couponBusy, setCouponBusy] = useState(false);
+  const quotedCart = useRef("");
 
   const onlineEnabled = payments.mercadopago || payments.transfer || payments.pickupPayment;
 
@@ -81,16 +88,96 @@ export function CheckoutClient({ payments, delivery }: Props) {
   ].filter(Boolean) as { kind: DeliveryKind; title: string; detail: string; price: number }[];
 
   const shipping = deliveryOptions.find((option) => option.kind === kind)?.price ?? 0;
-  const total = subtotal + shipping;
+  const couponDiscount = coupon ? Math.min(coupon.amount, subtotal) : 0;
+  const transferPercent = payments.transferDiscountPercent;
+  const transferDiscountFor = (base: number) => Math.round((base * transferPercent) / 100);
+  const transferDiscount = payment === "transfer" && transferPercent > 0 ? transferDiscountFor(subtotal - couponDiscount) : 0;
+  const total = subtotal + shipping - couponDiscount - transferDiscount;
+  const totalBeforePayment = subtotal + shipping - couponDiscount;
+
+  const cartKey = items.map(({ product, quantity }) => `${product.id}:${quantity}`).join(",");
+
+  const quoteCoupon = async (code: string): Promise<{ coupon: AppliedCoupon } | { error: string }> => {
+    try {
+      const response = await fetch("/api/checkout/quote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: items.map(({ product, quantity }) => ({ id: product.id, quantity })),
+          coupon: code,
+          email,
+        }),
+      });
+      const payload = (await response.json().catch(() => ({}))) as Partial<AppliedCoupon> & { error?: string };
+      if (!response.ok || !payload.code) return { error: payload.error ?? "No pudimos validar el cupón. Probá de nuevo." };
+      return { coupon: { code: payload.code, percent: Number(payload.percent), amount: Number(payload.amount) } };
+    } catch {
+      return { error: "No pudimos validar el cupón. Revisá tu conexión y probá de nuevo." };
+    }
+  };
+
+  const applyCoupon = async () => {
+    const code = couponInput.trim();
+    if (!code) {
+      setCouponError("Escribí el código del cupón.");
+      return;
+    }
+    setCouponBusy(true);
+    setCouponError(null);
+    const result = await quoteCoupon(code);
+    setCouponBusy(false);
+    if ("error" in result) {
+      setCoupon(null);
+      setCouponError(result.error);
+      return;
+    }
+    quotedCart.current = cartKey;
+    setCoupon(result.coupon);
+    setCouponInput("");
+  };
+
+  const removeCoupon = () => {
+    setCoupon(null);
+    setCouponError(null);
+  };
+
+  // Si cambia el carrito con un cupón aplicado, el descuento se vuelve a calcular.
+  const appliedCode = coupon?.code ?? null;
+  useEffect(() => {
+    if (!appliedCode || !cartKey || quotedCart.current === cartKey) return;
+    let cancelled = false;
+    quotedCart.current = cartKey;
+    quoteCoupon(appliedCode).then((result) => {
+      if (cancelled) return;
+      if ("error" in result) {
+        setCoupon(null);
+        setCouponError(result.error);
+      } else {
+        setCoupon(result.coupon);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+    // quoteCoupon lee el carrito del render en curso; alcanza con seguir la firma del carrito.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appliedCode, cartKey]);
 
   const paymentOptions = [
     payments.mercadopago
       ? { kind: "mercadopago" as const, title: "Mercado Pago", detail: "Tarjeta de crédito o débito, dinero en cuenta o efectivo. No hace falta tener cuenta." }
       : null,
     payments.transfer
-      ? { kind: "transfer" as const, title: "Transferencia", detail: `Te reservamos el pedido ${payments.offlineReservationHours} horas hábiles para que transfieras.` }
+      ? {
+          kind: "transfer" as const,
+          title: transferPercent > 0 ? `Transferencia · ${transferPercent} % de descuento` : "Transferencia",
+          detail:
+            transferPercent > 0
+              ? `Pagás ${formatPrice(totalBeforePayment - transferDiscountFor(subtotal - couponDiscount))}. Te reservamos el pedido ${payments.offlineReservationHours} horas hábiles para que transfieras.`
+              : `Te reservamos el pedido ${payments.offlineReservationHours} horas hábiles para que transfieras.`,
+        }
       : null,
-    payments.pickupPayment && kind === "pickup" && (payments.pickupPaymentMax === null || total <= payments.pickupPaymentMax)
+    payments.pickupPayment && kind === "pickup" && (payments.pickupPaymentMax === null || totalBeforePayment <= payments.pickupPaymentMax)
       ? { kind: "pickup" as const, title: "Pagar al retirar", detail: "Efectivo, transferencia, Mercado Pago o Naranja X en el local." }
       : null,
   ].filter(Boolean) as { kind: PaymentKind; title: string; detail: string }[];
@@ -158,6 +245,7 @@ export function CheckoutClient({ payments, delivery }: Props) {
           customer: { name, email, phone },
           delivery: { kind, zone, address },
           payment_method: payment,
+          coupon: coupon?.code ?? "",
           notes,
           marketing_consent: consent,
           attribution: { ...attribution, ...measurementContext() },
@@ -369,11 +457,74 @@ export function CheckoutClient({ payments, delivery }: Props) {
                   <dd className="price">{shipping > 0 ? formatPrice(shipping) : "Gratis"}</dd>
                 </div>
               ) : null}
+              {onlineEnabled && couponDiscount > 0 && coupon ? (
+                <div className={styles.discount}>
+                  <dt>
+                    Cupón {coupon.code} ({coupon.percent} %)
+                  </dt>
+                  <dd className="price">− {formatPrice(couponDiscount)}</dd>
+                </div>
+              ) : null}
+              {onlineEnabled && transferDiscount > 0 ? (
+                <div className={styles.discount}>
+                  <dt>Pago por transferencia ({transferPercent} %)</dt>
+                  <dd className="price">− {formatPrice(transferDiscount)}</dd>
+                </div>
+              ) : null}
               <div className={styles.total}>
                 <dt>Total</dt>
                 <dd className="price">{formatPrice(onlineEnabled ? total : subtotal)}</dd>
               </div>
             </dl>
+            {onlineEnabled && payments.coupons ? (
+              <div className={styles.coupon}>
+                {coupon ? (
+                  <p className={styles.couponApplied}>
+                    <span>Cupón {coupon.code} aplicado</span>
+                    <button type="button" className="enlace" onClick={removeCoupon}>
+                      Quitar
+                    </button>
+                  </p>
+                ) : couponOpen ? (
+                  <>
+                    <label className={styles.couponLabel} htmlFor="cupon">
+                      Código del cupón
+                    </label>
+                    <div className={styles.couponRow}>
+                      <input
+                        id="cupon"
+                        value={couponInput}
+                        onChange={(event) => setCouponInput(event.target.value.toUpperCase())}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter") {
+                            event.preventDefault();
+                            void applyCoupon();
+                          }
+                        }}
+                        maxLength={20}
+                        autoCapitalize="characters"
+                        autoComplete="off"
+                        spellCheck={false}
+                        aria-describedby={couponError ? "cupon-error" : undefined}
+                        aria-invalid={couponError ? true : undefined}
+                      />
+                      <button type="button" className="btn" data-variant="secondary" onClick={() => void applyCoupon()} disabled={couponBusy}>
+                        {couponBusy ? "Validando…" : "Aplicar"}
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <button type="button" className="enlace" onClick={() => setCouponOpen(true)}>
+                    Tengo un cupón
+                  </button>
+                )}
+                {couponError ? (
+                  <p id="cupon-error" className={styles.couponError} role="alert">
+                    {couponError}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
             {error ? (
               <p className={styles.error} role="alert">
                 {error}

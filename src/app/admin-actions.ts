@@ -55,7 +55,7 @@ function list(formData: FormData, name: string, max: number, limit = 100) {
 
 /** Los errores que la base levanta a propósito traen un texto pensado para mostrar. */
 function databaseMessage(error: { code?: string; message?: string } | null, fallback: string) {
-  if (error && ["22023", "P0002", "42501", "23514"].includes(error.code ?? "") && error.message) {
+  if (error && ["22023", "P0002", "42501", "23514", "23505"].includes(error.code ?? "") && error.message) {
     return error.message;
   }
   return fallback;
@@ -351,6 +351,7 @@ export async function saveCheckoutSettingsAction(
       holder: text(formData, "transferHolder", 120),
       cuit: text(formData, "transferCuit", 20),
       bank: text(formData, "transferBank", 80),
+      discount_percent: integer(formData, "transferDiscount", 0, 30, 0),
     },
     pickup_payment: {
       enabled: checked(formData, "pickupPaymentEnabled"),
@@ -361,6 +362,49 @@ export async function saveCheckoutSettingsAction(
     sync_gestion_sales: checked(formData, "syncGestionSales"),
   });
   return error ? { error } : { message: "Cobros guardados. La tienda ya los usa." };
+}
+
+export async function saveCouponAction(
+  _state: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  await requireAdmin("/admin/cupones");
+  const id = text(formData, "id", 40);
+  const code = text(formData, "code", 30).toUpperCase().replace(/[^A-Z0-9]/g, "");
+  if (!id && !/^[A-Z0-9]{3,20}$/.test(code))
+    return { error: "El código lleva entre 3 y 20 letras o números, sin espacios." };
+  const percent = Number(text(formData, "percent", 6).replace(",", "."));
+  if (!Number.isFinite(percent) || percent <= 0 || percent > 50)
+    return { error: "El descuento tiene que ser entre 1 % y 50 %." };
+  const endsOn = text(formData, "endsOn", 10);
+  if (endsOn && !/^\d{4}-\d{2}-\d{2}$/.test(endsOn)) return { error: "Revisá la fecha de vencimiento." };
+  const maxUses = Number.parseInt(text(formData, "maxUses", 8), 10);
+  const scope = text(formData, "scope", 20);
+  const origin = text(formData, "origin", 20);
+
+  const supabase = await createServerSupabaseClient();
+  const { error } = await supabase.rpc("storefront_admin_save_coupon", {
+    p_input: {
+      id: id || null,
+      code,
+      label: text(formData, "label", 120),
+      origin: ["general", "reel", "taller", "mostrador"].includes(origin) ? origin : "general",
+      percent,
+      scope: scope === "accessories" ? "accessories" : "all",
+      min_subtotal: money(formData, "minSubtotal") ?? 0,
+      max_discount: money(formData, "maxDiscount") || null,
+      max_uses: Number.isFinite(maxUses) && maxUses > 0 ? maxUses : null,
+      once_per_customer: checked(formData, "oncePerCustomer"),
+      starts_at: text(formData, "startsAt", 40) || null,
+      // Vence al final del día elegido, hora de Córdoba.
+      ends_at: endsOn ? `${endsOn}T23:59:59-03:00` : null,
+      is_active: checked(formData, "isActive"),
+    },
+  });
+  if (error) return { error: databaseMessage(error, "No pudimos guardar el cupón. Probá de nuevo.") };
+  updateTag(STORE_SETTINGS_TAG);
+  revalidatePath("/admin/cupones");
+  return { message: id ? "Cupón guardado." : `Cupón ${code} creado. Ya se puede usar en la compra.` };
 }
 
 export async function saveDeliverySettingsAction(

@@ -32,6 +32,8 @@ export type PreferenceInput = {
   accessToken: string;
   items: { sku: string; name: string; quantity: number; unitPrice: number; image?: string | null }[];
   shippingCost: number;
+  /** Descuento total del pedido. Mercado Pago no acepta renglones negativos. */
+  discountTotal?: number;
   payerEmail: string;
   payerName: string;
   expiresAt: string;
@@ -39,14 +41,30 @@ export type PreferenceInput = {
 
 export function buildPreference(config: MercadoPagoConfig, input: PreferenceInput) {
   const orderUrl = `${config.siteUrl}/pedido/${encodeURIComponent(input.orderNumber)}?t=${encodeURIComponent(input.accessToken)}`;
-  const items = input.items.map((item) => ({
-    id: item.sku.slice(0, 60),
-    title: item.name.slice(0, 120),
-    quantity: item.quantity,
-    unit_price: Number(item.unitPrice.toFixed(2)),
-    currency_id: "ARS",
-    picture_url: item.image ?? undefined,
-  }));
+  const discount = input.discountTotal ?? 0;
+  const productsTotal = input.items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
+  // Con descuento, los productos van en un solo renglón por el importe ya descontado:
+  // así lo que cobra Mercado Pago coincide al centavo con el total del pedido.
+  const items =
+    discount > 0
+      ? [
+          {
+            id: input.orderNumber.slice(0, 60),
+            title: `Pedido ${input.orderNumber} (${input.items.reduce((sum, item) => sum + item.quantity, 0)} productos, con descuento)`.slice(0, 120),
+            quantity: 1,
+            unit_price: Number(Math.max(productsTotal - discount, 0).toFixed(2)),
+            currency_id: "ARS",
+            picture_url: input.items[0]?.image ?? undefined,
+          },
+        ]
+      : input.items.map((item) => ({
+          id: item.sku.slice(0, 60),
+          title: item.name.slice(0, 120),
+          quantity: item.quantity,
+          unit_price: Number(item.unitPrice.toFixed(2)),
+          currency_id: "ARS",
+          picture_url: item.image ?? undefined,
+        }));
   if (input.shippingCost > 0) {
     items.push({
       id: "envio",

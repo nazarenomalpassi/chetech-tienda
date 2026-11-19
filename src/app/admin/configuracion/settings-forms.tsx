@@ -126,7 +126,22 @@ export function CheckoutSettingsForm({ value, mercadopagoReady }: { value: unkno
             max={72}
             defaultValue={str(get(value, ["offline_reservation_hours"]) ?? 24)}
           />
+          <Field
+            name="transferDiscount"
+            label="Descuento por transferencia (%)"
+            type="number"
+            min={0}
+            max={30}
+            step={1}
+            inputMode="numeric"
+            defaultValue={str(get(value, ["transfer", "discount_percent"]) ?? 0)}
+          />
         </div>
+        <p>
+          El descuento arranca en 0 %. La Ley 25.065 (art. 37, inciso c) pide el mismo precio al contado y con tarjeta en
+          un pago: hablalo con tu contador antes de subirlo. Si lo activás, la compra muestra el total con descuento al
+          elegir transferencia.
+        </p>
       </fieldset>
 
       <fieldset className={styles.group}>

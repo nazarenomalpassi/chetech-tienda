@@ -238,3 +238,14 @@
 .pagination > :last-child {
   justify-self: end;
 }
+
+.chips a span {
+  margin-left: 8px;
+  color: var(--color-tinta-3);
+  font-size: var(--text-14);
+  font-variant-numeric: tabular-nums;
+}
+
+.chips a[aria-current="true"] span {
+  color: var(--color-plata);
+}

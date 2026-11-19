@@ -110,12 +110,14 @@ export function Receipt({
   orderNumber,
   items,
   shipping,
+  discounts = [],
   total,
   footer,
 }: {
   orderNumber: string;
   items: { name: string; quantity: number; subtotal: number }[];
   shipping: number;
+  discounts?: { label: string; amount: number }[];
   total: number;
   footer?: string;
 }) {
@@ -152,6 +154,14 @@ export function Receipt({
             </td>
           </tr>
         ) : null}
+        {discounts.map((discount) => (
+          <tr key={discount.label}>
+            <td style={{ padding: "10px 16px", borderBottom: `1px solid ${linea}`, fontSize: 15 }}>{discount.label}</td>
+            <td align="right" style={{ padding: "10px 16px", borderBottom: `1px solid ${linea}`, fontSize: 15, whiteSpace: "nowrap", fontWeight: 600 }}>
+              − {money(discount.amount)}
+            </td>
+          </tr>
+        ))}
         <tr>
           <td style={{ padding: "12px 16px", fontFamily: display, fontSize: 22, fontWeight: 700 }}>Total</td>
           <td align="right" style={{ padding: "12px 16px", fontFamily: display, fontSize: 26, fontWeight: 700, whiteSpace: "nowrap" }}>

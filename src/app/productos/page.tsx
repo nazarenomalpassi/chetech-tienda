@@ -37,11 +37,14 @@ export default async function CatalogPage({ searchParams }: { searchParams: Sear
   const search = first(params.buscar)?.trim().slice(0, 100);
   const compat = first(params.compat);
   const price = first(params.precio);
+  const availableToday = first(params.disponible) === "hoy";
   const sortParam = first(params.orden) as CatalogSort | undefined;
   const sort = sortParam && sorts.includes(sortParam) ? sortParam : "popular";
   const page = Number(first(params.pagina) ?? "1") || 1;
 
-  const result = await getCatalog({ family, need, search, compat, priceRange: price, sort, page });
+  const result = await getCatalog({ family, need, search, compat, priceRange: price, availableToday, sort, page });
+  // El filtro de stock aparece recién cuando sirve: si todo lo listado está para llevar hoy, no hay nada que filtrar.
+  const showStockFilter = availableToday || result.stock.unavailable > 0;
   const familyMeta = family ? familyBySlug.get(family) : undefined;
   const needMeta = need ? needBySlug.get(need) : undefined;
 
@@ -53,6 +56,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: Sear
       buscar: search,
       compat,
       precio: price,
+      disponible: availableToday ? "hoy" : undefined,
       orden: sort === "popular" ? undefined : sort,
     };
     for (const [key, value] of Object.entries({ ...current, ...changes })) {
@@ -69,6 +73,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: Sear
     needMeta ? { label: needMeta.label, href: hrefWith({ necesidad: null }) } : null,
     compat ? { label: compatFilters.find((item) => item.slug === compat)?.label ?? compat, href: hrefWith({ compat: null }) } : null,
     price ? { label: priceRanges.find((item) => item.slug === price)?.label ?? price, href: hrefWith({ precio: null }) } : null,
+    availableToday ? { label: "Disponible hoy", href: hrefWith({ disponible: null }) } : null,
     search ? { label: `“${search}”`, href: hrefWith({ buscar: null }) } : null,
   ].filter(Boolean) as { label: string; href: string }[];
 
@@ -117,6 +122,20 @@ export default async function CatalogPage({ searchParams }: { searchParams: Sear
           <details className={styles.filters}>
             <summary>Filtrar</summary>
             <div className={styles.filterPanel}>
+              {showStockFilter ? (
+                <div>
+                  <p>Stock</p>
+                  <div className={styles.chips}>
+                    <Link
+                      href={hrefWith({ disponible: availableToday ? null : "hoy", pagina: null })}
+                      aria-current={availableToday ? "true" : undefined}
+                    >
+                      Disponible hoy
+                      <span>{result.stock.available}</span>
+                    </Link>
+                  </div>
+                </div>
+              ) : null}
               <div>
                 <p>Conector o tecnología</p>
                 <div className={styles.chips}>

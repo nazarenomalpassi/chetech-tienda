@@ -15,5 +15,10 @@ export async function GET(request: NextRequest) {
     ({ error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type }));
   else error = new Error("missing_token");
   if (error) return NextResponse.redirect(new URL("/ingresar?error=enlace-invalido", request.url));
+  // Con el mail recién confirmado, los pedidos que hizo sin cuenta pasan a su cuenta.
+  await supabase.rpc("storefront_claim_guest_orders").then(
+    () => undefined,
+    () => undefined,
+  );
   return NextResponse.redirect(new URL(next, request.url));
 }

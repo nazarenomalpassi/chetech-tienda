@@ -1,0 +1,56 @@
+.panel {
+  display: grid;
+  gap: 12px;
+  margin-top: 32px;
+  padding: 20px;
+  border: 1.5px solid var(--color-linea);
+  background: var(--color-blanco);
+}
+
+.panel h2 {
+  font-size: var(--titulo-3);
+}
+
+.panel p {
+  color: var(--color-tinta-2);
+}
+
+.panel strong {
+  color: var(--color-tinta);
+  overflow-wrap: anywhere;
+}
+
+.form {
+  display: grid;
+  gap: 14px;
+  justify-items: start;
+  max-width: 420px;
+}
+
+.form :global(.field) {
+  width: 100%;
+}
+
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--color-tinta-2);
+  font-size: var(--text-14);
+}
+
+.check input {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  accent-color: var(--color-tinta);
+}
+
+.error {
+  padding: 10px 12px;
+  border-left: 3px solid var(--color-tinta);
+  background: var(--color-pared-2);
+  color: var(--color-tinta);
+  font-weight: 600;
+}

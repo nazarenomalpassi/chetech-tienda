@@ -6,6 +6,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { safeReturnPath } from "@/lib/auth";
 import { legalConfig } from "@/config/legal";
 import { siteConfig } from "@/config/site";
+import { passwordError } from "@/lib/password";
 
 export type AuthActionState = { message?: string; error?: string };
 
@@ -16,13 +17,6 @@ function value(formData: FormData, name: string, max = 300) {
 
 function validEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 254;
-}
-
-function passwordError(password: string) {
-  if (password.length < 10) return "Usá al menos 10 caracteres.";
-  if (!/[a-záéíóúñ]/i.test(password) || !/[0-9]/.test(password)) return "Combiná letras y números.";
-  if (password.length > 72) return "La contraseña es demasiado larga.";
-  return "";
 }
 
 async function requestOrigin() {

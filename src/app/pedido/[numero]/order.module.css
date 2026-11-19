@@ -298,3 +298,9 @@
   flex-wrap: wrap;
   gap: 10px;
 }
+
+.withdraw {
+  margin-top: 24px;
+  color: var(--color-tinta-2);
+  font-size: var(--text-14);
+}

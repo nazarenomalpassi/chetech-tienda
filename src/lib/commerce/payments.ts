@@ -64,6 +64,7 @@ export async function startMercadoPagoCheckout(order: OrderPayload) {
       image: item.image,
     })),
     shippingCost: order.shipping_cost,
+    discountTotal: order.discount_total,
     payerEmail: order.customer_email,
     payerName: order.customer_name,
     expiresAt: new Date(expiresAt).toISOString(),
