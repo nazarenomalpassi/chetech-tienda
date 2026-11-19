@@ -388,6 +388,18 @@ begin
 end
 $$;
 
+-- La función del control conserva su dueño original al reemplazarla: ese rol necesita poder
+-- consultar las reservas online.
+do $$
+declare v_owner text;
+begin
+  select pg_get_userbyid(proowner) into v_owner
+  from pg_proc where oid = 'private.guard_reserved_stock()'::regprocedure;
+  execute format('grant execute on function private.storefront_reserved_quantity(uuid) to %I', v_owner);
+  execute format('grant usage on schema private to %I', v_owner);
+end
+$$;
+
 -- ---------------------------------------------------------------------------
 -- 5. Catálogo público v3: un solo pedido trae todo lo publicable, con familia, popularidad,
 --    garantía efectiva y disponibilidad real (stock menos reservas). Nunca expone stock ni costos.

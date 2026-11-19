@@ -3,6 +3,11 @@
 -- Las secuencias no vuelven atrás con ROLLBACK: se restauran al final solo si nadie las usó mientras tanto.
 \set ON_ERROR_STOP 1
 \pset pager off
+-- Si una prueba anterior se cortó a mitad de camino, el contador de pedidos quedó adelantado.
+select setval('private.storefront_order_number_seq',
+  greatest((select coalesce(max(substring(order_number from 5)::integer), 0) from public.storefront_orders), 1))
+where (select last_value from private.storefront_order_number_seq)
+  > (select coalesce(max(substring(order_number from 5)::integer), 0) from public.storefront_orders);
 select last_value as sale_seq_before from public.sale_number_seq \gset
 select last_value as order_seq_before from private.storefront_order_number_seq \gset
 
