@@ -838,7 +838,7 @@ begin
     raise exception 'Solo un administrador puede cambiar los cupones.' using errcode = '42501';
   end if;
   if v_percent is null or v_percent <= 0 or v_percent > 50 then
-    raise exception 'El descuento tiene que ser entre 1 % y 50 %.' using errcode = '22023';
+    raise exception 'El descuento tiene que ser entre 1 %% y 50 %%.' using errcode = '22023';
   end if;
   if v_scope not in ('all', 'accessories') or v_origin not in ('general', 'reel', 'taller', 'mostrador') then
     raise exception 'Revisá el alcance y el origen del cupón.' using errcode = '22023';
