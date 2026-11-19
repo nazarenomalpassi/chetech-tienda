@@ -116,6 +116,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const anonymousItems = useRef<CartItem[]>([]);
   const currentItems = useRef<CartItem[]>([]);
   const lastSyncedCart = useRef("");
+  // Último valor del carrito para los callbacks estables (patrón "latest ref"); no afecta el render.
+  // eslint-disable-next-line react-hooks/refs
   currentItems.current = items;
 
   useEffect(() => {

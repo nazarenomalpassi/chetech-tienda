@@ -39,11 +39,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
 
   useEffect(() => {
     const term = query.trim();
-    if (term.length < 2) {
-      setResults([]);
-      setTotal(0);
-      return;
-    }
+    if (term.length < 2) return;
     const controller = new AbortController();
     setLoading(true);
     const timer = window.setTimeout(() => {

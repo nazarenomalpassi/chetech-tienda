@@ -9,9 +9,10 @@ const MINIMUM_REFRESH_INTERVAL_MS = 10_000;
 export function RepairFocusRefresh() {
   const router = useRouter();
   const { refresh: refreshAccount } = useAccountSummary();
-  const lastRefreshAt = useRef(Date.now());
+  const lastRefreshAt = useRef(0);
 
   useEffect(() => {
+    lastRefreshAt.current = Date.now();
     const refresh = () => {
       const now = Date.now();
       if (now - lastRefreshAt.current < MINIMUM_REFRESH_INTERVAL_MS) return;

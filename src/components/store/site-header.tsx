@@ -44,10 +44,13 @@ export function SiteHeader({ announcement, showWorkshop }: Props) {
   const { account } = useAccountSummary();
   const { count, openDrawer } = useCart();
 
-  useEffect(() => {
+  // Al cambiar de página se cierran el menú y el buscador (ajuste de estado durante el render).
+  const [shownPath, setShownPath] = useState(pathname);
+  if (shownPath !== pathname) {
+    setShownPath(pathname);
     setMenuOpen(false);
     setSearchOpen(false);
-  }, [pathname]);
+  }
 
   useEffect(() => {
     if (!menuOpen) return;

@@ -95,17 +95,13 @@ export function CheckoutClient({ payments, delivery }: Props) {
       : null,
   ].filter(Boolean) as { kind: PaymentKind; title: string; detail: string }[];
 
-  const deliveryKeys = deliveryOptions.map((option) => option.kind).join(",");
-  const paymentKeys = paymentOptions.map((option) => option.kind).join(",");
-  useEffect(() => {
-    const available = deliveryKeys.split(",").filter(Boolean) as DeliveryKind[];
-    if (available.length && !available.includes(kind)) setKind(available[0]);
-  }, [deliveryKeys, kind]);
-  useEffect(() => {
-    const available = paymentKeys.split(",").filter(Boolean) as PaymentKind[];
-    if (payment && !available.includes(payment)) setPayment(null);
-    else if (!payment && available.length === 1) setPayment(available[0]);
-  }, [paymentKeys, payment]);
+  // Si la opción elegida deja de estar disponible (por ejemplo, al cambiar la entrega), se corrige en el
+  // mismo render: React vuelve a dibujar antes de mostrar nada.
+  const availableDelivery = deliveryOptions.map((option) => option.kind);
+  if (availableDelivery.length && !availableDelivery.includes(kind)) setKind(availableDelivery[0]);
+  const availablePayments = paymentOptions.map((option) => option.kind);
+  if (payment && !availablePayments.includes(payment)) setPayment(null);
+  else if (!payment && availablePayments.length === 1) setPayment(availablePayments[0]);
 
   if (!items.length) {
     return (
