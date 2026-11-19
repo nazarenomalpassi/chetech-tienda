@@ -356,7 +356,7 @@ export function CheckoutClient({ payments, delivery }: Props) {
 
         <aside className={styles.summary} aria-labelledby="resumen-titulo">
           <div className={styles.ticket}>
-            <div className="carta" aria-hidden />
+            <div className="barras" aria-hidden />
             <h2 id="resumen-titulo">Resumen</h2>
             <dl>
               <div>

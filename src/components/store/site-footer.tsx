@@ -8,7 +8,6 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
   return (
     <footer className={styles.footer}>
-      <div className="carta" aria-hidden />
       <div className={`page ${styles.grid}`}>
         <div className={styles.brand}>
           <Image src="/brand/chetech-logo-blanco.svg" alt="CheTech" width={180} height={32} />
@@ -87,6 +86,7 @@ export function SiteFooter() {
         >
           Defensa de las y los consumidores
         </a>
+        <span className={styles.barcode} aria-hidden />
       </div>
     </footer>
   );

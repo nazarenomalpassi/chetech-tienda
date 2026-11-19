@@ -109,3 +109,29 @@ test("el servicio técnico expone sus seis rutas con una sola experiencia", asyn
   assert.match(accordion, /aria-controls=\{panelId\}/);
   assert.match(repairsCta, /Consultar estado de mi reparación/);
 });
+
+test("la tienda pública es en escala de grises, con la tipografía de la marca", async () => {
+  const { readdir } = await import("node:fs/promises");
+  async function modules(dir) {
+    const entries = await readdir(new URL(dir, root), { withFileTypes: true });
+    const nested = await Promise.all(
+      entries.map((entry) =>
+        entry.isDirectory()
+          ? modules(`${dir}${entry.name}/`)
+          : entry.name.endsWith(".module.css")
+            ? [`${dir}${entry.name}`]
+            : [],
+      ),
+    );
+    return nested.flat();
+  }
+  // Los tonos de estado solo se permiten en Administración.
+  const publicModules = (await modules("src/")).filter((file) => !file.includes("/admin/"));
+  for (const file of publicModules) {
+    const css = await source(file);
+    assert.doesNotMatch(css, /--color-(amarillo|verde|rojo|magenta|cian|azul)\b/, `${file} usa un color`);
+  }
+  const [tokens, fonts] = await Promise.all([source("src/styles/tokens.css"), source("src/lib/fonts.ts")]);
+  assert.match(tokens, /--font-display: var\(--font-montech\)/);
+  assert.match(fonts, /montech-v02-700\.woff2/);
+});

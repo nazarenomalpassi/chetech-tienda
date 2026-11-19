@@ -54,7 +54,7 @@ export default async function OrderPage({ params, searchParams }: Props) {
     type: "svg",
     margin: 0,
     errorCorrectionLevel: "M",
-    color: { dark: "#15181a", light: "#ffffff" },
+    color: { dark: "#101010", light: "#ffffff" },
   });
   const awaiting = order.status === "awaiting_payment";
   const headline =
@@ -132,7 +132,7 @@ export default async function OrderPage({ params, searchParams }: Props) {
         {/* E11 · Comprobante: baja como papel que sale de una impresora y aparece el QR */}
         <aside className={styles.receipt} aria-labelledby="comprobante">
           <div className={styles.paper}>
-            <div className="carta" aria-hidden />
+            <div className="barras" aria-hidden />
             <div className={styles.receiptHead}>
               <Image src="/brand/chetech-logo-tinta.svg" alt="CheTech" width={120} height={21} />
               <p id="comprobante">Comprobante de pedido</p>

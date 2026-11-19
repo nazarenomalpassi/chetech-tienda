@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { ViewTransition, useRef } from "react";
-import { familyBySlug } from "@/config/catalog";
 import { useCart } from "@/components/cart-provider";
 import { StockStatus } from "@/components/store/stock-status";
 import { formatPrice } from "@/lib/format";
@@ -25,7 +24,6 @@ type Props = {
 export function ProductCard({ product, index = 0, priority = false, sizes }: Props) {
   const { add } = useCart();
   const imageRef = useRef<HTMLDivElement>(null);
-  const signal = familyBySlug.get(product.family)?.signal ?? "gris";
   const soldOut = product.status === "Sin stock";
   const second = product.images[1];
 
@@ -38,14 +36,7 @@ export function ProductCard({ product, index = 0, priority = false, sizes }: Pro
   };
 
   return (
-    <article
-      className={styles.card}
-      data-signal={signal}
-      style={{ "--i": index % 4 } as React.CSSProperties}
-    >
-      <div className={styles.header} aria-hidden>
-        <span className={styles.slot} />
-      </div>
+    <article className={styles.card} style={{ "--i": index % 4 } as React.CSSProperties}>
       <Link href={`/productos/${product.slug}`} className={styles.media} aria-label={product.name}>
         <ViewTransition name={`producto-${product.slug}`} share="morph">
           <div

@@ -10,7 +10,7 @@ import { SiteHeader } from "@/components/store/site-header";
 import { VisitTracker } from "@/components/store/visit-tracker";
 import { siteConfig, tagline } from "@/config/site";
 import { getProducts } from "@/lib/catalog";
-import { barlow, barlowCondensed } from "@/lib/fonts";
+import { montech, montechCompacta, plex } from "@/lib/fonts";
 import { anyOnlinePayment, getStoreSettings } from "@/lib/store-settings";
 import "./globals.css";
 
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f4f5f3",
+  themeColor: "#f8f8f8",
   colorScheme: "light",
   width: "device-width",
   initialScale: 1,
@@ -72,7 +72,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   };
 
   return (
-    <html lang="es-AR" className={`${barlow.variable} ${barlowCondensed.variable}`}>
+    <html lang="es-AR" className={`${montech.variable} ${montechCompacta.variable} ${plex.variable}`}>
       <body>
         <script
           type="application/ld+json"

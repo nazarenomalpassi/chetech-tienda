@@ -18,15 +18,13 @@ export default function ContactPage() {
       href: whatsappUrl("Hola, CheTech. Quiero hacer una consulta."),
       title: "WhatsApp",
       hint: siteConfig.phoneDisplay,
-      signal: "verde",
     },
-    { href: siteConfig.instagram, title: "Instagram", hint: siteConfig.instagramHandle, signal: "magenta" },
-    { href: `mailto:${siteConfig.email}`, title: "Mail", hint: siteConfig.email, signal: "cian" },
+    { href: siteConfig.instagram, title: "Instagram", hint: siteConfig.instagramHandle },
+    { href: `mailto:${siteConfig.email}`, title: "Mail", hint: siteConfig.email },
     {
       href: siteConfig.mapsUrl,
       title: "Cómo llegar",
       hint: `${siteConfig.address}, ${siteConfig.location}`,
-      signal: "azul",
     },
   ];
 
@@ -50,7 +48,7 @@ export default function ContactPage() {
           <ul className={styles.links}>
             {links.map((link) => (
               <li key={link.title}>
-                <a href={link.href} data-signal={link.signal} target="_blank" rel="noreferrer">
+                <a href={link.href} target="_blank" rel="noreferrer">
                   <span>
                     <strong>{link.title}</strong>
                     <small>{link.hint}</small>
@@ -62,7 +60,7 @@ export default function ContactPage() {
           </ul>
         </nav>
 
-        <section className={styles.card} data-signal="verde" aria-labelledby="horarios">
+        <section className={styles.card} aria-labelledby="horarios">
           <h2 id="horarios">Horarios</h2>
           <dl className={styles.hours}>
             {siteConfig.businessHours.map((item) => (

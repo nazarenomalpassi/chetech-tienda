@@ -4,7 +4,7 @@
 
 .title {
   margin-bottom: 20px;
-  font-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem);
+  font-size: var(--titulo-1);
 }
 
 .layout {
@@ -40,7 +40,7 @@
 }
 
 .section h2 {
-  font-size: var(--text-28);
+  font-size: var(--titulo-3);
 }
 
 .lead {
@@ -83,14 +83,12 @@
   width: 64px;
   height: 64px;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 0;
   background: var(--color-pared);
 }
 
 .thumb img {
-  object-fit: contain;
-  padding: 6%;
-  mix-blend-mode: multiply;
+  object-fit: cover;
 }
 
 .itemText {
@@ -264,12 +262,14 @@
   background: var(--color-blanco);
 }
 
-.ticket > :global(.carta) {
-  margin: 0 -20px;
+.ticket > :global(.barras) {
+  width: 148px;
+  height: 18px;
+  margin: 0 0 4px;
 }
 
 .ticket h2 {
-  font-size: var(--text-28);
+  font-size: var(--titulo-3);
 }
 
 .ticket dl {
@@ -300,7 +300,7 @@
 }
 
 .ticket .total dd {
-  font-size: var(--text-36);
+  font-size: var(--titulo-2);
   line-height: 1;
 }
 
@@ -311,8 +311,9 @@
 .error {
   padding: 10px 12px;
   border-radius: var(--radius-button);
-  background: color-mix(in srgb, var(--color-rojo) 10%, var(--color-blanco));
-  color: var(--color-rojo);
+  border-left: 3px solid var(--color-tinta);
+  background: var(--color-pared-2);
+  color: var(--color-tinta);
   font-weight: 600;
 }
 
@@ -329,7 +330,7 @@
 }
 
 .empty h1 {
-  font-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem);
+  font-size: var(--titulo-1);
 }
 
 .empty p {

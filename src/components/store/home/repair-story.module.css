@@ -107,7 +107,7 @@
 .tv {
   padding: 10px 10px 18px;
   border-radius: var(--radius-tv);
-  background: linear-gradient(180deg, #24292c 0%, var(--color-tinta) 18%, #0c0e0f 100%);
+  background: linear-gradient(180deg, #262626 0%, var(--color-tinta) 18%, #0a0a0a 100%);
   box-shadow: 0 22px 50px -26px rgb(0 0 0 / 0.55);
 }
 
@@ -131,16 +131,16 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, transparent 72%, #101214 72% 80%, transparent 80%),
+    linear-gradient(180deg, transparent 72%, #101010 72% 80%, transparent 80%),
     linear-gradient(
       90deg,
-      var(--color-gris-carta) 0 14.28%,
-      var(--color-amarillo) 14.28% 28.57%,
-      var(--color-cian) 28.57% 42.85%,
-      var(--color-verde) 42.85% 57.14%,
-      var(--color-magenta) 57.14% 71.42%,
-      var(--color-rojo) 71.42% 85.71%,
-      var(--color-azul) 85.71% 100%
+      #ffffff 0 14.28%,
+      #d0d0d0 14.28% 28.57%,
+      #a6a6a6 28.57% 42.85%,
+      #7c7c7c 42.85% 57.14%,
+      #525252 57.14% 71.42%,
+      #2b2b2b 71.42% 85.71%,
+      #000000 85.71% 100%
     );
 }
 
@@ -200,7 +200,7 @@
 }
 
 .copy h2 {
-  font-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem);
+  font-size: var(--titulo-1);
 }
 
 .lead {
@@ -280,9 +280,9 @@
 .section[data-enhanced="true"][data-step="2"] li[data-index="2"] .stepMark,
 .section[data-enhanced="true"][data-step="3"] li[data-index="3"] .stepMark,
 .section[data-enhanced="true"][data-step="4"] li[data-index="4"] .stepMark {
-  background: var(--color-cian);
-  border-color: var(--color-cian);
-  color: var(--color-tinta);
+  background: var(--color-tinta);
+  border-color: var(--color-tinta);
+  color: var(--color-blanco);
 }
 
 .actions {

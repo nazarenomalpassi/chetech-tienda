@@ -1,34 +1,36 @@
+/* Estado del stock sin color: lleno, medio o vacío, como una luz de tablero. */
 .status {
   display: inline-flex;
   align-items: center;
   gap: 7px;
   color: var(--color-tinta-2);
   font-size: var(--text-14);
-  font-weight: 600;
+  font-weight: 500;
   white-space: nowrap;
 }
 
 .dot {
   width: 9px;
   height: 9px;
-  border-radius: 50%;
-  background: var(--tone);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--tone) 18%, transparent);
+  flex: none;
+  border: 1.5px solid var(--color-tinta);
+  background: var(--color-tinta);
 }
 
-.status[data-tone="ok"] {
-  --tone: var(--color-verde);
-}
-
-.status[data-tone="low"] {
-  --tone: var(--color-amarillo);
+.status[data-tone="low"] .dot {
+  background: linear-gradient(135deg, var(--color-tinta) 50%, transparent 50%);
 }
 
 .status[data-tone="out"] {
-  --tone: var(--color-rojo);
-  color: var(--color-rojo);
+  color: var(--color-tinta-3);
 }
 
-.status[data-tone="ask"] {
-  --tone: var(--color-tinta-3);
+.status[data-tone="out"] .dot {
+  border-color: var(--color-acero);
+  background: transparent;
+}
+
+.status[data-tone="ask"] .dot {
+  border-color: var(--color-tinta-3);
+  background: transparent;
 }

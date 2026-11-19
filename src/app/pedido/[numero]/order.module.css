@@ -26,7 +26,7 @@
 }
 
 .main h1 {
-  font-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.75rem);
+  font-size: var(--titulo-1);
 }
 
 .steps {
@@ -50,7 +50,7 @@
 
 .steps li span {
   height: 6px;
-  border-radius: 999px;
+  border-radius: 0;
   background: var(--color-linea);
 }
 
@@ -67,7 +67,7 @@
 }
 
 .steps li[data-state="current"] span {
-  background: var(--color-verde);
+  background: var(--color-tinta);
 }
 
 .closed {
@@ -89,7 +89,7 @@
 
 .pickupCode {
   font-family: var(--font-display);
-  font-size: var(--text-64);
+  font-size: var(--titulo-1);
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0.08em;
@@ -106,7 +106,7 @@
 
 .history h2 {
   margin-bottom: 8px;
-  font-size: var(--text-28);
+  font-size: var(--titulo-3);
 }
 
 .history ol {
@@ -142,7 +142,7 @@
   inset: 0 -4px auto;
   z-index: 2;
   height: 12px;
-  border-radius: 6px;
+  border-radius: 0;
   background: var(--color-tinta);
 }
 
@@ -161,8 +161,10 @@
   animation: print 0.6s cubic-bezier(0.3, 0.7, 0.3, 1) both;
 }
 
-.paper > :global(.carta) {
-  margin: 0 -20px;
+.paper > :global(.barras) {
+  width: 148px;
+  height: 18px;
+  margin: 0 0 4px;
 }
 
 @keyframes print {
@@ -240,7 +242,7 @@
 }
 
 .total .price {
-  font-size: var(--text-36);
+  font-size: var(--titulo-2);
   line-height: 1;
 }
 
@@ -283,7 +285,7 @@
 }
 
 .missing h1 {
-  font-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem);
+  font-size: var(--titulo-1);
 }
 
 .missing p {

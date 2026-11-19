@@ -1,17 +1,16 @@
-// Diseño común de los mails: 600 px, una columna, la carta de ajuste arriba y el cuerpo como
+// Diseño común de los mails: 600 px, una columna, la marca en una franja negra arriba y el cuerpo como
 // comprobante. Un solo botón por mail y, debajo, el mismo enlace en texto. HTML con tablas para que
 // se vea igual en Gmail, Outlook y el celular.
 import type { ReactNode } from "react";
 
-const tinta = "#15181a";
-const tinta2 = "#3d4347";
-const tinta3 = "#5d6569";
-const pared = "#f4f5f3";
-const linea = "#d5d8d5";
-const carta = ["#c9ccc8", "#f5c400", "#00a7c7", "#1e9e4a", "#c2268f", "#d93025", "#1f4fd8"];
+const tinta = "#101010";
+const tinta2 = "#3a3d3d";
+const tinta3 = "#626767";
+const pared = "#f8f8f8";
+const linea = "#e0e0e0";
 
-const font = "'Barlow', 'Helvetica Neue', Arial, sans-serif";
-const display = "'Barlow Condensed', 'Arial Narrow', Arial, sans-serif";
+const font = "'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif";
+const display = "'Helvetica Neue', Arial, sans-serif";
 
 export function MailLayout({ preview, children }: { preview: string; children: ReactNode }) {
   return (
@@ -34,27 +33,15 @@ export function MailLayout({ preview, children }: { preview: string; children: R
                   width={600}
                   cellPadding={0}
                   cellSpacing={0}
-                  style={{ width: "100%", maxWidth: 600, backgroundColor: "#ffffff", border: `1px solid ${linea}`, borderRadius: 10, overflow: "hidden" }}
+                  style={{ width: "100%", maxWidth: 600, backgroundColor: "#ffffff", border: `1px solid ${linea}` }}
                 >
                   <tbody>
                     <tr>
-                      <td>
-                        <table role="presentation" width="100%" cellPadding={0} cellSpacing={0}>
-                          <tbody>
-                            <tr>
-                              {carta.map((color) => (
-                                <td key={color} height={8} style={{ backgroundColor: color, height: 8, lineHeight: "8px", fontSize: 0 }}>
-                                  &nbsp;
-                                </td>
-                              ))}
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ padding: "22px 28px 4px" }}>
-                        <span style={{ fontFamily: display, fontSize: 26, fontWeight: 700, letterSpacing: "0.02em", color: tinta }}>CheTech</span>
+                      <td style={{ padding: "18px 28px", backgroundColor: tinta }}>
+                        <span style={{ fontFamily: display, fontSize: 22, letterSpacing: "0.14em", color: "#ffffff" }}>
+                          <strong style={{ fontWeight: 700 }}>CHE</strong>
+                          <span style={{ fontWeight: 400 }}>TECH</span>
+                        </span>
                       </td>
                     </tr>
                     <tr>
@@ -87,7 +74,7 @@ export function MailLayout({ preview, children }: { preview: string; children: R
 }
 
 export function Title({ children }: { children: ReactNode }) {
-  return <h1 style={{ margin: "6px 0 12px", fontFamily: display, fontSize: 32, lineHeight: "34px", fontWeight: 700, color: tinta }}>{children}</h1>;
+  return <h1 style={{ margin: "6px 0 12px", fontFamily: display, fontSize: 24, lineHeight: "30px", fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: tinta }}>{children}</h1>;
 }
 
 export function P({ children, muted = false }: { children: ReactNode; muted?: boolean }) {
@@ -100,7 +87,7 @@ export function Button({ href, children }: { href: string; children: ReactNode }
       <table role="presentation" cellPadding={0} cellSpacing={0} style={{ margin: "18px 0 10px" }}>
         <tbody>
           <tr>
-            <td style={{ backgroundColor: tinta, borderRadius: 6 }}>
+            <td style={{ backgroundColor: tinta, borderRadius: 0 }}>
               <a
                 href={href}
                 style={{ display: "inline-block", padding: "14px 24px", color: "#ffffff", fontFamily: font, fontSize: 17, fontWeight: 600, textDecoration: "none" }}
@@ -139,7 +126,7 @@ export function Receipt({
       width="100%"
       cellPadding={0}
       cellSpacing={0}
-      style={{ margin: "8px 0 18px", border: `1.5px solid ${tinta}`, borderRadius: 8, borderCollapse: "separate" }}
+      style={{ margin: "8px 0 18px", border: `1.5px solid ${tinta}`, borderRadius: 0, borderCollapse: "separate" }}
     >
       <tbody>
         <tr>
@@ -186,7 +173,7 @@ export function Receipt({
 /** Datos en dos columnas (alias, CVU, código de retiro). */
 export function Facts({ rows }: { rows: [string, string][] }) {
   return (
-    <table role="presentation" width="100%" cellPadding={0} cellSpacing={0} style={{ margin: "4px 0 16px", backgroundColor: pared, borderRadius: 8 }}>
+    <table role="presentation" width="100%" cellPadding={0} cellSpacing={0} style={{ margin: "4px 0 16px", backgroundColor: pared, borderRadius: 0 }}>
       <tbody>
         {rows.map(([label, value]) => (
           <tr key={label}>

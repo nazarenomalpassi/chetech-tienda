@@ -48,12 +48,12 @@ export default async function RefurbishedPage() {
       )}
 
       <div className={styles.split}>
-        <section className={styles.card} data-signal="magenta" aria-labelledby="aviso-tele">
+        <section className={styles.card} aria-labelledby="aviso-tele">
           <h2 id="aviso-tele">Avisame cuando entre una</h2>
           <p>Contanos qué buscás (pulgadas, si es smart) y te escribimos una sola vez, cuando la tengamos.</p>
           <WaitlistForm kind="refurbished" cta="Avisarme" />
         </section>
-        <section className={styles.card} data-signal="verde" aria-labelledby="como-revisamos">
+        <section className={styles.card} aria-labelledby="como-revisamos">
           <h2 id="como-revisamos">Cómo las revisamos</h2>
           <ol className={styles.steps}>
             <li>Diagnóstico en el banco de pruebas.</li>

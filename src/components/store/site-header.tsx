@@ -162,7 +162,6 @@ export function SiteHeader({ announcement, showWorkshop }: Props) {
               <X aria-hidden size={22} />
             </button>
           </div>
-          <div className="carta" aria-hidden />
           <nav className={styles.menuNav} aria-label="Menú principal">
             <Suspense fallback={null}>
               <NavLinks onNavigate={() => setMenuOpen(false)} />
@@ -174,7 +173,7 @@ export function SiteHeader({ announcement, showWorkshop }: Props) {
               .filter((family) => family.slug !== "del-taller" || showWorkshop)
               .map((family) => (
                 <li key={family.slug}>
-                  <Link href={`/productos?familia=${family.slug}`} onClick={() => setMenuOpen(false)} data-signal={family.signal}>
+                  <Link href={`/productos?familia=${family.slug}`} onClick={() => setMenuOpen(false)}>
                     {family.name}
                   </Link>
                 </li>

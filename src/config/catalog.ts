@@ -5,8 +5,6 @@ export type FamilyMeta = {
   slug: string;
   name: string;
   description: string;
-  /** Color de señal de la carta de ajuste que identifica a la familia. */
-  signal: "amarillo" | "cian" | "verde" | "magenta" | "rojo" | "azul" | "gris";
 };
 
 export const families: FamilyMeta[] = [
@@ -14,43 +12,36 @@ export const families: FamilyMeta[] = [
     slug: "para-tu-tele",
     name: "Para tu tele",
     description: "ONN, TV Stick, controles, soportes y cables HDMI.",
-    signal: "amarillo",
   },
   {
     slug: "carga-y-energia",
     name: "Carga y energía",
     description: "Cargadores, cables, adaptadores, pilas y zapatillas.",
-    signal: "verde",
   },
   {
     slug: "audio",
     name: "Audio",
     description: "Auriculares, parlantes y micrófonos.",
-    signal: "cian",
   },
   {
     slug: "celular",
     name: "Celular",
     description: "Fundas, vidrios templados y soportes para auto.",
-    signal: "azul",
   },
   {
     slug: "compu-y-gaming",
     name: "Compu y gaming",
     description: "Teclados, mouse, pendrives y joysticks.",
-    signal: "rojo",
   },
   {
     slug: "hogar",
     name: "Hogar",
     description: "Iluminación, freidoras, pavas, ventiladores y estufas.",
-    signal: "gris",
   },
   {
     slug: "del-taller",
     name: "Del taller",
     description: "Teles revisadas y placas probadas en el banco de pruebas.",
-    signal: "magenta",
   },
 ];
 

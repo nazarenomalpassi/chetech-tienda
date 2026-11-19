@@ -88,7 +88,7 @@ export function TvHero({
             <div className={styles.screen}>
               <div className={styles.power} aria-hidden>
                 <span className={styles.powerLine} />
-                <span className={`carta ${styles.powerCarta}`} />
+                <span className={styles.powerCarta} />
               </div>
               <span className={styles.scanlines} aria-hidden />
 

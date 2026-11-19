@@ -133,7 +133,6 @@ export function CartDrawer() {
                   <X aria-hidden size={22} />
                 </button>
               </div>
-              <div className="carta" aria-hidden />
 
               {items.length === 0 ? (
                 <div className={styles.empty}>
