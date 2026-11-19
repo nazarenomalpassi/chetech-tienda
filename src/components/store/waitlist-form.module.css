@@ -1,16 +1,20 @@
+/* La columna se limita al ancho disponible: un campo de texto trae su propio ancho mínimo y, sin
+   esto, ensancha el formulario más allá de la tarjeta en pantallas de 320 px. */
 .form {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
 }
 
 .row {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 10px;
 }
 
 @media (min-width: 560px) {
   .row {
-    grid-template-columns: 1fr 1.2fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
   }
 }
 

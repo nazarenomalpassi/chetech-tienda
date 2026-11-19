@@ -2,7 +2,8 @@
 .footer {
   --foco: var(--color-blanco);
   margin-top: var(--space-9);
-  background: var(--color-tinta) url("/brand/trama-oscura.svg") no-repeat right -160px top -120px / 760px auto;
+  background: var(--color-tinta) url("/brand/trama-oscura.svg") no-repeat right -160px top -120px /
+    760px auto;
   color: color-mix(in srgb, var(--color-blanco) 78%, transparent);
   font-size: var(--text-16);
 }
@@ -182,5 +183,21 @@
   from {
     opacity: 0;
     transform: translateY(26px);
+  }
+}
+
+/* En pantallas táctiles, los enlaces sueltos del pie tienen la altura de un dedo. */
+@media (pointer: coarse) {
+  .whatsapp,
+  .link,
+  .social,
+  .bottom a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch);
+  }
+
+  .link {
+    margin-top: 0;
   }
 }

@@ -1,0 +1,303 @@
+/* Demostración del seguimiento: una pantalla del taller con los cinco pasos de una reparación. */
+.demo {
+  --chaflan: 18px;
+  --progress: 0;
+  position: relative;
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  overflow: hidden;
+  clip-path: polygon(0 0, calc(100% - var(--chaflan)) 0, 100% var(--chaflan), 100% 100%, 0 100%);
+}
+
+/* Trama de puntos y líneas de barrido, como el tele de la portada. */
+.demo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(to bottom, rgb(255 255 255 / 0.03) 0 1px, transparent 1px 3px),
+    radial-gradient(rgb(255 255 255 / 0.08) 1px, transparent 1.4px) 0 0 / 22px 22px;
+  mask-image: radial-gradient(120% 120% at 100% 0%, #000 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.top,
+.device,
+.rail,
+.now {
+  position: relative;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-right: 14px;
+}
+
+.caption {
+  color: var(--color-tinta-2);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+.caption::before {
+  content: ">>>";
+  margin-right: 6px;
+  color: var(--color-acero);
+  font-weight: 300;
+}
+
+.tag {
+  padding: 4px 7px;
+  border: 1px solid var(--color-plata);
+  color: var(--color-tinta-2);
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1;
+}
+
+.device {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.deviceName {
+  font-size: var(--text-18);
+  font-weight: 600;
+}
+
+.counter {
+  flex: none;
+  white-space: nowrap;
+  color: var(--color-acero);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+
+.counter b {
+  display: inline-block;
+  color: var(--color-tinta);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* Riel de pasos: la línea se llena hasta el paso actual. */
+.rail {
+  --mark: 14px;
+  padding-top: 2px;
+}
+
+.rail::before,
+.railFill {
+  content: "";
+  position: absolute;
+  top: calc(2px + var(--mark) / 2 - 1px + 15px);
+  right: calc(10% - 0px);
+  left: 10%;
+  height: 2px;
+}
+
+.rail::before {
+  background: var(--color-linea);
+}
+
+.railFill {
+  background: var(--color-tinta);
+  transform: scaleX(var(--progress));
+  transform-origin: 0 50%;
+  transition: transform 0.7s var(--ease-out);
+}
+
+.steps {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.steps button {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: var(--touch);
+  padding: 15px 0 4px;
+  border: 0;
+  background: transparent;
+  color: var(--color-acero);
+  cursor: pointer;
+  transition: color 0.25s ease;
+}
+
+.steps button:focus-visible {
+  outline-offset: -2px;
+}
+
+.mark {
+  position: relative;
+  width: var(--mark);
+  height: var(--mark);
+  border: 2px solid var(--color-plata);
+  background: var(--color-pared);
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.35s var(--ease-out);
+}
+
+.mark::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border: 2px solid var(--color-tinta);
+  opacity: 0;
+}
+
+.stepName {
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.steps li[data-state="hecho"] button {
+  color: var(--color-tinta-2);
+}
+
+.steps li[data-state="hecho"] .mark {
+  border-color: var(--color-tinta);
+  background: var(--color-tinta);
+}
+
+.steps li[data-state="actual"] button {
+  color: var(--color-tinta);
+}
+
+.steps li[data-state="actual"] .mark {
+  border-color: var(--color-tinta);
+  background: var(--color-tinta);
+  transform: scale(1.25);
+}
+
+/* En pantallas angostas los nombres no entran debajo de cada marca: se muestra solo el del paso actual. */
+@media (max-width: 420px) {
+  .steps li:not([data-state="actual"]) .stepName {
+    visibility: hidden;
+  }
+}
+
+@media (min-width: 520px) {
+  .stepName {
+    font-size: 0.6875rem;
+  }
+}
+
+.now {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--color-linea);
+  background: var(--color-blanco);
+}
+
+.nowText {
+  display: grid;
+  gap: 4px;
+  min-height: 4.4em;
+}
+
+.nowText strong {
+  font-family: var(--font-display);
+  font-size: var(--titulo-3);
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+
+.nowText span {
+  color: var(--color-tinta-2);
+}
+
+/* Barra que marca cuánto falta para el paso siguiente. Solo corre mientras la demostración avanza. */
+.timer {
+  height: 2px;
+  background: var(--color-tinta);
+  opacity: 0.5;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .steps button:hover {
+    color: var(--color-tinta);
+  }
+
+  .steps button:hover .mark {
+    transform: scale(1.3);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .steps li[data-state="actual"] .mark::after {
+    animation: demo-anillo 1.6s ease-out infinite;
+  }
+
+  .nowText {
+    animation: demo-texto 0.45s var(--ease-out);
+  }
+
+  .counter b {
+    animation: demo-numero 0.4s var(--ease-out);
+  }
+
+  .demo[data-running="true"] .timer {
+    animation: demo-tiempo var(--step-seconds) linear forwards;
+  }
+}
+
+@keyframes demo-anillo {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(2.2);
+  }
+}
+
+@keyframes demo-texto {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes demo-numero {
+  from {
+    opacity: 0;
+    transform: translateY(60%);
+  }
+}
+
+@keyframes demo-tiempo {
+  to {
+    transform: scaleX(1);
+  }
+}

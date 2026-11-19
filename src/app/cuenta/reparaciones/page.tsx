@@ -4,6 +4,7 @@ import { ArrowRight, CalendarDays, CircleAlert, Clock3, ShieldCheck, Wrench } fr
 import { redirect } from "next/navigation";
 import { AccountHeading } from "../account-heading";
 import { RepairFocusRefresh } from "@/components/repair-focus-refresh";
+import { RepairProgress } from "@/components/repair-progress";
 import { requireAccount } from "@/lib/auth";
 import { formatDate, formatDateOnly } from "@/lib/date";
 import { formatCurrency } from "@/lib/format";
@@ -106,6 +107,8 @@ export default async function RepairsPage({
                         {repairStatusLabel(repair.status)}
                       </span>
                     </div>
+
+                    <RepairProgress status={repair.status} compact />
 
                     {repair.customerActionRequired && (
                       <p className="repair-action-callout">

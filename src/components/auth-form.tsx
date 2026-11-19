@@ -5,6 +5,7 @@ import { Eye, EyeOff, LockKeyhole, PackageSearch, UserRound, Wrench } from "luci
 import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import type { AuthActionState } from "@/app/auth-actions";
+import { RepairDemo } from "@/components/repair-demo";
 import styles from "./auth-form.module.css";
 
 type Action = (state: AuthActionState, formData: FormData) => Promise<AuthActionState>;
@@ -127,7 +128,15 @@ export function AuthForm({
   embedded?: boolean;
 }) {
   const [state, formAction] = useActionState(action, {});
-  const text = copy[mode];
+  // Quien llega desde "Seguí tu reparación" lee de entrada para qué sirve ingresar.
+  const forRepairs = mode === "login" && Boolean(next?.startsWith("/cuenta/reparaciones"));
+  const text = forRepairs
+    ? {
+        ...copy.login,
+        title: "Seguí tu reparación",
+        subtitle: "Ingresá con el mail que dejaste en el local y mirá en qué paso está tu equipo.",
+      }
+    : copy[mode];
   const needsEmail = mode !== "update";
   const withNext = (path: string) => `${path}${next ? `?next=${encodeURIComponent(next)}` : ""}`;
 
@@ -273,11 +282,14 @@ export function AuthForm({
         {form}
 
         <div className={styles.extra}>
+          {mode === "login" || mode === "signup" ? <RepairDemo /> : null}
           {mode === "login" || mode === "signup" ? (
             <ul className={styles.benefits}>
-              {benefits.map(({ icon: Icon, title, text: detail }) => (
-                <li key={title}>
-                  <Icon aria-hidden />
+              {benefits.map(({ icon: Icon, title, text: detail }, index) => (
+                <li key={title} style={{ "--i": index } as React.CSSProperties}>
+                  <span className={styles.benefitIcon} aria-hidden>
+                    <Icon />
+                  </span>
                   <div>
                     <strong>{title}</strong>
                     <span>{detail}</span>

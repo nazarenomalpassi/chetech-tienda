@@ -1,6 +1,9 @@
 /* Tarjeta de producto: una ficha blanca, la foto sobre una placa gris con la esquina en chaflán
    y el precio en la letra de la marca. Sin color. */
+/* La tarjeta es un contenedor: el pie (estado + botón) se acomoda según el ancho de la tarjeta y no
+   el de la pantalla, porque la misma tarjeta va en grillas de dos, tres y cuatro columnas. */
 .card {
+  container: tarjeta / inline-size;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -110,6 +113,7 @@
 .body {
   display: grid;
   flex: 1;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto auto 1fr;
   gap: 6px;
   padding: 10px 12px 12px;
@@ -214,7 +218,37 @@
   cursor: not-allowed;
 }
 
-@media (min-width: 700px) {
+/* Tarjeta muy angosta (celular de 320 px, o cuatro columnas en una tablet): el estado y el botón no
+   entran lado a lado, así que el botón pasa abajo, a todo el ancho y con su texto. */
+@container tarjeta (max-width: 155px) {
+  .foot {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .add {
+    width: 100%;
+  }
+
+  .add span {
+    display: inline;
+  }
+}
+
+/* Un poco más ancha (celular de 360 px): entran lado a lado con el botón apenas más chico. */
+@container tarjeta (min-width: 155.01px) and (max-width: 163px) {
+  .foot {
+    gap: 6px;
+  }
+
+  .add {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Con lugar de sobra, el botón lleva su texto. */
+@container tarjeta (min-width: 232px) {
   .add {
     width: auto;
     padding: 0 12px;

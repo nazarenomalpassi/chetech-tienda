@@ -157,6 +157,21 @@
   line-height: 1.1;
 }
 
+/* En pantallas angostas el botón de la barra dice solo "Agregar": así el precio entra entero. */
+@media (max-width: 359px) {
+  .barLong {
+    display: none;
+  }
+}
+
+.barText {
+  flex: 1 1 0;
+}
+
+.bar :global(.btn) {
+  flex: none;
+}
+
 @media (min-width: 960px) {
   .bar {
     display: none;

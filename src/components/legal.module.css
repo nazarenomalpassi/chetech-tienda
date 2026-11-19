@@ -100,6 +100,9 @@
 
 .article {
   display: grid;
+  /* Sin esto, una palabra larga (un mail, un enlace) ensancha la columna y el texto se sale en
+     pantallas de 320 px. */
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-7);
   max-width: 44rem;
 }
@@ -241,6 +244,7 @@
 /* Formularios de arrepentimiento y privacidad */
 .formLayout {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-6);
   align-items: start;
 }
@@ -254,6 +258,7 @@
 
 .form {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
   max-width: 44rem;
   padding: 0 var(--space-5) var(--space-5);
@@ -268,6 +273,7 @@
 
 .row {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
 }
 
