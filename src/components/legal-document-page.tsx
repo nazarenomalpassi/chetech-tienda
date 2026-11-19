@@ -41,7 +41,7 @@ export function LegalHelp({ title = "¿Te quedó una duda?" }: { title?: string 
   );
 }
 
-export function LegalDocumentPage({ document }: { document: LegalDocument }) {
+export function LegalDocumentPage({ document, extra }: { document: LegalDocument; extra?: React.ReactNode }) {
   const sections = document.sections.map((section) => ({ ...section, id: anchor(section.title) }));
   return (
     <div className={`page ${styles.page}`}>
@@ -84,6 +84,7 @@ export function LegalDocumentPage({ document }: { document: LegalDocument }) {
               ) : null}
             </section>
           ))}
+          {extra}
           <LegalHelp />
         </div>
       </div>

@@ -8,6 +8,8 @@ import styles from "./analytics.module.css";
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 const KEY = "chetech-cookies-v1";
+/** Evento que vuelve a mostrar el aviso para cambiar la elección (botón de la página de cookies). */
+export const REVIEW_COOKIES_EVENT = "chetech:revisar-cookies";
 
 type Choice = "accepted" | "rejected" | null;
 
@@ -24,15 +26,25 @@ export function Analytics() {
       setChoice(null);
     }
     setReady(true);
+    const review = () => setChoice(null);
+    window.addEventListener(REVIEW_COOKIES_EVENT, review);
+    return () => window.removeEventListener(REVIEW_COOKIES_EVENT, review);
   }, []);
 
   if (!GA_ID && !PIXEL_ID) return null;
 
   const decide = (value: Exclude<Choice, null>) => {
+    let previous: Choice = null;
     try {
+      previous = localStorage.getItem(KEY) as Choice;
       localStorage.setItem(KEY, value);
     } catch {
       // Sin almacenamiento la decisión vale solo para esta visita.
+    }
+    // Si antes había aceptado, la medición ya está cargada en esta página: recargar la saca.
+    if (previous === "accepted" && value === "rejected") {
+      window.location.reload();
+      return;
     }
     setChoice(value);
   };
