@@ -1,3 +1,4 @@
+// Contrato de la tienda nueva (plan, secciones 4 a 6): lo que no se puede romper sin decidirlo a propósito.
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
@@ -8,87 +9,83 @@ async function source(path) {
   return readFile(new URL(path, root), "utf8");
 }
 
-test("the shared public product card stays compact and keeps its core actions", async () => {
-  const card = await source("src/components/product-card.tsx");
+test("la tarjeta de producto agrega al carrito, comparte la foto con la ficha y no manda a WhatsApp", async () => {
+  const card = await source("src/components/store/product-card.tsx");
 
-  assert.doesNotMatch(card, /product\.sku/);
-  assert.doesNotMatch(card, /product\.(?:shortDescription|description)/);
-  assert.doesNotMatch(card, /productWhatsApp|WhatsApp/);
-  assert.match(card, /className="product-card-link"/);
-  assert.match(card, /add\(product\)/);
+  assert.match(card, /add\(product/);
+  assert.match(card, /ViewTransition name=\{`producto-\$\{product\.slug\}`\}/);
+  assert.doesNotMatch(card, /productWhatsApp|whatsappUrl/);
+  assert.doesNotMatch(card, /product\.(?:shortDescription|description)\b/);
 });
 
-test("the product detail hides SKU, renders one description section and keeps commerce actions", async () => {
+test("la ficha tiene una sola descripción, datos estructurados y complementos", async () => {
   const detail = await source("src/app/productos/[slug]/page.tsx");
 
-  assert.equal(detail.match(/product\.sku/g)?.length, 1, "SKU should only remain in JSON-LD");
+  assert.equal(detail.match(/<h2 id="descripcion">Descripción<\/h2>/g)?.length, 1);
   assert.match(detail, /sku:\s*product\.sku/);
-  assert.equal(detail.match(/<p className="eyebrow">Descripción<\/p>/g)?.length, 1);
-  assert.match(detail, /<ProductActions product=\{product\}/);
-  assert.match(detail, /getRelatedProducts\(product,\s*4\)/);
+  assert.match(detail, /application\/ld\+json/);
+  assert.match(detail, /<BuyBox/);
 });
 
-test("customer cart and order detail do not render SKU snapshots", async () => {
-  const cart = await source("src/components/cart-page-client.tsx");
-  const order = await source("src/app/cuenta/pedidos/[id]/page.tsx");
+test("el pedido del cliente no muestra códigos internos", async () => {
+  const order = await source("src/app/pedido/[numero]/page.tsx");
+  const legacyOrder = await source("src/app/cuenta/pedidos/[id]/page.tsx");
 
-  assert.doesNotMatch(cart, /product\.sku/);
-  assert.doesNotMatch(order, /\{item\.sku_snapshot\}/);
+  assert.doesNotMatch(order, />\s*\{item\.sku\}/);
+  assert.doesNotMatch(legacyOrder, /\{item\.sku_snapshot\}/);
+  assert.match(order, /robots:\s*\{\s*index:\s*false/);
 });
 
-test("home products are selected once from real catalog data and moved client-side", async () => {
-  const home = await source("src/app/page.tsx");
-  const catalog = await source("src/lib/catalog.ts");
-  const carousel = await source("src/components/product-carousel.tsx");
+test("la compra nunca confía en el navegador para marcar un pago", async () => {
+  const [webhook, sync, payments, checkout] = await Promise.all([
+    source("src/app/api/payments/mercadopago/webhook/route.ts"),
+    source("src/app/api/payments/mercadopago/sync/route.ts"),
+    source("src/lib/commerce/payments.ts"),
+    source("src/app/api/checkout/route.ts"),
+  ]);
 
-  assert.match(home, /getCatalog\(\{\s*pageSize:\s*48\s*\}\)/);
-  assert.match(home, /selectHomeProducts\(catalog\.products,\s*12\)/);
-  assert.match(home, /<ProductCarousel products=\{products\}/);
-  assert.match(catalog, /product\.featured/);
-  assert.match(catalog, /interleaveCategories/);
-  assert.doesNotMatch(carousel, /supabase|fetch\(/i);
-  assert.match(carousel, /ResizeObserver/);
-  assert.match(carousel, /prefers-reduced-motion/);
+  assert.match(webhook, /verifySignature\(/);
+  assert.match(webhook, /storefront_register_webhook/);
+  assert.match(sync, /applyMercadoPagoPayment\(/);
+  assert.match(payments, /getPayment\(/);
+  assert.match(payments, /paymentProblem\(/);
+  // Del carrito solo viajan producto y cantidad: el precio lo pone la base.
+  assert.match(checkout, /storefront_product_id: String\(item\.id \?\? ""\), quantity:/);
+  assert.match(checkout, /access_token_hash:\s*hashToken\(token\)/);
 });
 
-test("hero controls and scroll reveals follow the accessibility contract", async () => {
-  const hero = await source("src/components/hero-service-carousel.tsx");
-  const reveal = await source("src/components/reveal-on-scroll.tsx");
+test("el movimiento respeta la preferencia de reducirlo", async () => {
+  const [base, card, story, hero] = await Promise.all([
+    source("src/styles/base.css"),
+    source("src/components/store/product-card.module.css"),
+    source("src/components/store/home/repair-story.tsx"),
+    source("src/components/store/home/tv-hero.tsx"),
+  ]);
 
-  assert.doesNotMatch(hero, /\b(?:Pause|Play|Pausar|Reanudar)\b/);
-  assert.match(hero, /hero-carousel-arrow-prev/);
-  assert.match(hero, /hero-carousel-arrow-next/);
-  assert.match(hero, /prefers-reduced-motion/);
-  assert.match(hero, /ArrowLeft/);
-  assert.match(reveal, /IntersectionObserver/);
-  assert.match(reveal, /unobserve/);
-  assert.match(reveal, /MutationObserver/);
+  assert.match(base, /prefers-reduced-motion:\s*reduce/);
+  assert.match(card, /prefers-reduced-motion:\s*reduce/);
+  assert.match(story, /prefers-reduced-motion|useReducedMotion/);
+  assert.match(hero, /prefers-reduced-motion|useReducedMotion/);
 });
 
-test("catalog protects page bounds and the compact responsive grid", async () => {
-  const page = await source("src/app/productos/page.tsx");
-  const css = await source("src/app/globals.css");
+test("el catálogo acota la página pedida y oculta los productos sin foto", async () => {
+  const query = await source("src/lib/catalog-query.ts");
 
-  assert.match(page, /page > catalog\.totalPages/);
-  assert.match(page, /invalidCategory/);
-  assert.match(css, /@media \(min-width: 1280px\)[\s\S]*repeat\(4, minmax\(0, 1fr\)\)/);
-  assert.match(css, /\.product-media\s*\{[\s\S]*aspect-ratio:\s*4\s*\/\s*3/);
-  assert.match(css, /-webkit-line-clamp:\s*2/);
-  assert.match(css, /\.reveal-enhanced \[data-reveal\]/);
+  assert.match(query, /Math\.min\(Math\.max\(Math\.trunc\(query\.page \?\? 1\), 1\), totalPages\)/);
+  assert.match(query, /export function isSellable/);
+  assert.match(query, /hiddenWithoutPhoto/);
 });
 
-test("technical service exposes six real routes through one reusable experience", async () => {
-  const [config, landing, detail, components, accordion, sitemap, repairsCta, css] =
-    await Promise.all([
-      source("src/config/service-categories.ts"),
-      source("src/app/servicio-tecnico/page.tsx"),
-      source("src/app/servicio-tecnico/[slug]/page.tsx"),
-      source("src/components/service-tech.tsx"),
-      source("src/components/service-accordion.tsx"),
-      source("src/app/sitemap.ts"),
-      source("src/components/service-repairs-cta.tsx"),
-      source("src/app/globals.css"),
-    ]);
+test("el servicio técnico expone sus seis rutas con una sola experiencia", async () => {
+  const [config, landing, detail, components, accordion, sitemap, repairsCta] = await Promise.all([
+    source("src/config/service-categories.ts"),
+    source("src/app/servicio-tecnico/page.tsx"),
+    source("src/app/servicio-tecnico/[slug]/page.tsx"),
+    source("src/components/service-tech.tsx"),
+    source("src/components/service-accordion.tsx"),
+    source("src/app/sitemap.ts"),
+    source("src/components/service-repairs-cta.tsx"),
+  ]);
 
   for (const slug of [
     "computadoras-notebooks",
@@ -105,24 +102,9 @@ test("technical service exposes six real routes through one reusable experience"
   assert.match(landing, /<ServiceLanding/);
   assert.match(detail, /generateStaticParams/);
   assert.match(detail, /generateMetadata/);
-  assert.match(detail, /<ServiceDetailLayout category=\{category\}/);
   assert.match(sitemap, /serviceCategories\.map/);
-  assert.match(components, /className="service-tech-card"/);
   assert.match(components, /whatsappUrl\(category\.contextualWhatsAppMessage\)/);
-  assert.match(config, /serviceLandingHero/);
-  assert.match(config, /image:\s*"\/brand\/services\/mantenimiento\.webp"/);
-  assert.match(components, /className="service-tech-lab-layout service-tech-shell"/);
-  assert.match(components, /src=\{serviceLandingHero\.image\}/);
-  assert.doesNotMatch(components, /service-tech-hero-grid|service-tech-hero-visual/);
-  assert.match(
-    css,
-    /calc\(100svh - var\(--site-header-stack\) - var\(--service-rail-height\) - 2px\)/,
-  );
   assert.doesNotMatch(components, /wa\.me\/\d/);
-  assert.doesNotMatch(
-    components,
-    /ST \/ 06|01—08|category\.index|service-tech-(?:hero-index|solution-index|process-mark)/,
-  );
   assert.match(accordion, /aria-expanded=\{expanded\}/);
   assert.match(accordion, /aria-controls=\{panelId\}/);
   assert.match(repairsCta, /Consultar estado de mi reparación/);
