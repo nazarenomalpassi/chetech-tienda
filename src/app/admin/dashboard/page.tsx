@@ -17,6 +17,7 @@ const sourceNames: Record<string, string> = {
   google: "Google",
   whatsapp: "WhatsApp",
   qr: "QR del local",
+  taller: "Clientes del taller",
   mostrador: "Mostrador",
 };
 
