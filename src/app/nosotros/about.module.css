@@ -204,3 +204,25 @@
   color: var(--color-tinta-2);
   text-align: right;
 }
+
+/* Entrada del primer tramo (lo que se ve al cargar): el título y los párrafos suben en cascada. */
+@media (prefers-reduced-motion: no-preference) {
+  .introText > * {
+    animation: nosotros-sube 0.65s var(--ease-out) backwards;
+  }
+
+  .introText > :nth-child(2) {
+    animation-delay: 0.08s;
+  }
+
+  .introText > :nth-child(3) {
+    animation-delay: 0.16s;
+  }
+}
+
+@keyframes nosotros-sube {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}

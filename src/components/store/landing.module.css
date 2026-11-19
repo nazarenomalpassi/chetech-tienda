@@ -289,3 +289,79 @@
   margin: 0;
   font-variant-numeric: tabular-nums;
 }
+
+/* Entrada: el encabezado sube, y los enlaces y las tarjetas entran en cascada. Corre desde el primer
+   cuadro (CSS), así lo que ya está en pantalla no parpadea. */
+@media (prefers-reduced-motion: no-preference) {
+  .head h1,
+  .igHead {
+    animation: landing-sube 0.65s var(--ease-out) backwards;
+  }
+
+  .head p {
+    animation: landing-sube 0.6s var(--ease-out) 0.08s backwards;
+  }
+
+  .finder {
+    animation: landing-sube 0.6s var(--ease-out) 0.14s backwards;
+  }
+
+  .links li,
+  .split > *,
+  .featured > * {
+    animation: landing-sube 0.55s var(--ease-out) backwards;
+  }
+
+  .links li:nth-child(1),
+  .split > :nth-child(1) {
+    animation-delay: 0.14s;
+  }
+
+  .links li:nth-child(2),
+  .split > :nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .links li:nth-child(3) {
+    animation-delay: 0.26s;
+  }
+
+  .links li:nth-child(4) {
+    animation-delay: 0.32s;
+  }
+
+  .links li:nth-child(n + 5) {
+    animation-delay: 0.38s;
+  }
+
+  .links a {
+    transition:
+      border-color 0.15s ease,
+      transform 0.25s var(--ease-out);
+  }
+
+  .links a svg {
+    transition: transform 0.25s var(--ease-out);
+  }
+
+  .links a:active {
+    transform: scale(0.985);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .links a:hover {
+    transform: translateX(6px);
+  }
+
+  .links a:hover svg {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes landing-sube {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}

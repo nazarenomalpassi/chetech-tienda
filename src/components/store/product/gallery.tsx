@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { ViewTransition, useRef, useState } from "react";
+import { ViewTransition, useEffect, useRef, useState } from "react";
 import { isDirectVideo, lqip, markLoaded } from "@/lib/images";
+import { clearPointerVars, writePointerVars } from "@/lib/pointer-vars";
 import styles from "./gallery.module.css";
 
 type Props = { slug: string; name: string; images: string[]; videoUrl?: string };
@@ -14,8 +15,12 @@ export function ProductGallery({ slug, name, images, videoUrl: rawVideoUrl }: Pr
   const videoUrl = isDirectVideo(rawVideoUrl) ? rawVideoUrl : undefined;
   const [active, setActive] = useState(0);
   const touch = useRef<number | null>(null);
+  const bubble = useRef<HTMLDivElement>(null);
+  const frame = useRef(0);
   const total = images.length + (videoUrl ? 1 : 0);
   const showingVideo = Boolean(videoUrl) && active === images.length;
+
+  useEffect(() => () => cancelAnimationFrame(frame.current), []);
 
   const move = (direction: 1 | -1) => {
     if (total < 2) return;
@@ -26,6 +31,9 @@ export function ProductGallery({ slug, name, images, videoUrl: rawVideoUrl }: Pr
     <div className={styles.gallery}>
       <div
         className={styles.stage}
+        data-zoom={!showingVideo && Boolean(images[active])}
+        onPointerMove={(event) => writePointerVars(event, bubble.current, frame)}
+        onPointerLeave={() => clearPointerVars(bubble.current, frame)}
         onTouchStart={(event) => (touch.current = event.touches[0]?.clientX ?? null)}
         onTouchEnd={(event) => {
           if (touch.current === null) return;
@@ -37,6 +45,7 @@ export function ProductGallery({ slug, name, images, videoUrl: rawVideoUrl }: Pr
         <ViewTransition name={`producto-${slug}`} share="morph">
           <div
             className={styles.bubble}
+            ref={bubble}
             style={
               !showingVideo && images[active]
                 ? ({ "--lqip": lqip(images[active]) } as React.CSSProperties)
@@ -59,11 +68,16 @@ export function ProductGallery({ slug, name, images, videoUrl: rawVideoUrl }: Pr
             ) : (
               <span className={styles.placeholder}>Foto en preparación</span>
             )}
+            {/* El escáner vuelve a pasar con cada foto. */}
+            {showingVideo ? null : <span key={active} className={styles.sweep} aria-hidden />}
           </div>
         </ViewTransition>
         {total > 1 ? (
           <p className={styles.counter} aria-live="polite">
-            {active + 1} de {total}
+            <span key={active} className={styles.counterNumber}>
+              {active + 1}
+            </span>{" "}
+            de {total}
           </p>
         ) : null}
       </div>

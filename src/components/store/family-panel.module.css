@@ -1,0 +1,450 @@
+/* Panel de familias del encabezado. Baja desde la barra como una persiana; cada familia es un canal
+   y la pantalla de la derecha muestra lo más vendido de la que tiene el cursor encima. Solo escritorio. */
+.panel {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  display: none;
+  border-bottom: 1px solid var(--color-linea);
+  visibility: hidden;
+  clip-path: inset(0 0 100% 0);
+  transition:
+    clip-path 0.2s var(--ease-in-out),
+    visibility 0s 0.2s;
+}
+
+@media (min-width: 1100px) {
+  .panel {
+    display: block;
+  }
+}
+
+.panel[data-open="true"] {
+  visibility: visible;
+  clip-path: inset(0);
+  transition:
+    clip-path 0.42s var(--ease-out),
+    visibility 0s;
+}
+
+/* Trama de puntos, la misma placa perforada de la portada. */
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgb(255 255 255 / 0.08) 1px, transparent 1.4px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(90% 120% at 82% 40%, #000 0%, transparent 72%);
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 400px);
+  gap: 72px;
+  align-items: center;
+  padding-top: 26px;
+  padding-bottom: 26px;
+}
+
+/* Lista de canales */
+.list {
+  --row: 48px;
+  position: relative;
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* El bloque blanco se desliza hasta la familia que tiene el cursor. */
+.marker {
+  --chaflan: 12px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: var(--row);
+  background: var(--color-tinta);
+  clip-path: polygon(0 0, calc(100% - var(--chaflan)) 0, 100% var(--chaflan), 100% 100%, 0 100%);
+  opacity: 0;
+  transform: translateY(calc(var(--active, 0) * var(--row)));
+  transition:
+    transform 0.32s var(--ease-out),
+    opacity 0.15s ease;
+}
+
+.panel[data-open="true"] .marker {
+  opacity: 1;
+  transition:
+    transform 0.32s var(--ease-out),
+    opacity 0.3s ease 0.18s;
+}
+
+.list li:not(.marker) {
+  position: relative;
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+
+.panel[data-open="true"] .list li:not(.marker) {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.4s var(--ease-out) calc(var(--i) * 36ms + 70ms),
+    transform 0.55s var(--ease-out) calc(var(--i) * 36ms + 70ms);
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  height: var(--row);
+  padding: 0 18px 0 14px;
+  color: var(--color-tinta-2);
+  font-family: var(--font-display);
+  transition: color 0.18s ease;
+}
+
+.item:focus-visible {
+  outline-offset: -4px;
+}
+
+.itemChannel {
+  color: var(--color-acero);
+  font-size: 0.6875rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  transition: color 0.18s ease;
+}
+
+.itemName {
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  transition: transform 0.32s var(--ease-out);
+}
+
+.itemCount {
+  font-size: 0.875rem;
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+}
+
+.item[data-active="true"] {
+  color: var(--color-pared);
+}
+
+.item[data-active="true"] .itemChannel {
+  color: var(--color-pared);
+}
+
+.item[data-active="true"] .itemName {
+  transform: translateX(8px);
+}
+
+/* Pantalla */
+.preview {
+  display: grid;
+  gap: 14px;
+  perspective: 900px;
+}
+
+.screen {
+  --x: 0;
+  --y: 0;
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid #3a3a3a;
+  border-radius: var(--radius-tv);
+  background: radial-gradient(120% 90% at 50% 0%, #2a2a2a 0%, #0c0c0c 62%, #000 100%);
+  box-shadow:
+    0 0 0 5px #111111,
+    0 0 0 6px #2c2c2c,
+    0 26px 60px rgb(0 0 0 / 0.6);
+  opacity: 0;
+  transform: rotateX(calc(var(--y) * -6deg)) rotateY(calc(var(--x) * 8deg)) translateY(18px);
+  transition:
+    transform 0.4s var(--ease-out),
+    opacity 0.15s ease;
+}
+
+.panel[data-open="true"] .screen {
+  opacity: 1;
+  transform: rotateX(calc(var(--y) * -6deg)) rotateY(calc(var(--x) * 8deg));
+  transition:
+    transform 0.4s var(--ease-out),
+    opacity 0.35s ease 0.12s;
+}
+
+.osd {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  left: 14px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #f4f4f4;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.osdChannel {
+  display: inline-block;
+  transform-origin: 0 50%;
+}
+
+.signal {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 10px;
+}
+
+.signal i {
+  width: 3px;
+  background: #f4f4f4;
+}
+
+.signal i:nth-child(1) {
+  height: 3px;
+}
+
+.signal i:nth-child(2) {
+  height: 5px;
+}
+
+.signal i:nth-child(3) {
+  height: 8px;
+}
+
+.signal i:nth-child(4) {
+  height: 10px;
+}
+
+.pictures {
+  position: absolute;
+  inset: 17% 6% 5%;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  align-items: center;
+}
+
+/* Cada foto se corre un poco distinto con el cursor: da profundidad sin mover la pantalla entera. */
+.picture {
+  --chaflan: 12px;
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #f3f4f1;
+  clip-path: polygon(0 0, calc(100% - var(--chaflan)) 0, 100% var(--chaflan), 100% 100%, 0 100%);
+  transform: translate(calc(var(--x) * (var(--i) + 1) * -4px), calc(var(--y) * (var(--i) + 1) * -3px));
+  transition: transform 0.4s var(--ease-out);
+}
+
+.picture:nth-child(2) {
+  translate: 0 -9%;
+}
+
+.picture img {
+  object-fit: cover;
+}
+
+.shutters {
+  position: absolute;
+  inset: -12%;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  pointer-events: none;
+  transform: skewX(-22deg);
+}
+
+.shutters span {
+  background: #e6e6e6;
+  transform: scaleY(0);
+  transform-origin: 50% 100%;
+}
+
+.shutters span:nth-child(even) {
+  background: #9c9c9c;
+  transform-origin: 50% 0;
+}
+
+.scanlines {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: repeating-linear-gradient(to bottom, rgb(255 255 255 / 0.045) 0 1px, transparent 1px 3px);
+  pointer-events: none;
+}
+
+.glare {
+  position: absolute;
+  inset: -20% -40%;
+  z-index: 5;
+  background: linear-gradient(105deg, transparent 42%, rgb(255 255 255 / 0.07) 50%, transparent 58%);
+  pointer-events: none;
+  transform: translateX(calc(var(--x) * 22%));
+  transition: transform 0.4s var(--ease-out);
+}
+
+.description {
+  min-height: 2.9em;
+  color: var(--color-tinta-2);
+  font-size: var(--text-14);
+  line-height: 1.45;
+}
+
+/* Pie del panel */
+.foot {
+  position: relative;
+  border-top: 1px solid var(--color-linea);
+}
+
+.footInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 52px;
+}
+
+.all {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--touch);
+  color: var(--color-tinta);
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.all::after {
+  content: ">>>";
+  color: var(--color-acero);
+  font-weight: 300;
+  transition:
+    transform 0.25s var(--ease-out),
+    color 0.2s ease;
+}
+
+.all:hover::after {
+  color: var(--color-tinta);
+  transform: translateX(6px);
+}
+
+.hint {
+  color: var(--color-acero);
+  font-size: var(--text-14);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .panel[data-open="true"] .picture {
+    animation: foto 0.5s var(--ease-out) backwards;
+    animation-delay: calc(var(--i) * 70ms + 140ms);
+  }
+
+  .panel[data-open="true"] .shutters span {
+    animation: persiana 0.46s var(--ease-in-out) backwards;
+    animation-delay: calc(var(--i) * 38ms);
+  }
+
+  .panel[data-open="true"] .osdChannel {
+    animation: canal 0.4s var(--ease-out);
+  }
+
+  .panel[data-open="true"] .description {
+    animation: texto 0.4s var(--ease-out) 0.12s backwards;
+  }
+
+  .panel[data-open="true"] .signal i:nth-child(n + 3) {
+    animation: senal 1.6s steps(1) infinite;
+  }
+
+  .panel[data-open="true"] .signal i:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  .panel[data-open="true"] .signal i:nth-child(4) {
+    animation-delay: 0.8s;
+  }
+}
+
+@keyframes foto {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.94);
+  }
+}
+
+@keyframes persiana {
+  from {
+    transform: scaleY(1);
+  }
+  to {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes canal {
+  from {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+}
+
+@keyframes texto {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes senal {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .panel[data-open="true"],
+  .marker,
+  .list li:not(.marker),
+  .panel[data-open="true"] .list li:not(.marker),
+  .screen,
+  .panel[data-open="true"] .screen,
+  .picture,
+  .glare,
+  .itemName {
+    transition-duration: 0.01s;
+    transition-delay: 0s;
+  }
+
+  .screen,
+  .panel[data-open="true"] .screen,
+  .picture,
+  .glare {
+    transform: none;
+  }
+}

@@ -1,0 +1,99 @@
+/* Familias del catálogo sobre la franja negra. El bloque blanco (.indicator) ocupa todo el ancho y
+   se recorta a la familia elegida: al cambiar, el recorte se desliza de una a otra. */
+.families {
+  margin: 0 calc(var(--page-inset) * -1);
+  padding: 2px var(--page-inset) 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.families::-webkit-scrollbar {
+  display: none;
+}
+
+.track {
+  --l: 0px;
+  --r: 100%;
+  position: relative;
+  display: flex;
+  gap: 8px;
+  width: max-content;
+}
+
+.indicator {
+  --chaflan: 10px;
+  position: absolute;
+  inset: 0;
+  background: var(--color-tinta);
+  clip-path: inset(0 var(--r) 0 var(--l));
+  opacity: 0;
+  pointer-events: none;
+}
+
+.track[data-ready="true"] .indicator {
+  opacity: 1;
+  transition: clip-path 0.38s var(--ease-out);
+}
+
+.track a {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--touch);
+  padding: 0 14px;
+  border: 1px solid var(--color-linea);
+  color: var(--color-tinta-2);
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  transition:
+    border-color 0.15s ease,
+    color 0.2s ease,
+    transform 0.15s var(--ease-out);
+}
+
+.track a span {
+  color: var(--color-acero);
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.2s ease;
+}
+
+.track a:active {
+  transform: scale(0.96);
+}
+
+.track a[data-shown="true"] {
+  border-color: transparent;
+  color: var(--color-pared);
+}
+
+.track a[data-shown="true"] span {
+  color: color-mix(in srgb, var(--color-pared) 62%, transparent);
+}
+
+/* Antes de medir (sin JavaScript todavía), la familia activa se pinta sola. */
+.track:not([data-ready="true"]) a[data-shown="true"] {
+  background: var(--color-tinta);
+}
+
+.track a:focus-visible {
+  outline-offset: -4px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .track a:not([data-shown="true"]):hover {
+    border-color: var(--color-tinta);
+    color: var(--color-tinta);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track[data-ready="true"] .indicator {
+    transition: none;
+  }
+}

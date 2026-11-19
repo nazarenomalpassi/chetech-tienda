@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/store/product-card";
+import { ScrollMotion } from "@/components/store/scroll-motion";
 import { BuyBox } from "@/components/store/product/buy-box";
 import { ProductGallery } from "@/components/store/product/gallery";
 import { isDirectVideo, videoSourceName } from "@/lib/images";
@@ -97,7 +98,7 @@ export default async function ProductPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }}
       />
-      <div className="page">
+      <ScrollMotion signature={product.slug} className="page">
         <nav aria-label="Ruta" className={styles.crumbs}>
           <Link href="/">Inicio</Link>
           <span aria-hidden>/</span>
@@ -131,7 +132,9 @@ export default async function ProductPage({ params }: Props) {
 
             <div className={styles.priceBlock}>
               <p className={styles.priceRow}>
-                <span className={`price ${styles.price}`}>{formatPrice(product.price)}</span>
+                <span className={styles.priceMask}>
+                  <span className={`price ${styles.price}`}>{formatPrice(product.price)}</span>
+                </span>
                 {product.previousPrice ? <s className={styles.before}>{formatPrice(product.previousPrice)}</s> : null}
               </p>
               <p className={styles.priceNote}>Precio final en pesos.</p>
@@ -194,8 +197,10 @@ export default async function ProductPage({ params }: Props) {
         <div className={styles.details}>
           {description ? (
             <section aria-labelledby="descripcion">
-              <h2 id="descripcion">Descripción</h2>
-              <div className={styles.description}>
+              <h2 id="descripcion" data-anim="titulo">
+                Descripción
+              </h2>
+              <div className={styles.description} data-anim="bloque">
                 {description.split(/\n{2,}/).map((paragraph) => (
                   <p key={paragraph.slice(0, 40)}>{paragraph}</p>
                 ))}
@@ -204,8 +209,10 @@ export default async function ProductPage({ params }: Props) {
           ) : null}
 
           <section aria-labelledby="etiqueta">
-            <h2 id="etiqueta">Etiqueta técnica</h2>
-            <div className={styles.label}>
+            <h2 id="etiqueta" data-anim="titulo">
+              Etiqueta técnica
+            </h2>
+            <div className={styles.label} data-anim="bloque">
               <div className={styles.labelHead}>
                 <span>CheTech</span>
                 <span className={styles.labelCode}>{product.sku}</span>
@@ -231,7 +238,9 @@ export default async function ProductPage({ params }: Props) {
 
         {related.length ? (
           <section className={styles.related} aria-labelledby="combina">
-            <h2 id="combina">Combina con</h2>
+            <h2 id="combina" data-anim="titulo">
+              Combina con
+            </h2>
             <div className={styles.relatedGrid}>
               {related.map((item, index) => (
                 <ProductCard key={item.id} product={item} index={index} />
@@ -239,7 +248,7 @@ export default async function ProductPage({ params }: Props) {
             </div>
           </section>
         ) : null}
-      </div>
+      </ScrollMotion>
     </div>
   );
 }

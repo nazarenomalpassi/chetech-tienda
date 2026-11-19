@@ -34,8 +34,74 @@
 
 .stepper output {
   min-width: 32px;
+  overflow: hidden;
   text-align: center;
   font-variant-numeric: tabular-nums;
+}
+
+.stepper output span {
+  display: inline-block;
+}
+
+.stepper button {
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s var(--ease-out);
+}
+
+.stepper button:active:not(:disabled) {
+  transform: scale(0.88);
+}
+
+.addLabel {
+  display: inline-block;
+}
+
+/* Al agregar, el botón confirma un momento con el texto nuevo y una tilde que se dibuja. */
+.addButton[data-added="true"] .addLabel::before {
+  content: "";
+  display: inline-block;
+  width: 0.62em;
+  height: 0.34em;
+  margin: 0 0.6em 0.2em 0;
+  border-bottom: 2.5px solid currentColor;
+  border-left: 2.5px solid currentColor;
+  transform: rotate(-45deg);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .stepper output span[data-direction="sube"] {
+    animation: cifra-sube 0.22s var(--ease-out);
+  }
+
+  .stepper output span[data-direction="baja"] {
+    animation: cifra-baja 0.22s var(--ease-out);
+  }
+
+  .addLabel {
+    animation: rotulo 0.32s var(--ease-out);
+  }
+}
+
+@keyframes cifra-sube {
+  from {
+    opacity: 0;
+    transform: translateY(70%);
+  }
+}
+
+@keyframes cifra-baja {
+  from {
+    opacity: 0;
+    transform: translateY(-70%);
+  }
+}
+
+@keyframes rotulo {
+  from {
+    opacity: 0;
+    transform: translateY(60%);
+  }
 }
 
 .buttons {

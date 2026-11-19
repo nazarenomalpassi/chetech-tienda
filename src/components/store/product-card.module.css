@@ -8,11 +8,20 @@
   border: 1px solid var(--color-linea);
   background: var(--color-blanco);
   transform-origin: 50% 0;
-  transition: border-color 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    translate 0.28s var(--ease-out),
+    scale 0.18s var(--ease-out),
+    box-shadow 0.28s var(--ease-out);
 }
 
 .card:hover {
   border-color: var(--color-tinta);
+}
+
+/* Al tocarla, la tarjeta cede apenas: se siente que respondió. */
+.card:active {
+  scale: 0.985;
 }
 
 .media {
@@ -35,7 +44,37 @@
   object-fit: cover;
   transition:
     opacity 0.15s ease,
-    transform 0.3s var(--ease-out);
+    transform 0.35s var(--ease-out);
+}
+
+/* Escáner: una línea recorre la foto cuando la tarjeta aparece, como el lector del código de barras. */
+.sweep {
+  position: absolute;
+  inset: 0 -30%;
+  background: linear-gradient(
+    90deg,
+    transparent 0 34%,
+    rgb(16 16 16 / 0.09) 49.4%,
+    rgb(16 16 16 / 0.55) 49.7% 50%,
+    transparent 50.3% 100%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-62%);
+}
+
+/* Linterna: con el mouse, la foto se oscurece un poco y queda iluminado lo que está bajo el cursor. */
+.scan {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle 120px at var(--mx, 50%) var(--my, 50%),
+    transparent 0 46%,
+    rgb(16 16 16 / 0.2) 100%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
 }
 
 .second {
@@ -147,6 +186,24 @@
   background: var(--color-tinta-2);
 }
 
+.add:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.add[data-added="true"] svg {
+  animation: tilde 0.45s var(--ease-out);
+}
+
+@keyframes tilde {
+  from {
+    opacity: 0;
+    transform: scale(0.3) rotate(-40deg);
+  }
+  60% {
+    transform: scale(1.25) rotate(0deg);
+  }
+}
+
 .add:focus-visible {
   outline-offset: -5px;
   outline-color: var(--color-blanco);
@@ -168,8 +225,20 @@
   }
 }
 
-/* E12 · Segunda foto y "Agregar" al pasar el mouse (solo con mouse) */
+/* E12 · Con mouse: la tarjeta se despega con una sombra dura, la foto se acerca y sigue al cursor,
+   aparece la segunda foto y el botón "Agregar". */
 @media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    translate: -3px -3px;
+    box-shadow: 6px 6px 0 var(--color-tinta);
+  }
+
+  .card:active {
+    scale: 1;
+    translate: -1px -1px;
+    box-shadow: 3px 3px 0 var(--color-tinta);
+  }
+
   .card:hover .second {
     opacity: 1;
   }
@@ -179,8 +248,13 @@
     opacity: 0;
   }
 
-  .card:not(:has(.second)):hover .image {
-    transform: scale(1.04);
+  .card:hover .image,
+  .card:hover .second {
+    transform: scale(1.1) translate(calc(var(--px, 0) * -2.6%), calc(var(--py, 0) * -2.6%));
+  }
+
+  .card:hover .scan {
+    opacity: 1;
   }
 
   .add:not(:disabled) {
@@ -189,20 +263,43 @@
   }
 
   .card:hover .add,
-  .card:focus-within .add {
+  .card:focus-within .add,
+  .add[data-added="true"] {
     opacity: 1;
     transform: translateY(0);
   }
+
+  .card:hover .add:active {
+    transform: scale(0.92);
+  }
 }
 
-/* E4 · Entrada de las tarjetas: cada una sube 10 px y se asienta, en cascada.
-   Lo hace el navegador ligado al scroll; donde no hay soporte, la tarjeta aparece quieta. */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .card {
+/* E4 · Entrada de las tarjetas.
+   "cascada": lo que ya está en pantalla al cargar sube y se asienta, una tras otra, y después pasa
+   el escáner por la foto.
+   "scroll": las de más abajo entran ligadas al scroll; donde el navegador no lo soporta, quedan quietas. */
+@media (prefers-reduced-motion: no-preference) {
+  .card[data-entrance="cascada"] {
+    animation: hang 0.62s var(--ease-out) backwards;
+    animation-delay: calc(var(--n, 0) * 45ms + 40ms);
+  }
+
+  .card[data-entrance="cascada"] .sweep {
+    animation: escaner 0.9s var(--ease-in-out) backwards;
+    animation-delay: calc(var(--n, 0) * 45ms + 360ms);
+  }
+
+  @supports (animation-timeline: view()) {
+    .card[data-entrance="scroll"] {
       animation: hang linear both;
       animation-timeline: view();
-      animation-range: entry calc(var(--i, 0) * 6%) entry calc(55% + var(--i, 0) * 6%);
+      animation-range: entry calc(var(--i, 0) * 5%) entry calc(42% + var(--i, 0) * 5%);
+    }
+
+    .card[data-entrance="scroll"] .sweep {
+      animation: escaner linear both;
+      animation-timeline: view();
+      animation-range: entry calc(40% + var(--i, 0) * 6%) cover calc(34% + var(--i, 0) * 4%);
     }
   }
 }
@@ -210,11 +307,22 @@
 @keyframes hang {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(26px) scale(0.97);
   }
   to {
     opacity: 1;
     transform: none;
+  }
+}
+
+@keyframes escaner {
+  from {
+    opacity: 1;
+    transform: translateX(-62%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(62%);
   }
 }
 

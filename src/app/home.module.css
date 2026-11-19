@@ -216,15 +216,29 @@
   transition:
     border-color 0.15s ease,
     background-color 0.15s ease,
-    color 0.15s ease;
+    color 0.15s ease,
+    transform 0.15s var(--ease-out);
 }
 
+/* Con mouse, la tarjeta se da vuelta a blanco y una luz acompaña al cursor por adentro. */
 @media (hover: hover) and (pointer: fine) {
   .need:hover {
     border-color: var(--color-tinta);
-    background: var(--color-tinta);
+    background: radial-gradient(circle 240px at var(--mx, 50%) var(--my, 50%), #ffffff 0%, #c9c9c9 100%);
     color: var(--color-blanco);
   }
+
+  .need .needLabel {
+    transition: transform 0.3s var(--ease-out);
+  }
+
+  .need:hover .needLabel {
+    transform: translateX(6px);
+  }
+}
+
+.need:active {
+  transform: scale(0.98);
 }
 
 .need:hover .needHint {
@@ -309,13 +323,64 @@
   transition: border-color 0.15s ease;
 }
 
+/* Con mouse, la familia se inclina hacia el cursor, una luz lo acompaña y las tres fotos se corren
+   cada una un poco distinto, como si estuvieran a distinta profundidad. */
+.family {
+  position: relative;
+  transition:
+    border-color 0.15s ease,
+    transform 0.35s var(--ease-out);
+}
+
+.family::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle 260px at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.16), transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.familyImages span {
+  transition: transform 0.35s var(--ease-out);
+}
+
+.family:active {
+  transform: scale(0.985);
+}
+
 @media (hover: hover) and (pointer: fine) {
   .family:hover {
     border-color: var(--color-tinta);
+    transform: perspective(900px) rotateX(calc(var(--py, 0) * -3.5deg)) rotateY(calc(var(--px, 0) * 4.5deg));
+  }
+
+  .family:hover::after {
+    opacity: 1;
   }
 
   .family:hover .familyImages img {
-    transform: scale(1.06);
+    transform: scale(1.08);
+  }
+
+  .family:hover .familyImages span:nth-child(1) {
+    transform: translate(calc(var(--px, 0) * -5px), calc(var(--py, 0) * -4px));
+  }
+
+  .family:hover .familyImages span:nth-child(2) {
+    transform: translate(calc(var(--px, 0) * -9px), calc(var(--py, 0) * -7px)) translateY(-4px);
+  }
+
+  .family:hover .familyImages span:nth-child(3) {
+    transform: translate(calc(var(--px, 0) * -13px), calc(var(--py, 0) * -10px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .family:hover,
+  .family:hover .familyImages span {
+    transform: none;
   }
 }
 
