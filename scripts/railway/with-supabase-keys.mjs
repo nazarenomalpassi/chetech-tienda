@@ -49,6 +49,17 @@ export function deriveRoleKey(rootSecret, role) {
   return `${content}.${signature}`;
 }
 
+// Clave del canal web de solicitudes legales (arrepentimiento y privacidad). La base guarda solo su
+// huella SHA-256 en private.consumer_request_intake_secrets; si cambia ROOT_SECRET hay que volver a
+// cargar esa huella (ver README, "Despliegue en Railway").
+export const LEGAL_REQUEST_SALT_LABEL = "chetech/legal-request-salt/v1";
+
+export function deriveLegalRequestSalt(rootSecret) {
+  if (Buffer.byteLength(rootSecret) < 32)
+    throw new Error("ROOT_SECRET debe tener al menos 32 bytes");
+  return createHmac("sha256", rootSecret).update(LEGAL_REQUEST_SALT_LABEL).digest("hex");
+}
+
 function main(argv) {
   const command = argv.slice(2);
   if (command.length === 0) {
@@ -62,6 +73,8 @@ function main(argv) {
     const anonKey = deriveRoleKey(rootSecret, "anon");
     env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = anonKey;
     env.NEXT_PUBLIC_SUPABASE_ANON_KEY = anonKey;
+    if (!env.LEGAL_REQUEST_HASH_SALT)
+      env.LEGAL_REQUEST_HASH_SALT = deriveLegalRequestSalt(rootSecret);
     delete env.SUPABASE_ROOT_SECRET;
   }
   const child = spawn(command[0], command.slice(1), { stdio: "inherit", env });

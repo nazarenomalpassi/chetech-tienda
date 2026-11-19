@@ -62,7 +62,9 @@ La tienda corre en el proyecto **chetech** de Railway, junto al sistema de gesti
 
 - `railway.json` define la construcción, el arranque, el control de salud (`/robots.txt`, que no consulta la base) y el modo Serverless: si nadie visita la tienda durante un rato, se duerme y deja de consumir; la primera visita después tarda unos segundos más.
 - `scripts/railway/with-supabase-keys.mjs` calcula la clave pública de la base a partir de `SUPABASE_ROOT_SECRET` al construir y al arrancar, con la misma derivación que el sistema de gestión. La clave no se copia a mano.
-- Variables del servicio: `NEXT_PUBLIC_SUPABASE_URL` (dirección pública de Envoy), `SUPABASE_ROOT_SECRET` (referencia a la variable de la base), `NEXT_PUBLIC_SITE_URL`, `LEGAL_REQUEST_HASH_SALT` y `NEXT_TELEMETRY_DISABLED=1`.
+- El mismo script calcula `LEGAL_REQUEST_HASH_SALT` (clave del formulario de arrepentimiento y privacidad) si no está cargada. La base guarda solo su huella en `private.consumer_request_intake_secrets`; si algún día cambia `ROOT_SECRET`, hay que volver a cargarla con `encode(extensions.digest(encode(extensions.hmac('chetech/legal-request-salt/v1', <ROOT_SECRET>, 'sha256'), 'hex'), 'sha256'), 'hex')`.
+- Variables del servicio: `NEXT_PUBLIC_SUPABASE_URL` (dirección pública de Envoy), `SUPABASE_ROOT_SECRET` (referencia a la variable de la base), `NEXT_PUBLIC_SITE_URL` y `NEXT_TELEMETRY_DISABLED=1`.
+- Las fotos del catálogo se sirven desde el bucket de Railway a través de Envoy: las direcciones guardadas en `storefront_product_images.public_url` y `storefront_products.primary_image_url` apuntan a esa dirección.
 
 ## Sobre el proyecto
 
