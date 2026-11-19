@@ -1,0 +1,41 @@
+export type OrderItem = {
+  name: string;
+  sku: string;
+  quantity: number;
+  unit_price: number;
+  subtotal: number;
+  image: string | null;
+  slug: string | null;
+};
+
+export type OrderPayload = {
+  id: string;
+  order_number: string;
+  status: string;
+  payment_method: "mercadopago" | "transfer" | "pickup" | null;
+  payment_status: string;
+  delivery_method: string;
+  delivery_option: { kind?: string; label?: string; zone?: string } | null;
+  shipping_address: Record<string, string> | null;
+  customer_name: string;
+  customer_email: string;
+  customer_phone: string;
+  subtotal: number;
+  shipping_cost: number;
+  discount_total: number;
+  total: number;
+  reserved_until: string | null;
+  paid_at: string | null;
+  ready_at: string | null;
+  shipped_at: string | null;
+  delivered_at: string | null;
+  pickup_code: string | null;
+  tracking_code: string | null;
+  tracking_url: string | null;
+  transfer_reported_at: string | null;
+  created_at: string;
+  is_guest: boolean;
+  items: OrderItem[];
+  history: { status: string; note: string | null; at: string }[];
+  transfer: { alias: string; cvu: string; holder: string; cuit: string; bank: string } | null;
+};

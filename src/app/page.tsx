@@ -1,221 +1,312 @@
+import Image from "next/image";
 import Link from "next/link";
-import type { CSSProperties } from "react";
-import {
-  ArrowRight,
-  Box,
-  MapPin,
-  MessageCircle,
-  PackageCheck,
-  ShieldCheck,
-  Truck,
-  Wrench,
-} from "lucide-react";
-import { CategoryShowcase } from "@/components/category-showcase";
-import { HeroServiceCarousel } from "@/components/hero-service-carousel";
-import { ProductCarousel } from "@/components/product-carousel";
-import { getCatalog, selectHomeProducts } from "@/lib/catalog";
+import { Search } from "lucide-react";
+import { ProductCard } from "@/components/store/product-card";
+import { RepairStory } from "@/components/store/home/repair-story";
+import { TvHero } from "@/components/store/home/tv-hero";
+import { tvPowerScript } from "@/components/store/home/tv-power-script";
+import { WaitlistForm } from "@/components/store/waitlist-form";
+import { families, needs } from "@/config/catalog";
 import { siteConfig } from "@/config/site";
+import { getProducts } from "@/lib/catalog";
+import { bestSellers } from "@/lib/catalog-query";
+import { familySummaries, pickTvChannels } from "@/lib/home";
+import { getStoreSettings } from "@/lib/store-settings";
 import { whatsappUrl } from "@/lib/whatsapp";
+import styles from "./home.module.css";
 
 export const revalidate = 60;
 
-export default async function Home() {
-  const catalog = await getCatalog({ pageSize: 48 });
-  const products = selectHomeProducts(catalog.products, 12);
+export default async function HomePage() {
+  const [products, settings] = await Promise.all([getProducts(), getStoreSettings()]);
+  const channels = pickTvChannels(products, settings.promo.tvChannels);
+  const top = bestSellers(products, 8);
+  const summaries = familySummaries(products);
+  const refurbished = products.filter((product) => product.condition === "Reacondicionado" && product.image);
+  const { mercadopago, transfer, pickupPayment } = settings.payments;
+  const onlinePayments = [
+    mercadopago ? "Mercado Pago (tarjeta, débito o dinero en cuenta)" : null,
+    transfer ? "transferencia" : null,
+    pickupPayment ? "pago al retirar" : null,
+  ].filter(Boolean);
+
+  const faqs = [
+    {
+      q: "¿Puedo comprar sin crear una cuenta?",
+      a: "Sí. Cargás tu nombre, tu mail y tu WhatsApp, y listo. La cuenta es opcional y sirve para seguir pedidos y reparaciones.",
+    },
+    {
+      q: "¿Cuándo puedo retirar?",
+      a: `En ${siteConfig.address}, Río Tercero. Lunes a viernes de 09:30 a 19:00 y sábados de 10:00 a 12:30 y de 16:00 a 20:00.`,
+    },
+    {
+      q: "¿Qué garantía tienen los productos?",
+      a: "Cada ficha dice el plazo de garantía. Nunca es menor al que fija la ley: 6 meses para productos nuevos y 3 para usados o reacondicionados.",
+    },
+    {
+      q: "¿Cómo pago?",
+      a: onlinePayments.length
+        ? `Online podés pagar con ${onlinePayments.join(", ")}. En el local, con efectivo, transferencia, Mercado Pago o Naranja X.`
+        : "Elegís los productos acá, nos mandás el pedido por WhatsApp y pagás al retirar: efectivo, transferencia, Mercado Pago o Naranja X.",
+    },
+    {
+      q: "¿Hacen envíos?",
+      a: settings.delivery.correo
+        ? "Sí, por Correo Argentino a todo el país. El costo se calcula en el carrito antes de pagar."
+        : "Por ahora los pedidos se retiran en el local. Si necesitás que te lo llevemos, escribinos por WhatsApp.",
+    },
+    {
+      q: "¿Me puedo arrepentir de una compra?",
+      a: "Sí. Tenés 10 días corridos desde que recibís el producto. Usá el botón de arrepentimiento que está al pie de la página; no hace falta registrarse.",
+    },
+  ];
+
   return (
     <>
-      <section className="hero dark-grid">
-        <div className="shell hero-grid">
-          <div className="hero-copy" data-reveal="left">
-            <p className="kicker">Tecnología · Reparación · Río Tercero</p>
-            <h1>
-              Tecnología que
-              <br />
-              <span>responde.</span>
-            </h1>
-            <p>Encontrá tecnología, accesorios, repuestos y equipos seleccionados por Chetech.</p>
-            <div className="hero-actions">
-              <Link href="/productos" className="button light">
-                Explorar productos <ArrowRight />
+      <script dangerouslySetInnerHTML={{ __html: tvPowerScript }} />
+      <TvHero
+        channels={channels}
+        title={
+          <h1 id="hero-titulo" className={styles.title}>
+            Arreglamos tu tele. <span>Y tenemos todo para que la disfrutes.</span>
+          </h1>
+        }
+      >
+        <ul className={styles.proofs}>
+          <li data-signal="verde">
+            <span>
+              <strong>Lo retirás hoy</strong> en {siteConfig.address}, sin costo.
+            </span>
+          </li>
+          <li data-signal="amarillo">
+            <span>
+              <strong>Garantía escrita</strong> en cada producto, con plazo en meses.
+            </span>
+          </li>
+          <li data-signal="cian">
+            <span>
+              <strong>Lo prueba un técnico:</strong> lo del taller sale revisado.
+            </span>
+          </li>
+        </ul>
+        <div className={styles.heroActions}>
+          <Link href="/productos" className="btn" data-size="large">
+            Ver productos
+          </Link>
+          <Link href="/servicio-tecnico" className="btn" data-variant="secondary" data-size="large">
+            Reparar un equipo
+          </Link>
+        </div>
+      </TvHero>
+
+      <section className={styles.section} aria-labelledby="necesidades-titulo">
+        <div className="page">
+          <h2 id="necesidades-titulo" className={styles.sectionTitle}>
+            ¿Qué necesitás?
+          </h2>
+          <ul className={styles.needs}>
+            {needs.map((need) => (
+              <li key={need.slug}>
+                <Link href={need.href ?? `/productos?necesidad=${need.slug}`} className={styles.need}>
+                  <span className={styles.needLabel}>{need.label}</span>
+                  <span className={styles.needHint}>{need.hint}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {top.length ? (
+        <section className={styles.section} aria-labelledby="vendidos-titulo">
+          <div className="page">
+            <div className={styles.sectionHead}>
+              <h2 id="vendidos-titulo" className={styles.sectionTitle}>
+                Lo más vendido en el local
+              </h2>
+              <Link href="/productos" className="enlace">
+                Ver todo
               </Link>
-              <a
-                className="button ghost"
-                href={whatsappUrl("Hola, Chetech. Quiero hacer una consulta.")}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <MessageCircle /> Hablar por WhatsApp
+            </div>
+            <div className={styles.grid}>
+              {top.map((product, index) => (
+                <ProductCard key={product.id} product={product} index={index} />
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      <section className={styles.section} aria-labelledby="familias-titulo">
+        <div className="page">
+          <h2 id="familias-titulo" className={styles.sectionTitle}>
+            Toda la pared del local
+          </h2>
+          <ul className={styles.wall}>
+            {families
+              .filter((family) => (summaries.get(family.slug)?.count ?? 0) > 0)
+              .map((family) => {
+                const summary = summaries.get(family.slug);
+                return (
+                  <li key={family.slug}>
+                    <Link href={`/productos?familia=${family.slug}`} className={styles.family} data-signal={family.signal}>
+                      <span className={styles.familyHead} aria-hidden>
+                        <span />
+                      </span>
+                      <span className={styles.familyImages} aria-hidden>
+                        {summary?.images.map((image) => (
+                          <span key={image}>
+                            <Image src={image} alt="" fill sizes="120px" />
+                          </span>
+                        ))}
+                      </span>
+                      <span className={styles.familyText}>
+                        <strong>{family.name}</strong>
+                        <span>{family.description}</span>
+                        <span className={styles.familyCount}>
+                          {summary?.count} {summary?.count === 1 ? "producto" : "productos"}
+                        </span>
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
+          </ul>
+        </div>
+      </section>
+
+      <section className={styles.section} aria-labelledby="del-taller-titulo">
+        <div className={`page ${styles.workshop}`}>
+          <div className={styles.workshopCard} data-signal="magenta">
+            <h2 id="del-taller-titulo">Teles revisadas del taller</h2>
+            {refurbished.length ? (
+              <>
+                <p>Cada una sale con su lista de pruebas, garantía y fotos reales.</p>
+                <div className={styles.workshopGrid}>
+                  {refurbished.slice(0, 2).map((product, index) => (
+                    <ProductCard key={product.id} product={product} index={index} />
+                  ))}
+                </div>
+                <Link href="/reacondicionados" className="btn" data-variant="secondary">
+                  Ver todas las teles revisadas
+                </Link>
+              </>
+            ) : (
+              <>
+                <p>
+                  Ahora no hay teles revisadas a la venta. Cuando entre una, probada en el banco de pruebas y con
+                  garantía, te avisamos.
+                </p>
+                <WaitlistForm kind="refurbished" cta="Avisarme cuando entre una" />
+              </>
+            )}
+          </div>
+
+          <div className={styles.workshopCard} data-signal="cian">
+            <h2>Buscá la placa de tu tele</h2>
+            <p>
+              Escribí el modelo de tu televisor o el código de la placa. Está en la etiqueta de atrás de la tele o
+              impreso sobre la placa.
+            </p>
+            <form action="/placas-tv" method="get" className={styles.boardForm} role="search">
+              <label className="field">
+                <span>Modelo o código</span>
+                <input name="modelo" placeholder="Por ejemplo, 32LJ600B o BN41-02568" autoComplete="off" required minLength={3} />
+              </label>
+              <button type="submit" className="btn">
+                <Search aria-hidden size={18} />
+                Buscar placa
+              </button>
+            </form>
+            <p className={styles.small}>
+              Si no aparece,{" "}
+              <a className="enlace" href={whatsappUrl("Hola, busco una placa para mi tele. Les mando una foto de la etiqueta.")} target="_blank" rel="noreferrer">
+                mandanos una foto de la etiqueta por WhatsApp
+              </a>
+              .
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <RepairStory
+        actions={
+          <>
+            <Link href="/cuenta/reparaciones" className="btn">
+              Seguí tu reparación
+            </Link>
+            <a
+              href={whatsappUrl("Hola, quiero pedir un presupuesto para reparar un equipo.")}
+              target="_blank"
+              rel="noreferrer"
+              className="btn"
+              data-variant="secondary"
+            >
+              Pedir presupuesto
+            </a>
+          </>
+        }
+      />
+
+      <section className={styles.section} aria-labelledby="local-titulo">
+        <div className={`page ${styles.trust}`}>
+          <div className={styles.trustIntro}>
+            <h2 id="local-titulo" className={styles.sectionTitle}>
+              Un local de verdad, en Río Tercero
+            </h2>
+            <p>
+              Estamos en {siteConfig.address}. Podés venir a ver los productos, retirar tu compra o dejar un equipo
+              para reparar.
+            </p>
+            <div className={styles.trustActions}>
+              <a href={siteConfig.mapsUrl} target="_blank" rel="noreferrer" className="btn" data-variant="secondary">
+                Cómo llegar
+              </a>
+              <a href={siteConfig.instagram} target="_blank" rel="noreferrer" className="btn" data-variant="quiet">
+                Ver el Instagram
               </a>
             </div>
           </div>
-          <div className="hero-visual" data-reveal="right">
-            <HeroServiceCarousel />
-          </div>
-        </div>
-      </section>
-
-      {catalog.categories.length > 0 && <CategoryShowcase categories={catalog.categories} />}
-
-      {products.length > 0 && (
-        <section className="section surface">
-          <div className="shell">
-            <div className="section-heading" data-reveal>
-              <div>
-                <p className="eyebrow">Selección Chetech</p>
-                <h2>Explorá nuestros productos</h2>
-              </div>
-              <Link className="text-link" href="/productos">
-                Ver todos los productos <ArrowRight />
-              </Link>
+          <dl className={styles.facts}>
+            <div>
+              <dt>Horario</dt>
+              <dd>
+                Lunes a viernes de 09:30 a 19:00
+                <br />
+                Sábados de 10:00 a 12:30 y de 16:00 a 20:00
+              </dd>
             </div>
-            <ProductCarousel products={products} />
-          </div>
-        </section>
-      )}
-
-      <section className="board-spotlight dark-grid">
-        <div className="shell board-grid">
-          <div data-reveal="left">
-            <p className="kicker">Placas de televisores</p>
-            <h2>
-              Buscá por modelo.
-              <br />
-              Confirmá con nosotros.
-            </h2>
-            <p>
-              Buscá el modelo exacto de tu televisor. También podés enviarnos una foto de la
-              etiqueta o de la placa por WhatsApp para verificar compatibilidad.
-            </p>
-            <Link href="/placas-tv" className="button light">
-              Buscar mi placa <ArrowRight />
-            </Link>
-          </div>
-          <div className="board-code" data-reveal="right">
-            <strong>32PHG5102</strong>
-            <small>MODELO DE TV / CONSULTÁ COMPATIBILIDAD</small>
-          </div>
-        </div>
-      </section>
-
-      <section className="section shell">
-        <div className="section-heading" data-reveal>
-          <div>
-            <p className="eyebrow">Servicio técnico especializado</p>
-            <h2>Reparamos. Probamos. Explicamos.</h2>
-          </div>
-          <Link className="text-link" href="/servicio-tecnico">
-            Ver servicios <ArrowRight />
-          </Link>
-        </div>
-        <div className="service-grid">
-          {[
-            [
-              Wrench,
-              "Diagnóstico técnico",
-              "Revisamos el equipo y te explicamos el problema antes de avanzar.",
-            ],
-            [PackageCheck, "Trabajo documentado", "Presupuesto y estado comunicados con claridad."],
-            [Box, "Retiro y entrega", "Coordinamos la modalidad disponible para tu zona."],
-          ].map(([Icon, title, text], index) => {
-            const I = Icon as typeof Wrench;
-            return (
-              <article
-                key={String(title)}
-                data-reveal
-                style={{ "--reveal-delay": `${index * 70}ms` } as CSSProperties}
-              >
-                <I />
-                <span>{"///"}</span>
-                <h3>{String(title)}</h3>
-                <p>{String(text)}</p>
-              </article>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="trust-strip" data-reveal>
-        <div className="shell">
-          <span>
-            <ShieldCheck /> {siteConfig.warrantyText}
-          </span>
-          <span>
-            <Truck /> Envíos a toda Argentina
-          </span>
-          <span>
-            <MapPin /> Retiro en Río Tercero
-          </span>
-        </div>
-      </section>
-
-      <section className="section shell visit-grid">
-        <div data-reveal="left">
-          <p className="eyebrow">Visitanos</p>
-          <h2>{siteConfig.address}</h2>
-          <p>{siteConfig.location}</p>
-          <a className="button primary" href={siteConfig.mapsUrl} target="_blank" rel="noreferrer">
-            Cómo llegar <ArrowRight />
-          </a>
-        </div>
-        <div className="hours-card" data-reveal="right">
-          <p className="eyebrow">Horarios de atención</p>
-          <dl className="hours-list">
-            {siteConfig.businessHours.map((item) => (
-              <div key={item.label}>
-                <dt>{item.label}</dt>
-                <dd>{item.value}</dd>
-              </div>
-            ))}
+            <div>
+              <dt>Pagos en el local</dt>
+              <dd>Efectivo, transferencia, Mercado Pago o Naranja X</dd>
+            </div>
+            <div>
+              <dt>Pagos online</dt>
+              <dd>{onlinePayments.length ? onlinePayments.join(", ") : "Reservás por WhatsApp y pagás al retirar"}</dd>
+            </div>
+            <div>
+              <dt>Factura</dt>
+              <dd>
+                {siteConfig.invoiceType}. CUIT {siteConfig.taxId}
+              </dd>
+            </div>
           </dl>
         </div>
       </section>
 
-      <section className="section surface">
-        <div className="shell faq-layout">
-          <div data-reveal="left">
-            <p className="eyebrow">Preguntas frecuentes</p>
-            <h2>Comprar simple, sin vueltas.</h2>
-            <p>
-              Armá tu carrito y envianos el pedido por WhatsApp. Te confirmaremos disponibilidad,
-              forma de pago y envío.
-            </p>
-          </div>
-          <div className="faq-list" data-reveal="right">
-            {[
-              [
-                "¿Cómo compro?",
-                "Agregá productos al carrito, ingresá o creá tu cuenta y generá el pedido. Te llevamos a WhatsApp para terminar de coordinarlo.",
-              ],
-              [
-                "¿Los productos y reparaciones tienen garantía?",
-                `${siteConfig.warrantyText} ${siteConfig.warrantyDetail}`,
-              ],
-              [
-                "¿Cómo confirmo una placa?",
-                "Enviá una foto clara del código y los conectores. Comparamos los datos antes de coordinar la compra.",
-              ],
-            ].map(([q, a]) => (
-              <details key={q}>
-                <summary>
-                  {q}
-                  <span>+</span>
-                </summary>
-                <p>{a}</p>
+      <section className={styles.section} aria-labelledby="preguntas-titulo">
+        <div className={`page ${styles.faq}`}>
+          <h2 id="preguntas-titulo" className={styles.sectionTitle}>
+            Preguntas frecuentes
+          </h2>
+          <div className={styles.faqList}>
+            {faqs.map((item) => (
+              <details key={item.q}>
+                <summary>{item.q}</summary>
+                <p>{item.a}</p>
               </details>
             ))}
           </div>
-        </div>
-      </section>
-      <section className="consumer-rights">
-        <div className="shell">
-          <div>
-            <p className="eyebrow">Compras remotas</p>
-            <h2>¿Necesitás cancelar una compra?</h2>
-            <p>Podés iniciar el trámite sin cuenta, contraseña ni motivo obligatorio.</p>
-          </div>
-          <Link className="button light" href="/arrepentimiento">
-            Botón de arrepentimiento <ArrowRight />
-          </Link>
         </div>
       </section>
     </>

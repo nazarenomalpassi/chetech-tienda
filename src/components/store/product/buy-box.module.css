@@ -1,0 +1,98 @@
+.box {
+  display: grid;
+  gap: 14px;
+}
+
+.quantity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-weight: 600;
+}
+
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid var(--color-linea);
+  border-radius: var(--radius-button);
+  background: var(--color-blanco);
+}
+
+.stepper button {
+  display: grid;
+  place-items: center;
+  width: var(--touch);
+  height: var(--touch);
+  border: 0;
+  background: transparent;
+}
+
+.stepper button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.stepper output {
+  min-width: 32px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.buttons {
+  display: grid;
+  gap: 10px;
+}
+
+@media (min-width: 560px) {
+  .buttons {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .buttons > a {
+    grid-column: 1 / -1;
+  }
+}
+
+/* E7 · Barra de compra fija (solo celular) */
+.bar {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px var(--page-inset) max(10px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--color-linea);
+  background: color-mix(in srgb, var(--color-blanco) 96%, transparent);
+  backdrop-filter: blur(8px);
+  transform: translateY(110%);
+  transition: transform 0.2s var(--ease-out);
+}
+
+.bar[data-visible="true"] {
+  transform: translateY(0);
+}
+
+.barText {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+.barName {
+  overflow: hidden;
+  font-size: var(--text-14);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.barPrice {
+  font-size: var(--text-22);
+  line-height: 1.1;
+}
+
+@media (min-width: 960px) {
+  .bar {
+    display: none;
+  }
+}

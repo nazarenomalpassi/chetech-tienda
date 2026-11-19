@@ -1,0 +1,303 @@
+.section {
+  --repair: 0;
+  position: relative;
+  background: var(--color-pared-2);
+  border-block: 1px solid var(--color-linea);
+}
+
+.pin {
+  padding: 56px 0;
+}
+
+.grid {
+  display: grid;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+    gap: 64px;
+  }
+
+  .section[data-enhanced="true"] .tvColumn {
+    position: sticky;
+    top: calc(var(--header-height) + 90px);
+  }
+
+  .section[data-enhanced="true"] .steps li {
+    padding: 26px 0;
+  }
+}
+
+@media (max-width: 899px) {
+  /* En una sola columna el televisor necesita que su contenedor incluya los pasos para quedar fijo */
+  .section[data-enhanced="true"] .grid {
+    display: block;
+  }
+
+  .section[data-enhanced="true"] .copy {
+    margin-top: 20px;
+  }
+
+  .section[data-enhanced="true"] .tvColumn {
+    position: sticky;
+    top: calc(var(--header-height) + 8px);
+    z-index: 2;
+    margin-inline: calc(var(--page-inset) * -1);
+    padding: 10px var(--page-inset);
+    background: var(--color-pared-2);
+  }
+
+  .section[data-enhanced="true"] .tv {
+    width: 100%;
+    max-width: 420px;
+    justify-self: center;
+  }
+
+  .section[data-enhanced="true"] .steps li {
+    padding: 22px 0;
+  }
+}
+
+.tvColumn {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.section[data-enhanced="true"] .tvColumn {
+  grid-template-columns: 1fr;
+}
+
+.section[data-enhanced="true"] .tvFigure[data-role="after"] {
+  display: none;
+}
+
+.tvFigure {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.tvFigure[data-role="before"] {
+  --r: 0;
+}
+
+.tvFigure[data-role="after"] {
+  --r: 1;
+}
+
+.section[data-enhanced="true"] .tvFigure[data-role="before"] {
+  --r: var(--repair);
+}
+
+.tvFigure figcaption {
+  color: var(--color-tinta-3);
+  font-size: var(--text-14);
+  font-weight: 600;
+  text-align: center;
+}
+
+.section[data-enhanced="true"] figcaption {
+  display: none;
+}
+
+.tv {
+  padding: 10px 10px 18px;
+  border-radius: var(--radius-tv);
+  background: linear-gradient(180deg, #24292c 0%, var(--color-tinta) 18%, #0c0e0f 100%);
+  box-shadow: 0 22px 50px -26px rgb(0 0 0 / 0.55);
+}
+
+.screen {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--color-pantalla);
+}
+
+.signal {
+  position: absolute;
+  inset: 0;
+  filter: grayscale(calc((1 - var(--r)) * 85%)) brightness(calc(0.55 + var(--r) * 0.45))
+    contrast(calc(1.4 - var(--r) * 0.4));
+}
+
+/* La señal: la carta de ajuste en vertical */
+.bars {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, transparent 72%, #101214 72% 80%, transparent 80%),
+    linear-gradient(
+      90deg,
+      var(--color-gris-carta) 0 14.28%,
+      var(--color-amarillo) 14.28% 28.57%,
+      var(--color-cian) 28.57% 42.85%,
+      var(--color-verde) 42.85% 57.14%,
+      var(--color-magenta) 57.14% 71.42%,
+      var(--color-rojo) 71.42% 85.71%,
+      var(--color-azul) 85.71% 100%
+    );
+}
+
+/* Cortes horizontales de la imagen rota */
+.tear1 {
+  clip-path: inset(18% 0 62% 0);
+  transform: translateX(calc((1 - var(--r)) * 18%));
+}
+
+.tear2 {
+  clip-path: inset(55% 0 28% 0);
+  transform: translateX(calc((1 - var(--r)) * -26%));
+}
+
+.noise {
+  position: absolute;
+  inset: -20%;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.9'/></svg>");
+  opacity: calc((1 - var(--r)) * 0.85);
+  mix-blend-mode: overlay;
+}
+
+.roll {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 22%;
+  top: calc(20% + (1 - var(--r)) * 40%);
+  background: linear-gradient(180deg, transparent, rgb(255 255 255 / 0.22), transparent);
+  opacity: calc(1 - var(--r));
+}
+
+.ok {
+  position: absolute;
+  left: 50%;
+  bottom: 12%;
+  padding: 6px 12px;
+  border-radius: 4px;
+  background: rgb(0 0 0 / 0.75);
+  color: var(--color-blanco);
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+  font-weight: 700;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  opacity: var(--r);
+}
+
+.tvFigure[data-role="before"] .ok {
+  opacity: clamp(0, calc((var(--r) - 0.85) * 7), 1);
+}
+
+/* Texto y pasos */
+.copy {
+  display: grid;
+  gap: 18px;
+}
+
+.copy h2 {
+  font-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem);
+}
+
+.lead {
+  max-width: 52ch;
+  color: var(--color-tinta-2);
+  font-size: var(--text-18);
+}
+
+.steps {
+  display: grid;
+  gap: 4px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: paso;
+}
+
+.steps li {
+  display: flex;
+  gap: 14px;
+  padding: 10px 0;
+  border-top: 1px solid var(--color-linea);
+  color: var(--color-tinta);
+  counter-increment: paso;
+  transition: opacity 0.25s ease;
+}
+
+.steps li > span:last-child {
+  display: grid;
+}
+
+.steps strong {
+  font-family: var(--font-display);
+  font-size: var(--text-22);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.steps li span span {
+  color: var(--color-tinta-2);
+}
+
+.stepMark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1.5px solid var(--color-tinta);
+  border-radius: 50%;
+  font-family: var(--font-display);
+  font-weight: 700;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.stepMark::before {
+  content: counter(paso);
+}
+
+/* Con el efecto activo, los pasos se encienden a medida que avanza la reparación */
+.section[data-enhanced="true"] .steps li {
+  opacity: 0.38;
+}
+
+.section[data-enhanced="true"][data-step="0"] .steps li[data-index="0"],
+.section[data-enhanced="true"][data-step="1"] .steps li:is([data-index="0"], [data-index="1"]),
+.section[data-enhanced="true"][data-step="2"] .steps li:is([data-index="0"], [data-index="1"], [data-index="2"]),
+.section[data-enhanced="true"][data-step="3"] .steps li:not([data-index="4"]),
+.section[data-enhanced="true"][data-step="4"] .steps li {
+  opacity: 1;
+}
+
+.section[data-enhanced="true"][data-step="0"] li[data-index="0"] .stepMark,
+.section[data-enhanced="true"][data-step="1"] li[data-index="1"] .stepMark,
+.section[data-enhanced="true"][data-step="2"] li[data-index="2"] .stepMark,
+.section[data-enhanced="true"][data-step="3"] li[data-index="3"] .stepMark,
+.section[data-enhanced="true"][data-step="4"] li[data-index="4"] .stepMark {
+  background: var(--color-cian);
+  border-color: var(--color-cian);
+  color: var(--color-tinta);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+@media (max-width: 899px) {
+  .pin {
+    padding: 40px 0;
+  }
+
+  .lead {
+    font-size: var(--text-16);
+  }
+}

@@ -54,6 +54,14 @@ export function deriveRoleKey(rootSecret, role) {
 // cargar esa huella (ver README, "Despliegue en Railway").
 export const LEGAL_REQUEST_SALT_LABEL = "chetech/legal-request-salt/v1";
 
+export const CHECKOUT_ACCESS_LABEL = "chetech/checkout-access/v1";
+
+export function deriveCheckoutAccessSecret(rootSecret) {
+  if (Buffer.byteLength(rootSecret) < 32)
+    throw new Error("ROOT_SECRET debe tener al menos 32 bytes");
+  return createHmac("sha256", rootSecret).update(CHECKOUT_ACCESS_LABEL).digest("hex");
+}
+
 export function deriveLegalRequestSalt(rootSecret) {
   if (Buffer.byteLength(rootSecret) < 32)
     throw new Error("ROOT_SECRET debe tener al menos 32 bytes");
@@ -73,6 +81,11 @@ function main(argv) {
     const anonKey = deriveRoleKey(rootSecret, "anon");
     env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = anonKey;
     env.NEXT_PUBLIC_SUPABASE_ANON_KEY = anonKey;
+    // Clave de servicio: solo para el servidor (pedidos sin cuenta, avisos de pago, cola de mails).
+    // No lleva el prefijo NEXT_PUBLIC_, así Next.js nunca la incluye en el código del navegador.
+    if (!env.SUPABASE_SERVICE_ROLE_KEY) env.SUPABASE_SERVICE_ROLE_KEY = deriveRoleKey(rootSecret, "service_role");
+    // Secreto de los enlaces de pedidos sin cuenta (ver src/lib/commerce/tokens.ts).
+    if (!env.CHECKOUT_ACCESS_SECRET) env.CHECKOUT_ACCESS_SECRET = deriveCheckoutAccessSecret(rootSecret);
     if (!env.LEGAL_REQUEST_HASH_SALT)
       env.LEGAL_REQUEST_HASH_SALT = deriveLegalRequestSalt(rootSecret);
     delete env.SUPABASE_ROOT_SECRET;

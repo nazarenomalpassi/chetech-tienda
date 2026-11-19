@@ -12,10 +12,24 @@ import {
 import { useAccountSummary } from "@/components/account-provider";
 import type { CartItem, Product } from "@/lib/types";
 
+export type AddOptions = {
+  /** Rectángulo de la foto que se tocó: la miniatura vuela desde ahí al carrito (efecto E6). */
+  origin?: DOMRect | null;
+  /** No abrir el panel del carrito (por ejemplo, en "Comprar ahora", que va directo a pagar). */
+  silent?: boolean;
+};
+
+export type LastAdded = { product: Product; quantity: number; at: number; origin: DOMRect | null };
+
 type CartContextValue = {
   items: CartItem[];
   count: number;
-  add: (product: Product, quantity?: number) => void;
+  subtotal: number;
+  drawerOpen: boolean;
+  openDrawer: () => void;
+  closeDrawer: () => void;
+  lastAdded: LastAdded | null;
+  add: (product: Product, quantity?: number, options?: AddOptions) => void;
   update: (id: string, quantity: number) => void;
   remove: (id: string) => void;
   clear: () => void;
@@ -29,8 +43,9 @@ const ANONYMOUS_CART_KEY = "chetech-storefront-cart-v3:anonymous";
 const PENDING_CART_PREFIX = "chetech-storefront-cart-v3:pending:";
 const EMPTY_CART: CartItem[] = [];
 
+// En la compra online el máximo por producto es 10 (la base aplica el mismo límite).
 function clampQuantity(value: number) {
-  return Math.max(1, Math.min(Math.trunc(Number(value) || 1), 99));
+  return Math.max(1, Math.min(Math.trunc(Number(value) || 1), 10));
 }
 
 function cartFingerprint(items: CartItem[]) {
@@ -95,6 +110,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
   const [serverReady, setServerReady] = useState(false);
   const [activeScope, setActiveScope] = useState<CartScope>("unresolved");
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [lastAdded, setLastAdded] = useState<LastAdded | null>(null);
   const scope = useRef<CartScope>("unresolved");
   const anonymousItems = useRef<CartItem[]>([]);
   const currentItems = useRef<CartItem[]>([]);
@@ -219,7 +236,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [accountId, items, serverReady]);
 
   const add = useCallback(
-    (product: Product, quantity = 1) =>
+    (product: Product, quantity = 1, options?: AddOptions) => {
+      setLastAdded({
+        product,
+        quantity: clampQuantity(quantity),
+        at: Date.now(),
+        origin: options?.origin ?? null,
+      });
+      if (!options?.silent) setDrawerOpen(true);
       setItems((current) => {
         const safeQuantity = clampQuantity(quantity);
         const existing = current.find((item) => item.product.id === product.id);
@@ -232,9 +256,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           : current.length >= 25
             ? current
             : [...current, { product, quantity: safeQuantity }];
-      }),
+      });
+    },
     [],
   );
+  const openDrawer = useCallback(() => setDrawerOpen(true), []);
+  const closeDrawer = useCallback(() => setDrawerOpen(false), []);
   const update = useCallback(
     (id: string, quantity: number) =>
       setItems((current) =>
@@ -256,12 +283,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     () => ({
       items: visibleItems,
       count: visibleItems.reduce((sum, item) => sum + item.quantity, 0),
+      subtotal: visibleItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0),
+      drawerOpen,
+      openDrawer,
+      closeDrawer,
+      lastAdded,
       add,
       update,
       remove,
       clear,
     }),
-    [visibleItems, add, update, remove, clear],
+    [visibleItems, drawerOpen, openDrawer, closeDrawer, lastAdded, add, update, remove, clear],
   );
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

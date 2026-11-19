@@ -1,0 +1,302 @@
+/* Base: elementos, foco, movimiento reducido y piezas compartidas (botones, contenedor). */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-height) + 16px);
+}
+
+body {
+  margin: 0;
+  background: var(--color-pared);
+  color: var(--color-tinta);
+  font-family: var(--font-body);
+  font-size: var(--text-16);
+  line-height: 1.55;
+  font-feature-settings: "tnum" 0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-azul);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--color-amarillo);
+  color: var(--color-tinta);
+}
+
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -60px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: var(--radius-button);
+  background: var(--color-tinta);
+  color: var(--color-blanco);
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Contenedor */
+.page {
+  width: min(var(--page-width), 100% - var(--page-inset) * 2);
+  margin-inline: auto;
+}
+
+/* Precios: siempre con números tabulares para que no salten */
+.price {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+/* Botones. Cada uno dice lo que hace; ninguno lleva flecha. */
+.btn {
+  --btn-bg: var(--color-tinta);
+  --btn-fg: var(--color-blanco);
+  --btn-border: var(--color-tinta);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: var(--touch);
+  padding: 0 20px;
+  border: 1.5px solid var(--btn-border);
+  border-radius: var(--radius-button);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--font-body);
+  font-size: var(--text-16);
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s var(--ease-out);
+}
+
+.btn:hover {
+  --btn-bg: #000;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn[disabled],
+.btn[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.btn[data-variant="secondary"] {
+  --btn-bg: transparent;
+  --btn-fg: var(--color-tinta);
+  --btn-border: var(--color-tinta);
+}
+
+.btn[data-variant="secondary"]:hover {
+  --btn-bg: var(--color-tinta);
+  --btn-fg: var(--color-blanco);
+}
+
+.btn[data-variant="quiet"] {
+  --btn-bg: transparent;
+  --btn-fg: var(--color-tinta);
+  --btn-border: var(--color-linea);
+}
+
+.btn[data-variant="quiet"]:hover {
+  --btn-border: var(--color-tinta);
+}
+
+.btn[data-variant="whatsapp"] {
+  --btn-bg: transparent;
+  --btn-fg: var(--color-tinta);
+  --btn-border: var(--color-linea);
+}
+
+.btn[data-variant="whatsapp"] svg {
+  color: var(--color-verde);
+}
+
+.btn[data-variant="whatsapp"]:hover {
+  --btn-border: var(--color-verde);
+}
+
+.btn[data-variant="screen"] {
+  --btn-bg: var(--color-blanco);
+  --btn-fg: var(--color-tinta);
+  --btn-border: var(--color-blanco);
+}
+
+.btn[data-variant="screen"]:hover {
+  --btn-bg: var(--color-amarillo);
+  --btn-border: var(--color-amarillo);
+}
+
+.btn[data-size="large"] {
+  min-height: 52px;
+  padding: 0 26px;
+  font-size: var(--text-18);
+}
+
+.btn[data-block="true"] {
+  width: 100%;
+}
+
+/* Enlace de texto */
+.enlace {
+  color: var(--color-azul);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+
+/* Campos de formulario */
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field > span {
+  font-size: var(--text-14);
+  font-weight: 600;
+  color: var(--color-tinta-2);
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: var(--touch);
+  padding: 10px 14px;
+  border: 1.5px solid var(--color-linea);
+  border-radius: var(--radius-button);
+  background: var(--color-blanco);
+  color: var(--color-tinta);
+  font-size: var(--text-16);
+  transition: border-color 0.15s ease;
+}
+
+.field textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.field input:hover,
+.field select:hover,
+.field textarea:hover {
+  border-color: var(--color-tinta-3);
+}
+
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+  outline: none;
+  border-color: var(--color-azul);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-azul) 22%, transparent);
+}
+
+.field [aria-invalid="true"] {
+  border-color: var(--color-rojo);
+}
+
+.field small {
+  color: var(--color-tinta-3);
+  font-size: var(--text-14);
+}
+
+/* Carta de ajuste como tira */
+.carta {
+  height: 6px;
+  background: var(--carta);
+}
+
+/* Movimiento reducido: todo aparece sin animación */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

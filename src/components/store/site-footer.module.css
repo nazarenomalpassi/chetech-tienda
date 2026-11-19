@@ -1,0 +1,137 @@
+.footer {
+  margin-top: var(--space-9);
+  background: var(--color-pantalla);
+  color: color-mix(in srgb, var(--color-blanco) 82%, transparent);
+  font-size: var(--text-16);
+}
+
+.grid {
+  display: grid;
+  gap: 36px;
+  padding: 56px 0 40px;
+}
+
+@media (min-width: 760px) {
+  .grid {
+    grid-template-columns: 1.3fr 1fr 1fr 1fr;
+  }
+}
+
+.grid h2 {
+  margin-bottom: 12px;
+  color: var(--color-blanco);
+  font-size: var(--text-22);
+  font-weight: 600;
+}
+
+.brand {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  max-width: 34ch;
+}
+
+.brand img {
+  width: 180px;
+  height: auto;
+}
+
+.whatsapp {
+  justify-self: start;
+  color: var(--color-blanco);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.link {
+  display: inline-block;
+  margin-top: 6px;
+  color: var(--color-blanco);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.hours {
+  display: grid;
+  gap: 4px;
+  margin: 16px 0 0;
+}
+
+.hours div {
+  display: grid;
+}
+
+.hours dt {
+  color: var(--color-blanco);
+  font-weight: 600;
+}
+
+.hours dd {
+  margin: 0;
+}
+
+.nav {
+  display: grid;
+  gap: 2px;
+}
+
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+}
+
+.nav a:hover,
+.bottom a:hover,
+.social:hover {
+  color: var(--color-blanco);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 0;
+  border-top: 1px solid rgb(255 255 255 / 0.14);
+}
+
+.regret {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--touch);
+  padding: 8px 16px;
+  border: 1.5px solid rgb(255 255 255 / 0.4);
+  border-radius: var(--radius-button);
+  color: var(--color-blanco);
+}
+
+.regret:hover {
+  border-color: var(--color-blanco);
+}
+
+.regret span {
+  display: grid;
+  line-height: 1.25;
+}
+
+.regret small {
+  color: color-mix(in srgb, var(--color-blanco) 70%, transparent);
+  font-size: var(--text-14);
+}
+
+.bottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  padding: 20px 0 max(28px, env(safe-area-inset-bottom));
+  border-top: 1px solid rgb(255 255 255 / 0.14);
+  color: color-mix(in srgb, var(--color-blanco) 60%, transparent);
+  font-size: var(--text-14);
+}

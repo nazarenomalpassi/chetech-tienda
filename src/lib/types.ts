@@ -1,6 +1,7 @@
-export type ProductCondition = "Nuevo" | "Reacondicionado" | "Usado";
+export type ProductCondition = "Nuevo" | "Reacondicionado" | "Usado" | "Usado seleccionado" | "Repuesto";
 export type ProductStatus =
   "Disponible" | "Últimas unidades" | "Sin stock" | "Consultar disponibilidad";
+export type ShippingSize = "chico" | "mediano" | "grande" | "no_viaja";
 
 export type Product = {
   id: string;
@@ -11,6 +12,8 @@ export type Product = {
   description: string;
   category: string;
   categorySlug: string;
+  family: string;
+  familyName: string;
   brand: string;
   model: string;
   price: number;
@@ -24,7 +27,18 @@ export type Product = {
   isOffer?: boolean;
   shipping: boolean;
   pickup: boolean;
+  /** Texto de garantía listo para mostrar: "Garantía de 6 meses". */
   warranty: string;
+  warrantyMonths: number;
+  /** true cuando el plazo es el mínimo de la Ley 24.240 porque todavía no se cargó otro. */
+  warrantyIsLegalMinimum: boolean;
+  shippingSize?: ShippingSize;
+  videoUrl?: string;
+  boxContents?: string;
+  compatibleWith: string[];
+  /** 1 = el más vendido en el local en los últimos 90 días. */
+  popularityRank?: number;
+  publishedAt?: string;
   specifications: Record<string, string>;
   board?: {
     code: string;
@@ -34,7 +48,13 @@ export type Product = {
   };
 };
 
-export type CatalogSort = "recent" | "price-asc" | "price-desc" | "name";
+export type CatalogSort = "popular" | "recent" | "price-asc" | "price-desc" | "name";
+
+export type CatalogFamily = {
+  slug: string;
+  name: string;
+  count: number;
+};
 
 export type CatalogCategory = {
   name: string;
@@ -48,8 +68,12 @@ export type CatalogCondition = {
 };
 
 export type CatalogQuery = {
+  family?: string;
   categorySlug?: string;
+  need?: string;
+  compat?: string;
   condition?: ProductCondition;
+  priceRange?: string;
   search?: string;
   sort?: CatalogSort;
   page?: number;
@@ -58,12 +82,15 @@ export type CatalogQuery = {
 
 export type CatalogResult = {
   products: Product[];
+  families: CatalogFamily[];
   categories: CatalogCategory[];
   conditions: CatalogCondition[];
   total: number;
   page: number;
   pageSize: number;
   totalPages: number;
+  /** Productos que coinciden pero no se muestran porque todavía no tienen foto. */
+  hiddenWithoutPhoto: number;
 };
 
 export type CartItem = { product: Product; quantity: number };

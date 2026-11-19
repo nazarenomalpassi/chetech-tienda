@@ -31,12 +31,14 @@
     "test:railway-keys": "node --test scripts/railway/with-supabase-keys.test.mjs"
   },
   "dependencies": {
+    "@react-email/render": "2.3.1",
     "@supabase/ssr": "0.12.3",
     "@supabase/supabase-js": "2.110.7",
     "gsap": "3.15.1",
     "lucide-react": "0.511.0",
     "motion": "14.14.0",
     "next": "16.4.6",
+    "qrcode": "1.5.4",
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "sharp": "0.35.3",
@@ -47,6 +49,7 @@
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/qrcode": "1.5.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "eslint": "^9",

@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { requireAdmin } from "@/lib/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { STOREFRONT_CATALOG_TAG } from "@/lib/catalog";
@@ -69,7 +69,7 @@ export async function updateStorefrontProductAction(
     .maybeSingle();
   if (error || !data)
     return { error: "No pudimos actualizar el producto. Verificá tus permisos y los datos." };
-  revalidateTag(STOREFRONT_CATALOG_TAG);
+  updateTag(STOREFRONT_CATALOG_TAG);
   revalidatePath("/admin", "layout");
   return { message: "Presentación pública actualizada." };
 }
@@ -113,6 +113,6 @@ export async function deleteProductImageAction(formData: FormData) {
       .remove([storagePath]);
     if (storageError) console.error("Product image storage cleanup failed", storageError.message);
   }
-  revalidateTag(STOREFRONT_CATALOG_TAG);
+  updateTag(STOREFRONT_CATALOG_TAG);
   revalidatePath(`/admin/productos/${productId}`);
 }

@@ -7,7 +7,7 @@ function redirectPreservingSession(url: URL, sessionResponse: NextResponse) {
   return redirect;
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const protectedCustomerRoute = pathname === "/cuenta" || pathname.startsWith("/cuenta/");
   const protectedAdminRoute = pathname === "/admin" || pathname.startsWith("/admin/");

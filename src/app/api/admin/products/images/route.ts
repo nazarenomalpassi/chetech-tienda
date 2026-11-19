@@ -104,6 +104,6 @@ export async function POST(request: NextRequest) {
     await supabase.storage.from("storefront-products").remove([path]);
     return NextResponse.json({ message: "No pudimos registrar la imagen." }, { status: 500 });
   }
-  revalidateTag(STOREFRONT_CATALOG_TAG);
+  revalidateTag(STOREFRONT_CATALOG_TAG, { expire: 0 });
   return NextResponse.json({ id: registered.data, publicUrl }, { status: 201 });
 }
