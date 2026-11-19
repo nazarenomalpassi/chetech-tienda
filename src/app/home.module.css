@@ -8,11 +8,73 @@
 
 .title span {
   display: block;
-  margin-top: 0.18em;
-  font-size: 0.62em;
+  margin-top: 0.22em;
+  color: var(--color-tinta-2);
+  font-size: 0.6em;
   font-weight: 300;
-  line-height: 1.2;
+  line-height: 1.22;
   letter-spacing: 0.02em;
+}
+
+/* Marquesina: los rubros de la tarjeta del local pasan solos sobre una franja gris plata. */
+.ticker {
+  overflow: hidden;
+  border-block: 1px solid var(--color-negro);
+  background: var(--color-plata);
+  color: var(--color-tinta);
+}
+
+.tickerTrack {
+  display: flex;
+  width: max-content;
+}
+
+.tickerTrack ul {
+  display: flex;
+  flex: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tickerTrack li {
+  display: flex;
+  align-items: center;
+  padding: 13px 0;
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 0.82rem + 0.9vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tickerTrack li:nth-child(even) {
+  font-weight: 300;
+}
+
+.tickerTrack li::after {
+  content: ">>>";
+  margin: 0 clamp(14px, 2vw, 26px);
+  color: var(--color-tinta-3);
+  font-size: 0.7em;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tickerTrack {
+    animation: marquesina 34s linear infinite;
+    will-change: transform;
+  }
+}
+
+/* Hay cuatro copias del texto: al correr un cuarto, el dibujo vuelve a empezar sin salto. */
+@keyframes marquesina {
+  to {
+    transform: translateX(-25%);
+  }
 }
 
 .proofs {
@@ -73,6 +135,11 @@
   .section {
     padding: 72px 0;
   }
+}
+
+/* La última franja es oscura y se apoya directo sobre el pie, sin la tira clara del medio. */
+.sectionLast {
+  margin-bottom: calc(var(--space-9) * -1);
 }
 
 .sectionHead {
@@ -152,10 +219,12 @@
     color 0.15s ease;
 }
 
-.need:hover {
-  border-color: var(--color-tinta);
-  background: var(--color-tinta);
-  color: var(--color-blanco);
+@media (hover: hover) and (pointer: fine) {
+  .need:hover {
+    border-color: var(--color-tinta);
+    background: var(--color-tinta);
+    color: var(--color-blanco);
+  }
 }
 
 .need:hover .needHint {
@@ -174,10 +243,38 @@
   letter-spacing: 0.02em;
 }
 
+/* Las tres flechas se encienden de a una, como una señal que avanza. */
 .needLabel::before {
   content: ">>>";
+  display: inline-block;
+  margin-right: 0.12em;
+  background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--color-tinta) 30%, transparent) 0 36%,
+      var(--color-tinta) 50%,
+      color-mix(in srgb, var(--color-tinta) 30%, transparent) 64% 100%
+    )
+    100% 0 / 400% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
   font-weight: 300;
-  opacity: 0.55;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .needLabel::before {
+    animation: flechas 1.8s steps(8) infinite;
+  }
+
+  .needs li:nth-child(even) .needLabel::before {
+    animation-delay: 0.6s;
+  }
+}
+
+@keyframes flechas {
+  to {
+    background-position: 0 0;
+  }
 }
 
 .needHint {
@@ -212,8 +309,14 @@
   transition: border-color 0.15s ease;
 }
 
-.family:hover {
-  border-color: var(--color-tinta);
+@media (hover: hover) and (pointer: fine) {
+  .family:hover {
+    border-color: var(--color-tinta);
+  }
+
+  .family:hover .familyImages img {
+    transform: scale(1.06);
+  }
 }
 
 .familyImages {
@@ -232,6 +335,7 @@
 
 .familyImages img {
   object-fit: cover;
+  transition: transform 0.5s var(--ease-out);
 }
 
 .familyText {
@@ -258,7 +362,7 @@
 }
 
 @media (max-width: 520px) {
-  .familyText span:not(.familyCount) {
+  .familyText > span:not(.familyCount) {
     display: none;
   }
 

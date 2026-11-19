@@ -68,7 +68,7 @@ export function RepairStory({ actions }: { actions: React.ReactNode }) {
   }, []);
 
   return (
-    <section ref={sectionRef} className={styles.section} aria-labelledby="taller-titulo" data-step="0">
+    <section ref={sectionRef} className={`oscuro ${styles.section}`} aria-labelledby="taller-titulo" data-step="0">
       <div ref={pinRef} className={styles.pin}>
         <div className={`page ${styles.grid}`}>
           <div className={styles.tvColumn} aria-hidden>

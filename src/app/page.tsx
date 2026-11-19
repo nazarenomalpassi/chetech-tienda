@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { ProductCard } from "@/components/store/product-card";
+import { HomeMotion } from "@/components/store/home/home-motion";
 import { RepairStory } from "@/components/store/home/repair-story";
 import { TvHero } from "@/components/store/home/tv-hero";
 import { tvPowerScript } from "@/components/store/home/tv-power-script";
@@ -99,12 +100,27 @@ export default async function HomePage() {
         </div>
       </TvHero>
 
-      <section className={styles.section} aria-labelledby="necesidades-titulo">
+      <HomeMotion>
+      {/* Marquesina con los rubros de la tarjeta del local. Es decorativa: el texto se lee una vez. */}
+      <div className={styles.ticker}>
+        <p className="visually-hidden">Reparamos televisores, computadoras, electrodomésticos y más.</p>
+        <div className={styles.tickerTrack} data-anim="marquesina" aria-hidden>
+          {[0, 1, 2, 3].map((copy) => (
+            <ul key={copy}>
+              {["Reparamos", "Televisores", "Computadoras", "Electrodomésticos", "Y más"].map((word) => (
+                <li key={word}>{word}</li>
+              ))}
+            </ul>
+          ))}
+        </div>
+      </div>
+
+      <section className={`oscuro ${styles.section}`} data-tono="grafito" aria-labelledby="necesidades-titulo">
         <div className="page">
-          <h2 id="necesidades-titulo" className={styles.sectionTitle}>
+          <h2 id="necesidades-titulo" className={styles.sectionTitle} data-anim="titulo">
             ¿Qué necesitás?
           </h2>
-          <ul className={styles.needs}>
+          <ul className={styles.needs} data-anim="grupo">
             {needs.map((need) => (
               <li key={need.slug}>
                 <Link href={need.href ?? `/productos?necesidad=${need.slug}`} className={styles.need}>
@@ -121,7 +137,7 @@ export default async function HomePage() {
         <section className={styles.section} aria-labelledby="vendidos-titulo">
           <div className="page">
             <div className={styles.sectionHead}>
-              <h2 id="vendidos-titulo" className={styles.sectionTitle}>
+              <h2 id="vendidos-titulo" className={styles.sectionTitle} data-anim="titulo">
                 Lo más vendido en el local
               </h2>
               <Link href="/productos" className="enlace">
@@ -137,12 +153,12 @@ export default async function HomePage() {
         </section>
       ) : null}
 
-      <section className={styles.section} aria-labelledby="familias-titulo">
+      <section className={`oscuro ${styles.section}`} aria-labelledby="familias-titulo">
         <div className="page">
-          <h2 id="familias-titulo" className={styles.sectionTitle}>
+          <h2 id="familias-titulo" className={styles.sectionTitle} data-anim="titulo">
             Toda la pared del local
           </h2>
-          <ul className={styles.wall}>
+          <ul className={styles.wall} data-anim="grupo">
             {families
               .filter((family) => (summaries.get(family.slug)?.count ?? 0) > 0)
               .map((family) => {
@@ -161,7 +177,8 @@ export default async function HomePage() {
                         <strong>{family.name}</strong>
                         <span>{family.description}</span>
                         <span className={styles.familyCount}>
-                          {summary?.count} {summary?.count === 1 ? "producto" : "productos"}
+                          <span data-count={summary?.count}>{summary?.count}</span>{" "}
+                          {summary?.count === 1 ? "producto" : "productos"}
                         </span>
                       </span>
                     </Link>
@@ -173,7 +190,7 @@ export default async function HomePage() {
       </section>
 
       <section className={styles.section} aria-labelledby="del-taller-titulo">
-        <div className={`page ${styles.workshop}`}>
+        <div className={`page ${styles.workshop}`} data-anim="grupo">
           <div className={styles.workshopCard}>
             <h2 id="del-taller-titulo">Teles revisadas del taller</h2>
             {refurbished.length ? (
@@ -248,7 +265,7 @@ export default async function HomePage() {
       <section className={styles.section} aria-labelledby="local-titulo">
         <div className={`page ${styles.trust}`}>
           <div className={styles.trustIntro}>
-            <h2 id="local-titulo" className={styles.sectionTitle}>
+            <h2 id="local-titulo" className={styles.sectionTitle} data-anim="titulo">
               Un local de verdad, en Río Tercero
             </h2>
             <p>
@@ -264,7 +281,7 @@ export default async function HomePage() {
               </a>
             </div>
           </div>
-          <dl className={styles.facts}>
+          <dl className={styles.facts} data-anim="grupo">
             <div>
               <dt>Horario</dt>
               <dd>
@@ -291,12 +308,12 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className={styles.section} aria-labelledby="preguntas-titulo">
+      <section className={`oscuro ${styles.section} ${styles.sectionLast}`} data-tono="grafito" aria-labelledby="preguntas-titulo">
         <div className={`page ${styles.faq}`}>
-          <h2 id="preguntas-titulo" className={styles.sectionTitle}>
+          <h2 id="preguntas-titulo" className={styles.sectionTitle} data-anim="titulo">
             Preguntas frecuentes
           </h2>
-          <div className={styles.faqList}>
+          <div className={styles.faqList} data-anim="grupo">
             {faqs.map((item) => (
               <details key={item.q}>
                 <summary>{item.q}</summary>
@@ -306,6 +323,7 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+      </HomeMotion>
     </>
   );
 }

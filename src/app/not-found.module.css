@@ -7,7 +7,7 @@
 }
 
 .code {
-  color: var(--color-plata);
+  color: var(--color-acero);
   font-family: var(--font-display);
   font-size: clamp(4.5rem, 3rem + 8vw, 8rem);
   line-height: 0.9;

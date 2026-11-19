@@ -12,6 +12,9 @@ html {
   scroll-padding-top: calc(var(--header-height) + 16px);
   /* La barra de desplazamiento reserva su lugar: el contenido no salta al abrir el carrito. */
   scrollbar-gutter: stable;
+  /* Lo que asoma al estirar la página en el celular (arriba el encabezado, abajo el pie) es negro. */
+  background: var(--color-negro);
+  color-scheme: light;
 }
 
 /* Nada se sale de costado en el celular. */
@@ -26,6 +29,7 @@ button:disabled {
 }
 
 body {
+  min-height: 100dvh;
   margin: 0;
   background: var(--color-pared);
   color: var(--color-tinta);
@@ -357,11 +361,45 @@ p {
   background: var(--barras);
 }
 
-/* Secciones sobre negro: el foco pasa a blanco. */
+/* Tramo oscuro. Adentro, los mismos nombres de color apuntan a su versión de noche: el fondo es
+   negro, las superficies carbón y la tinta blanca. Así botones, campos y enlaces se dan vuelta solos
+   sin escribir una variante oscura de cada uno. */
 .oscuro {
-  --foco: var(--color-blanco);
-  background: var(--color-tinta);
-  color: var(--color-blanco);
+  --color-pared: #0a0a0a;
+  --color-pared-2: #1d1d1d;
+  --color-blanco: #161616;
+  --color-tinta: #f4f4f4;
+  --color-tinta-2: #cbcbcb;
+  --color-tinta-3: #a2a7a7;
+  --color-linea: #2f2f2f;
+  --color-plata: #4a4a4a;
+  --color-acero: #8a9090;
+  --foco: #f4f4f4;
+  background: #0a0a0a;
+  color: #f4f4f4;
+}
+
+/* Vuelve a la versión de día dentro de un tramo oscuro (una tarjeta blanca sobre negro). */
+.claro {
+  --color-pared: #e4e4e4;
+  --color-pared-2: #d6d6d6;
+  --color-blanco: #ffffff;
+  --color-tinta: #101010;
+  --color-tinta-2: #333636;
+  --color-tinta-3: #565b5b;
+  --color-linea: #c6c6c6;
+  --color-plata: #d0d0d0;
+  --color-acero: #7d8383;
+  --foco: #101010;
+  color: #101010;
+}
+
+.oscuro[data-tono="grafito"] {
+  --color-pared: #1a1a1a;
+  --color-pared-2: #262626;
+  --color-blanco: #222222;
+  --color-linea: #3a3a3a;
+  background: #1a1a1a;
 }
 
 /* Movimiento reducido: todo aparece sin animación */
