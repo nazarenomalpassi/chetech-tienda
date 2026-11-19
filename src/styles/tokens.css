@@ -1,0 +1,90 @@
+/* Sistema de diseño CheTech: "el banco de pruebas".
+   Los colores de señal salen de la carta de ajuste de un televisor en prueba. Marcan un estado
+   o una familia; nunca decoran. Solo Tinta y Azul se usan como color de texto. */
+
+@theme {
+  --color-pared: #f4f5f3;
+  --color-pared-2: #eaece8;
+  --color-tinta: #15181a;
+  --color-tinta-2: #3d4347;
+  --color-tinta-3: #5d6569;
+  --color-pantalla: #000000;
+  --color-linea: #d5d8d5;
+  --color-blanco: #ffffff;
+  --color-azul: #1f4fd8;
+  --color-amarillo: #f5c400;
+  --color-verde: #1e9e4a;
+  --color-rojo: #d93025;
+  --color-magenta: #c2268f;
+  --color-cian: #00a7c7;
+  --color-gris-carta: #c9ccc8;
+
+  --font-display: var(--font-barlow-condensed), "Arial Narrow", sans-serif;
+  --font-body: var(--font-barlow), "Helvetica Neue", Arial, sans-serif;
+
+  --radius-card: 10px;
+  --radius-button: 6px;
+  --radius-tv: 14px;
+}
+
+:root {
+  /* Escala tipográfica: 14, 16, 18, 22, 28, 36, 48, 64 */
+  --text-14: 0.875rem;
+  --text-16: 1rem;
+  --text-18: 1.125rem;
+  --text-22: 1.375rem;
+  --text-28: 1.75rem;
+  --text-36: 2.25rem;
+  --text-48: 3rem;
+  --text-64: 4rem;
+  --text-hero: clamp(2.25rem, 1.4rem + 3.6vw, 4rem);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+  --page-width: 1240px;
+  --page-inset: clamp(16px, 4vw, 40px);
+  --header-height: 56px;
+  --touch: 44px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Carta de ajuste: siete barras */
+  --carta: linear-gradient(
+    90deg,
+    var(--color-gris-carta) 0 14.28%,
+    var(--color-amarillo) 14.28% 28.57%,
+    var(--color-cian) 28.57% 42.85%,
+    var(--color-verde) 42.85% 57.14%,
+    var(--color-magenta) 57.14% 71.42%,
+    var(--color-rojo) 71.42% 85.71%,
+    var(--color-azul) 85.71% 100%
+  );
+
+  /* Compatibilidad con los estilos de cuenta, administración y páginas legales */
+  --ink: var(--color-tinta);
+  --ink-2: #1d2124;
+  --paper: var(--color-pared);
+  --white: var(--color-blanco);
+  --muted: var(--color-tinta-3);
+  --line: var(--color-linea);
+  --acid: var(--color-amarillo);
+  --radius: var(--radius-button);
+  --display: var(--font-display);
+  --body: var(--font-body);
+  --site-content-width: var(--page-width);
+  --site-wide-content-width: 1360px;
+  --site-page-inset: calc(var(--page-inset) * 2);
+  --site-wide-page-inset: 48px;
+  --site-header-stack: calc(var(--header-height) + 36px + env(safe-area-inset-top));
+  --service-rail-height: 55px;
+  --control-height: 48px;
+}

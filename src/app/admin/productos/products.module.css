@@ -1,0 +1,212 @@
+.summary {
+  margin-bottom: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-linea);
+  border-radius: var(--radius-card);
+  background: var(--color-blanco);
+}
+
+.summary p {
+  margin: 0 0 var(--space-3);
+}
+
+.summary ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.summary a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 36px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-linea);
+  border-radius: 999px;
+  color: var(--color-tinta);
+  font-size: var(--text-14);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.summary a[aria-current="true"] {
+  border-color: var(--color-tinta);
+  background: var(--color-tinta);
+  color: var(--color-blanco);
+}
+
+.summary a span {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.filters label,
+.bulk label {
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--text-14);
+  font-weight: 600;
+}
+
+.filters input,
+.filters select,
+.bulk select {
+  min-height: var(--touch);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-linea);
+  border-radius: var(--radius-button);
+  background: var(--color-blanco);
+  font: inherit;
+  font-weight: 400;
+}
+
+.filters input {
+  min-width: 240px;
+}
+
+.bulk {
+  position: sticky;
+  top: var(--space-2);
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-linea);
+  border-radius: var(--radius-card);
+  background: var(--color-pared-2);
+}
+
+.bulk[data-active="true"] {
+  border-color: var(--color-azul);
+  background: var(--color-blanco);
+  box-shadow: 0 6px 18px rgb(21 24 26 / 12%);
+}
+
+.bulk > strong {
+  flex-basis: 100%;
+}
+
+.tableWrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-linea);
+  border-radius: var(--radius-card);
+  background: var(--color-blanco);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--color-linea);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.table th {
+  color: var(--color-tinta-3);
+  font-size: var(--text-14);
+  font-weight: 600;
+}
+
+.table tr[data-selected="true"] td {
+  background: color-mix(in srgb, var(--color-azul) 7%, var(--color-blanco));
+}
+
+.table input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+}
+
+.num {
+  text-align: right !important;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.product {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 260px;
+}
+
+.product small {
+  display: block;
+  color: var(--color-tinta-3);
+  font-size: var(--text-14);
+}
+
+.thumb {
+  display: block;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: var(--radius-button);
+  background: var(--color-pared-2);
+  object-fit: contain;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chips li {
+  padding: 2px var(--space-2);
+  border-left: 3px solid var(--color-amarillo);
+  background: var(--color-pared);
+  font-size: var(--text-14);
+  white-space: nowrap;
+}
+
+.done {
+  color: var(--color-verde);
+  font-weight: 600;
+}
+
+.empty {
+  padding: var(--space-6);
+  text-align: center;
+  color: var(--color-tinta-2);
+}
+
+.error {
+  color: var(--color-rojo);
+  font-weight: 600;
+}
+
+.message {
+  margin: 0;
+  font-weight: 600;
+}
+
+.message[data-kind="error"] {
+  color: var(--color-rojo);
+}
+
+.message[data-kind="ok"] {
+  color: var(--color-verde);
+}

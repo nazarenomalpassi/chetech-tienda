@@ -1,0 +1,34 @@
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--color-tinta-2);
+  font-size: var(--text-14);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--tone);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--tone) 18%, transparent);
+}
+
+.status[data-tone="ok"] {
+  --tone: var(--color-verde);
+}
+
+.status[data-tone="low"] {
+  --tone: var(--color-amarillo);
+}
+
+.status[data-tone="out"] {
+  --tone: var(--color-rojo);
+  color: var(--color-rojo);
+}
+
+.status[data-tone="ask"] {
+  --tone: var(--color-tinta-3);
+}

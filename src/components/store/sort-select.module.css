@@ -1,0 +1,29 @@
+.sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-tinta-2);
+  font-size: var(--text-14);
+  font-weight: 600;
+}
+
+.sort select {
+  min-height: var(--touch);
+  padding: 0 34px 0 12px;
+  border: 1.5px solid var(--color-linea);
+  border-radius: var(--radius-button);
+  background:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%2315181a' stroke-width='2' fill='none'/></svg>")
+      no-repeat right 12px center,
+    var(--color-blanco);
+  color: var(--color-tinta);
+  font-size: var(--text-16);
+  font-weight: 500;
+  appearance: none;
+}
+
+@media (max-width: 420px) {
+  .sort span {
+    display: none;
+  }
+}

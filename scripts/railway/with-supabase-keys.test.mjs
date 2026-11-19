@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { deriveLegalRequestSalt, deriveRoleKey } from "./with-supabase-keys.mjs";
+import {
+  deriveCheckoutAccessSecret,
+  deriveLegalRequestSalt,
+  deriveRoleKey,
+} from "./with-supabase-keys.mjs";
 
 // Vector calculado con la implementación original en Go (6ixfalls/supabase, secrets.Derive)
 // a partir de un secreto de prueba; es el mismo que usa el sistema de gestión.
@@ -28,4 +32,12 @@ test("la clave de solicitudes legales coincide con la que calcula la base", () =
     deriveLegalRequestSalt(ROOT),
     "5f6a78b1ea8bf2b9626ea35d4ce08b2a9063ff91fb24347ef20c78a31d6c60ce",
   );
+});
+
+test("el secreto de los enlaces de pedidos es estable y distinto de la clave legal", () => {
+  const secret = deriveCheckoutAccessSecret(ROOT);
+  assert.match(secret, /^[0-9a-f]{64}$/);
+  assert.equal(secret, deriveCheckoutAccessSecret(ROOT));
+  assert.notEqual(secret, deriveLegalRequestSalt(ROOT));
+  assert.throws(() => deriveCheckoutAccessSecret("corto"), /32 bytes/);
 });

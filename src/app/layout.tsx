@@ -1,41 +1,57 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import { AccountProvider } from "@/components/account-provider";
 import { CartProvider } from "@/components/cart-provider";
-import { Footer } from "@/components/footer";
-import { Header } from "@/components/header";
-import { RevealOnScroll } from "@/components/reveal-on-scroll";
-import { siteConfig } from "@/config/site";
+import { Analytics } from "@/components/store/analytics";
+import { CartDrawer } from "@/components/store/cart-drawer";
+import { PageProgress } from "@/components/store/page-progress";
+import { SiteFooter } from "@/components/store/site-footer";
+import { SiteHeader } from "@/components/store/site-header";
+import { VisitTracker } from "@/components/store/visit-tracker";
+import { siteConfig, tagline } from "@/config/site";
+import { getProducts } from "@/lib/catalog";
+import { barlow, barlowCondensed } from "@/lib/fonts";
+import { anyOnlinePayment, getStoreSettings } from "@/lib/store-settings";
 import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.baseUrl),
-  title: { default: "Chetech · Tecnología y servicio técnico", template: "%s · Chetech" },
-  description: siteConfig.description,
-  applicationName: "Chetech",
+  title: { default: "CheTech · Servicio técnico y tienda de tecnología en Río Tercero", template: "%s · CheTech" },
+  description: `${tagline} Teles, placas, controles y accesorios. Comprás online y retirás en ${siteConfig.address}, Río Tercero.`,
+  applicationName: "CheTech",
   openGraph: {
     type: "website",
     locale: "es_AR",
-    siteName: "Chetech",
-    title: "Chetech · Tecnología que responde",
-    description: siteConfig.description,
+    siteName: "CheTech",
+    title: "CheTech · Servicio técnico y tienda de tecnología",
+    description: tagline,
   },
-  twitter: { card: "summary_large_image", title: "Chetech", description: siteConfig.description },
+  twitter: { card: "summary_large_image", title: "CheTech", description: tagline },
   robots: { index: true, follow: true },
+  formatDetection: { telephone: false },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a0c0e",
-  colorScheme: "dark light",
+  themeColor: "#f4f5f3",
+  colorScheme: "light",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const [settings, products] = await Promise.all([getStoreSettings(), getProducts()]);
+  const showWorkshop = products.some((product) => product.family === "del-taller" && product.image);
+  const announcement = !anyOnlinePayment(settings)
+    ? "Armás tu pedido acá, lo reservás por WhatsApp y retirás gratis en Independencia 784."
+    : settings.delivery.correo
+      ? "Comprás online y retirás gratis en Independencia 784. Envíos a todo el país."
+      : "Comprás online y retirás gratis en Independencia 784, Río Tercero.";
+
   const localBusiness = {
     "@context": "https://schema.org",
     "@type": "ElectronicsStore",
-    name: siteConfig.name,
+    name: "CheTech",
     description: siteConfig.description,
     url: siteConfig.baseUrl,
     telephone: `+${siteConfig.whatsapp}`,
@@ -54,24 +70,30 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       closes: hours.closes,
     })),
   };
+
   return (
-    <html lang="es">
+    <html lang="es-AR" className={`${barlow.variable} ${barlowCondensed.variable}`}>
       <body>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(localBusiness).replace(/</g, "\\u003c"),
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusiness).replace(/</g, "\\u003c") }}
         />
         <AccountProvider>
           <CartProvider>
             <a className="skip-link" href="#contenido">
               Saltar al contenido
             </a>
-            <Header />
+            <Suspense fallback={null}>
+              <PageProgress />
+            </Suspense>
+            <SiteHeader announcement={announcement} showWorkshop={showWorkshop} />
             <main id="contenido">{children}</main>
-            <Footer />
-            <RevealOnScroll />
+            <SiteFooter />
+            <CartDrawer />
+            <Suspense fallback={null}>
+              <VisitTracker />
+            </Suspense>
+            <Analytics />
           </CartProvider>
         </AccountProvider>
       </body>

@@ -31,16 +31,18 @@ export const siteConfig = {
     { dayOfWeek: "Saturday", opens: "16:00", closes: "20:00" },
     { dayOfWeek: "Sunday", opens: "00:00", closes: "00:00" },
   ],
-  shippingText: "Envíos a toda Argentina y retiro coordinado en el local.",
-  warrantyText: "Todos nuestros productos y reparaciones cuentan con garantía.",
-  warrantyDetail: "Consultanos por las condiciones correspondientes al producto o reparación.",
+  shippingText: "Retiro gratis en Independencia 784.",
+  warrantyText: "Garantía escrita en cada producto y en cada reparación.",
+  warrantyDetail: "El plazo figura en la ficha de cada producto. Nunca es menor al que fija la Ley 24.240.",
   baseUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
 } as const;
 
 export const navigation = [
   { href: "/productos", label: "Productos" },
-  { href: "/placas-tv", label: "Placas de TV" },
-  { href: "/reacondicionados", label: "Reacondicionados" },
+  { href: "/productos?familia=para-tu-tele", label: "Para tu tele" },
   { href: "/servicio-tecnico", label: "Servicio técnico" },
+  { href: "/cuenta/reparaciones", label: "Seguí tu reparación" },
   { href: "/contacto", label: "Contacto" },
 ];
+
+export const tagline = "Arreglamos tu tele. Y tenemos todo para que la disfrutes.";

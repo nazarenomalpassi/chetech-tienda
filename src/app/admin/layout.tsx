@@ -12,7 +12,7 @@ import {
 import { requireAdmin } from "@/lib/auth";
 
 const links = [
-  ["/admin/dashboard", "Dashboard", CircleGauge],
+  ["/admin/dashboard", "Tablero", CircleGauge],
   ["/admin/productos", "Productos", Boxes],
   ["/admin/placas", "Placas", Cpu],
   ["/admin/reacondicionados", "Reacondicionados", PackageCheck],
@@ -29,7 +29,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <aside className="admin-sidebar">
         <div>
           <p className="eyebrow">Chetech</p>
-          <h2>Administración e-commerce</h2>
+          <h2>Administración de la tienda</h2>
           <span>{admin.email}</span>
         </div>
         <nav>
