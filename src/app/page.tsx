@@ -2,7 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { ProductCard } from "@/components/store/product-card";
-import { HomeMotion } from "@/components/store/home/home-motion";
+import { PointerField } from "@/components/store/pointer-field";
+import { ScrollMotion } from "@/components/store/scroll-motion";
 import { RepairStory } from "@/components/store/home/repair-story";
 import { TvHero } from "@/components/store/home/tv-hero";
 import { tvPowerScript } from "@/components/store/home/tv-power-script";
@@ -100,7 +101,7 @@ export default async function HomePage() {
         </div>
       </TvHero>
 
-      <HomeMotion>
+      <ScrollMotion>
       {/* Marquesina con los rubros de la tarjeta del local. Es decorativa: el texto se lee una vez. */}
       <div className={styles.ticker}>
         <p className="visually-hidden">Reparamos televisores, computadoras, electrodomésticos y más.</p>
@@ -120,16 +121,18 @@ export default async function HomePage() {
           <h2 id="necesidades-titulo" className={styles.sectionTitle} data-anim="titulo">
             ¿Qué necesitás?
           </h2>
-          <ul className={styles.needs} data-anim="grupo">
+          <PointerField>
+<ul className={styles.needs} data-anim="grupo">
             {needs.map((need) => (
               <li key={need.slug}>
-                <Link href={need.href ?? `/productos?necesidad=${need.slug}`} className={styles.need}>
+                <Link href={need.href ?? `/productos?necesidad=${need.slug}`} className={styles.need} data-cursor>
                   <span className={styles.needLabel}>{need.label}</span>
                   <span className={styles.needHint}>{need.hint}</span>
                 </Link>
               </li>
             ))}
           </ul>
+</PointerField>
         </div>
       </section>
 
@@ -158,14 +161,15 @@ export default async function HomePage() {
           <h2 id="familias-titulo" className={styles.sectionTitle} data-anim="titulo">
             Toda la pared del local
           </h2>
-          <ul className={styles.wall} data-anim="grupo">
+          <PointerField>
+<ul className={styles.wall} data-anim="grupo">
             {families
               .filter((family) => (summaries.get(family.slug)?.count ?? 0) > 0)
               .map((family) => {
                 const summary = summaries.get(family.slug);
                 return (
                   <li key={family.slug}>
-                    <Link href={`/productos?familia=${family.slug}`} className={styles.family}>
+                    <Link href={`/productos?familia=${family.slug}`} className={styles.family} data-cursor>
                       <span className={styles.familyImages} aria-hidden>
                         {summary?.images.map((image) => (
                           <span key={image}>
@@ -186,6 +190,7 @@ export default async function HomePage() {
                 );
               })}
           </ul>
+</PointerField>
         </div>
       </section>
 
@@ -323,7 +328,7 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-      </HomeMotion>
+      </ScrollMotion>
     </>
   );
 }

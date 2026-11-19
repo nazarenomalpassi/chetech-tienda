@@ -117,6 +117,54 @@
   color: var(--color-tinta);
 }
 
+/* "Productos" abre el panel de familias: lleva una flechita que gira cuando el panel está abierto. */
+.navLink[aria-controls]::before {
+  content: "";
+  order: 1;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 8px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.25s var(--ease-out);
+}
+
+.navLink[data-panel-open="true"] {
+  color: var(--color-tinta);
+}
+
+.navLink[data-panel-open="true"]::after {
+  transform: scaleX(1);
+}
+
+.navLink[data-panel-open="true"]::before {
+  transform: translateY(3px) rotate(-135deg);
+}
+
+/* Con el panel abierto, la página de atrás se apaga un poco. */
+.panelScrim {
+  position: fixed;
+  inset: 0;
+  z-index: 39;
+  display: none;
+  background: rgb(0 0 0 / 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.panelScrim[data-open="true"] {
+  opacity: 1;
+  transition: opacity 0.35s ease;
+}
+
+@media (min-width: 1100px) {
+  .panelScrim {
+    display: block;
+  }
+}
+
 .actions {
   display: flex;
   align-items: center;
@@ -315,7 +363,8 @@
   color: var(--color-tinta);
 }
 
-.menuNav .navLink::after {
+.menuNav .navLink::after,
+.menuNav .navLink::before {
   display: none;
 }
 
@@ -343,6 +392,15 @@
   font-weight: 500;
 }
 
+.menuFamilies a small {
+  margin-left: auto;
+  color: var(--color-acero);
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+}
+
 .menuFamilies a::before {
   content: ">>>";
   color: var(--color-acero);
@@ -358,4 +416,97 @@
 .menuFoot {
   margin-top: auto;
   padding: 20px;
+}
+
+/* El menú se arma en cascada: primero las secciones, después las familias, al final el botón. */
+.menuNav .navLink,
+.menuTitle,
+.menuFamilies li,
+.menuFoot {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition:
+    opacity 0.12s ease,
+    transform 0.12s ease;
+}
+
+.menu[data-open="true"] .menuNav .navLink,
+.menu[data-open="true"] .menuTitle,
+.menu[data-open="true"] .menuFamilies li,
+.menu[data-open="true"] .menuFoot {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.4s var(--ease-out) var(--d, 0ms),
+    transform 0.55s var(--ease-out) var(--d, 0ms);
+}
+
+.menuNav .navLink:nth-child(1) {
+  --d: 90ms;
+}
+
+.menuNav .navLink:nth-child(2) {
+  --d: 135ms;
+}
+
+.menuNav .navLink:nth-child(3) {
+  --d: 180ms;
+}
+
+.menuNav .navLink:nth-child(4) {
+  --d: 225ms;
+}
+
+.menuNav .navLink:nth-child(5) {
+  --d: 270ms;
+}
+
+.menuTitle {
+  --d: 320ms;
+}
+
+.menuFamilies li {
+  --d: calc(350ms + var(--i, 0) * 38ms);
+}
+
+.menuFoot {
+  --d: 640ms;
+}
+
+/* Las tres flechas de cada familia se encienden de a una mientras el menú está abierto. */
+@media (prefers-reduced-motion: no-preference) {
+  .menu[data-open="true"] .menuFamilies a::before {
+    background: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--color-tinta) 28%, transparent) 0 36%,
+        var(--color-tinta) 50%,
+        color-mix(in srgb, var(--color-tinta) 28%, transparent) 64% 100%
+      )
+      100% 0 / 400% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: menu-flechas 1.8s steps(8) infinite;
+    animation-delay: calc(var(--i, 0) * 0.22s);
+  }
+}
+
+@keyframes menu-flechas {
+  to {
+    background-position: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menuNav .navLink,
+  .menuTitle,
+  .menuFamilies li,
+  .menuFoot,
+  .menu[data-open="true"] .menuNav .navLink,
+  .menu[data-open="true"] .menuTitle,
+  .menu[data-open="true"] .menuFamilies li,
+  .menu[data-open="true"] .menuFoot {
+    transform: none;
+    transition: opacity 0.15s ease;
+  }
 }

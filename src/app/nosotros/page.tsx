@@ -3,6 +3,7 @@ import { MapPin, MessageCircle, PackageCheck, ShieldCheck, Truck, Wrench } from 
 import { HeroServiceCarousel } from "@/components/hero-service-carousel";
 import { siteConfig } from "@/config/site";
 import { whatsappUrl } from "@/lib/whatsapp";
+import { ScrollMotion } from "@/components/store/scroll-motion";
 import styles from "./about.module.css";
 
 export const metadata: Metadata = {
@@ -43,7 +44,7 @@ const promises = [
 
 export default function AboutPage() {
   return (
-    <>
+    <ScrollMotion>
       <section className={`page ${styles.intro}`}>
         <div className={styles.introText}>
           <h1>Tecnología con atención real</h1>
@@ -61,10 +62,12 @@ export default function AboutPage() {
 
       <section className={`page ${styles.how}`} aria-labelledby="como-trabajamos">
         <div className={styles.howHead}>
-          <h2 id="como-trabajamos">Cómo trabajamos</h2>
+          <h2 id="como-trabajamos" data-anim="titulo">
+            Cómo trabajamos
+          </h2>
           <p>Menos vueltas para vos: nos encargamos de coordinar y de avisarte en cada paso.</p>
         </div>
-        <ul className={styles.list}>
+        <ul className={styles.list} data-anim="grupo">
           {howWeWork.map(({ icon: Icon, title, text }) => (
             <li key={title}>
               <Icon aria-hidden />
@@ -80,13 +83,15 @@ export default function AboutPage() {
       <section className={styles.promise} aria-labelledby="compromiso">
         <div className={`page ${styles.promiseInner}`}>
           <div className={styles.promiseText}>
-            <h2 id="compromiso">Que resolver sea fácil</h2>
+            <h2 id="compromiso" data-anim="titulo">
+              Que resolver sea fácil
+            </h2>
             <p>
               Siempre hay alguien para orientarte. Nos ocupamos de la coordinación, el seguimiento y la información para
               que decidas con tranquilidad.
             </p>
           </div>
-          <ul className={styles.list}>
+          <ul className={styles.list} data-anim="grupo">
             {promises.map(({ icon: Icon, title, text }) => (
               <li key={title}>
                 <Icon aria-hidden />
@@ -102,7 +107,9 @@ export default function AboutPage() {
 
       <section className={`page ${styles.visit}`} aria-labelledby="visitanos">
         <div className={styles.visitText}>
-          <h2 id="visitanos">Pasá por el local</h2>
+          <h2 id="visitanos" data-anim="titulo">
+            Pasá por el local
+          </h2>
           <p>Traé tu equipo para que lo revisemos, retirá una compra o consultanos lo que necesites.</p>
           <a
             className="btn"
@@ -114,7 +121,7 @@ export default function AboutPage() {
             Escribir por WhatsApp
           </a>
         </div>
-        <div className={styles.ticket}>
+        <div className={styles.ticket} data-anim="bloque">
           <div className="barras" aria-hidden />
           <p className={styles.address}>
             {siteConfig.address}, {siteConfig.location}
@@ -134,6 +141,6 @@ export default function AboutPage() {
           </p>
         </div>
       </section>
-    </>
+    </ScrollMotion>
   );
 }

@@ -177,11 +177,40 @@ p {
   line-height: 1;
   white-space: nowrap;
   --chaflan: 9px;
+  position: relative;
+  overflow: hidden;
   transition:
     background-color 0.15s ease,
     color 0.15s ease,
     border-color 0.15s ease,
     transform 0.15s var(--ease-out);
+}
+
+/* Con mouse, un brillo cruza el botón al apoyar el cursor, una sola vez por pasada. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 36%,
+      color-mix(in srgb, var(--btn-fg) 28%, transparent) 50%,
+      transparent 64%
+    );
+    pointer-events: none;
+    transform: translateX(-110%);
+  }
+
+  .btn:hover:not([disabled], [aria-disabled="true"])::after {
+    animation: btn-brillo 0.7s var(--ease-out);
+  }
+}
+
+@keyframes btn-brillo {
+  to {
+    transform: translateX(110%);
+  }
 }
 
 .btn:not([data-variant]),
@@ -200,7 +229,7 @@ p {
 }
 
 .btn:active {
-  transform: translateY(1px);
+  transform: translateY(1px) scale(0.985);
 }
 
 .btn[disabled],
@@ -357,8 +386,37 @@ p {
 }
 
 .barras {
+  position: relative;
   height: 14px;
+  overflow: hidden;
   background: var(--barras);
+}
+
+/* Cada tanto una luz recorre el código de barras de punta a punta, como el lector de la caja. */
+@media (prefers-reduced-motion: no-preference) {
+  .barras::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent calc(50% - 16px),
+      var(--color-blanco) 50%,
+      transparent calc(50% + 16px)
+    );
+    animation: barras-lector 4.2s var(--ease-in-out) infinite;
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes barras-lector {
+  0% {
+    transform: translateX(-100%);
+  }
+  36%,
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 /* Tramo oscuro. Adentro, los mismos nombres de color apuntan a su versión de noche: el fondo es

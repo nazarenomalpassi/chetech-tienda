@@ -1,5 +1,47 @@
 .page {
-  padding: 20px 0 40px;
+  padding: 0 0 40px;
+}
+
+/* Franja negra del catálogo: cada familia es un canal. Al cambiar de familia, una línea de luz la
+   recorre de arriba abajo y el título vuelve a subir. */
+.banner {
+  position: relative;
+  overflow: hidden;
+  padding: 18px 0 18px;
+}
+
+.banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgb(255 255 255 / 0.09) 1px, transparent 1.4px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(70% 130% at 88% 30%, #000 0%, transparent 76%);
+  pointer-events: none;
+}
+
+.bannerShape {
+  position: absolute;
+  top: -150px;
+  right: -190px;
+  width: 620px;
+  height: 620px;
+  background: url("/brand/trama-oscura.svg") no-repeat center / contain;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.retrace {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 0%, rgb(255 255 255 / 0.16) 48%, rgb(255 255 255 / 0.5) 50%, transparent 52%);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-60%);
+}
+
+.bannerInner {
+  position: relative;
 }
 
 .crumbs {
@@ -17,65 +59,164 @@
 
 .head {
   display: grid;
-  gap: 6px;
-  margin: 14px 0 18px;
+  gap: 8px;
+  margin: 18px 0 20px;
 }
 
+.channel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-tinta);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.signal {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 10px;
+}
+
+.signal i {
+  width: 3px;
+  background: currentColor;
+}
+
+.signal i:nth-child(1) {
+  height: 3px;
+}
+
+.signal i:nth-child(2) {
+  height: 5px;
+}
+
+.signal i:nth-child(3) {
+  height: 8px;
+}
+
+.signal i:nth-child(4) {
+  height: 10px;
+}
+
+/* El título sube desde atrás de una máscara. */
+/* El espacio de arriba es para los acentos de las mayúsculas, que la máscara cortaba. */
 .head h1 {
-  font-size: var(--titulo-1);
+  overflow: hidden;
+  margin-top: -0.2em;
+  padding: 0.2em 0 0.06em;
+  font-size: var(--titulo-hero);
+  line-height: 1.02;
 }
 
-.head p {
+.head h1 span {
+  display: block;
+}
+
+.summary {
+  max-width: 62ch;
   color: var(--color-tinta-2);
 }
 
-.families {
-  display: flex;
-  gap: 8px;
-  margin: 0 calc(var(--page-inset) * -1);
-  padding: 2px var(--page-inset) 10px;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.families::-webkit-scrollbar {
-  display: none;
-}
-
-.families a {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  gap: 8px;
-  min-height: var(--touch);
-  padding: 0 14px;
-  border: 1px solid var(--color-plata);
-  background: var(--color-blanco);
+.summary span {
+  color: var(--color-tinta);
   font-family: var(--font-display);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-  transition: border-color 0.15s ease;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
-.families a:hover {
-  border-color: var(--color-tinta);
+.body {
+  padding-top: 18px;
 }
 
-.families a span {
-  color: var(--color-tinta-3);
-  font-weight: 300;
+@media (min-width: 960px) {
+  .banner {
+    padding: 22px 0 26px;
+  }
+
+  .head {
+    margin: 26px 0 28px;
+  }
 }
 
-.families a[aria-current="page"] {
-  border-color: var(--color-tinta);
-  background: var(--color-tinta);
-  color: var(--color-blanco);
+@media (prefers-reduced-motion: no-preference) {
+  .head h1 span {
+    animation: titulo-sube 0.7s var(--ease-out) both;
+  }
+
+  .channel {
+    animation: canal-entra 0.45s var(--ease-out) both;
+  }
+
+  .summary {
+    animation: texto-entra 0.6s var(--ease-out) 0.14s both;
+  }
+
+  .retrace {
+    animation: retrazo 0.6s var(--ease-in-out) 0.02s both;
+  }
+
+  .signal i:nth-child(n + 3) {
+    animation: senal 1.6s steps(1) infinite;
+  }
+
+  .signal i:nth-child(4) {
+    animation-delay: 0.5s;
+  }
+
+  .bannerShape {
+    animation: deriva 22s ease-in-out infinite alternate;
+  }
 }
 
-.families a[aria-current="page"] span {
-  color: rgb(255 255 255 / 0.7);
+@keyframes titulo-sube {
+  from {
+    transform: translateY(105%);
+  }
+}
+
+@keyframes canal-entra {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+}
+
+@keyframes texto-entra {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes retrazo {
+  0% {
+    opacity: 1;
+    transform: translateY(-60%);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(60%);
+  }
+}
+
+@keyframes senal {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes deriva {
+  to {
+    transform: translate(-18px, 14px) rotate(3deg);
+  }
 }
 
 .toolbar {
@@ -115,6 +256,7 @@
   border-right: 2px solid currentColor;
   border-bottom: 2px solid currentColor;
   transform: rotate(45deg) translateY(-2px);
+  transition: transform 0.25s var(--ease-out);
 }
 
 .filters[open] summary::after {
@@ -136,6 +278,51 @@
   font-weight: 600;
 }
 
+/* El panel de filtros baja como una persiana y sus grupos entran en cascada. */
+@media (prefers-reduced-motion: no-preference) {
+  .filters[open] .filterPanel {
+    animation: filtros-abren 0.34s var(--ease-out);
+  }
+
+  .filters[open] .filterPanel > div {
+    animation: texto-entra 0.4s var(--ease-out) backwards;
+  }
+
+  .filters[open] .filterPanel > div:nth-child(1) {
+    animation-delay: 0.06s;
+  }
+
+  .filters[open] .filterPanel > div:nth-child(2) {
+    animation-delay: 0.12s;
+  }
+
+  .filters[open] .filterPanel > div:nth-child(3) {
+    animation-delay: 0.18s;
+  }
+
+  .activeChip {
+    animation: chip-entra 0.3s var(--ease-out) backwards;
+  }
+}
+
+@keyframes filtros-abren {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(-6px);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes chip-entra {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -152,8 +339,20 @@
   font-weight: 500;
 }
 
+.chips a {
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s var(--ease-out);
+}
+
 .chips a:hover {
   border-color: var(--color-tinta);
+}
+
+.chips a:active {
+  transform: scale(0.96);
 }
 
 .chips a[aria-current="true"] {

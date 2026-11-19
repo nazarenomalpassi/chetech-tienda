@@ -40,10 +40,20 @@
 }
 
 .titleBlock {
+  position: relative;
   display: grid;
   gap: 8px;
   padding-top: 14px;
-  border-top: 1.5px solid var(--color-tinta);
+}
+
+/* La línea de arriba del título se traza de izquierda a derecha al abrir la ficha. */
+.titleBlock::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1.5px;
+  background: var(--color-tinta);
+  transform-origin: 0 50%;
 }
 
 .family {
@@ -84,9 +94,105 @@
   gap: 4px 12px;
 }
 
+.priceMask {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  vertical-align: bottom;
+}
+
 .price {
+  display: inline-block;
   font-size: clamp(1.9rem, 1.5rem + 1.7vw, 2.75rem);
   line-height: 1;
+}
+
+/* Entrada de la ficha: la columna de datos se arma de arriba abajo, el precio sube desde atrás de
+   una máscara y las tres marcas de entrega se encienden de a una. */
+@media (prefers-reduced-motion: no-preference) {
+  /* La barra de compra fija también es hija de .info (lleva data-visible): esa no entra con el resto. */
+  .info > :not([data-visible]) {
+    animation: ficha-entra 0.6s var(--ease-out) backwards;
+  }
+
+  .info > :nth-child(1) {
+    animation-delay: 0.04s;
+  }
+
+  .info > :nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  .info > :nth-child(3) {
+    animation-delay: 0.16s;
+  }
+
+  .info > :nth-child(4) {
+    animation-delay: 0.22s;
+  }
+
+  .info > :nth-child(5) {
+    animation-delay: 0.28s;
+  }
+
+  .info > :nth-child(n + 6) {
+    animation-delay: 0.34s;
+  }
+
+  .titleBlock::before {
+    animation: linea-traza 0.8s var(--ease-out) backwards;
+  }
+
+  .price {
+    animation: precio-sube 0.7s var(--ease-out) 0.2s backwards;
+  }
+
+  .delivery li::before {
+    animation: marca-enciende 0.5s steps(2) backwards;
+  }
+
+  .delivery li:nth-child(1)::before {
+    animation-delay: 0.5s;
+  }
+
+  .delivery li:nth-child(2)::before {
+    animation-delay: 0.68s;
+  }
+
+  .delivery li:nth-child(3)::before {
+    animation-delay: 0.86s;
+  }
+
+  .compat li {
+    animation: ficha-entra 0.4s var(--ease-out) backwards;
+    animation-delay: 0.42s;
+  }
+}
+
+@keyframes ficha-entra {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+@keyframes linea-traza {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes precio-sube {
+  from {
+    transform: translateY(105%);
+  }
+}
+
+@keyframes marca-enciende {
+  from {
+    opacity: 0;
+    transform: scale(2.2);
+  }
 }
 
 .before {

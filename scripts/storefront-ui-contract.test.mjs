@@ -21,7 +21,7 @@ test("la tarjeta de producto agrega al carrito, comparte la foto con la ficha y 
 test("la ficha tiene una sola descripción, datos estructurados y complementos", async () => {
   const detail = await source("src/app/productos/[slug]/page.tsx");
 
-  assert.equal(detail.match(/<h2 id="descripcion">Descripción<\/h2>/g)?.length, 1);
+  assert.equal(detail.match(/<h2 id="descripcion"[^>]*>\s*Descripción\s*<\/h2>/g)?.length, 1);
   assert.match(detail, /sku:\s*product\.sku/);
   assert.match(detail, /application\/ld\+json/);
   assert.match(detail, /<BuyBox/);

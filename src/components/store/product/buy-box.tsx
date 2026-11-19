@@ -16,6 +16,9 @@ export function BuyBox({ product, whatsappHref }: Props) {
   const { add } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [barVisible, setBarVisible] = useState(false);
+  const [added, setAdded] = useState(false);
+  const addedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [direction, setDirection] = useState<"sube" | "baja">("sube");
   const actionsRef = useRef<HTMLDivElement>(null);
   const soldOut = product.status === "Sin stock";
   const item = { id: product.id, name: product.name, price: product.price, family: product.familyName };
@@ -41,8 +44,19 @@ export function BuyBox({ product, whatsappHref }: Props) {
   const origin = () =>
     document.querySelector<HTMLElement>("[data-product-stage]")?.getBoundingClientRect() ?? null;
 
+  useEffect(() => () => void (addedTimer.current && clearTimeout(addedTimer.current)), []);
+
+  // El número de cantidad entra desde abajo al sumar y desde arriba al restar.
+  const step = (change: 1 | -1) => {
+    setDirection(change > 0 ? "sube" : "baja");
+    setQuantity((value) => Math.max(1, Math.min(10, value + change)));
+  };
+
   const addToCart = () => {
     add(product, quantity, { origin: origin() });
+    setAdded(true);
+    if (addedTimer.current) clearTimeout(addedTimer.current);
+    addedTimer.current = setTimeout(() => setAdded(false), 1600);
     trackEvent("add_to_cart", { value: product.price * quantity, items: [{ ...item, quantity }] });
   };
 
@@ -59,19 +73,33 @@ export function BuyBox({ product, whatsappHref }: Props) {
           <div className={styles.quantity}>
             <span id="cantidad-label">Cantidad</span>
             <div className={styles.stepper} role="group" aria-labelledby="cantidad-label">
-              <button type="button" aria-label="Restar una" disabled={quantity <= 1} onClick={() => setQuantity((value) => Math.max(1, value - 1))}>
+              <button type="button" aria-label="Restar una" disabled={quantity <= 1} onClick={() => step(-1)}>
                 <Minus aria-hidden size={18} />
               </button>
-              <output aria-live="polite">{quantity}</output>
-              <button type="button" aria-label="Sumar una" disabled={quantity >= 10} onClick={() => setQuantity((value) => Math.min(10, value + 1))}>
+              <output aria-live="polite">
+                <span key={quantity} data-direction={direction}>
+                  {quantity}
+                </span>
+              </output>
+              <button type="button" aria-label="Sumar una" disabled={quantity >= 10} onClick={() => step(1)}>
                 <Plus aria-hidden size={18} />
               </button>
             </div>
           </div>
         )}
         <div className={styles.buttons}>
-          <button type="button" className="btn" data-size="large" data-block="true" onClick={addToCart} disabled={soldOut}>
-            {soldOut ? "Sin stock" : "Agregar al carrito"}
+          <button
+            type="button"
+            className={`btn ${styles.addButton}`}
+            data-size="large"
+            data-block="true"
+            data-added={added}
+            onClick={addToCart}
+            disabled={soldOut}
+          >
+            <span key={added ? "listo" : "agregar"} className={styles.addLabel}>
+              {soldOut ? "Sin stock" : added ? "Agregado al carrito" : "Agregar al carrito"}
+            </span>
           </button>
           {soldOut ? null : (
             <button type="button" className="btn" data-variant="secondary" data-size="large" data-block="true" onClick={buyNow}>

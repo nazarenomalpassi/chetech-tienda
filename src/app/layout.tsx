@@ -8,9 +8,11 @@ import { PageProgress } from "@/components/store/page-progress";
 import { SiteFooter } from "@/components/store/site-footer";
 import { SiteHeader } from "@/components/store/site-header";
 import { VisitTracker } from "@/components/store/visit-tracker";
+import { families } from "@/config/catalog";
 import { siteConfig, tagline } from "@/config/site";
 import { getProducts } from "@/lib/catalog";
 import { montech, montechCompacta, plex } from "@/lib/fonts";
+import { familySummaries } from "@/lib/home";
 import { anyOnlinePayment, getStoreSettings } from "@/lib/store-settings";
 import "./globals.css";
 
@@ -42,6 +44,11 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const [settings, products] = await Promise.all([getStoreSettings(), getProducts()]);
   const showWorkshop = products.some((product) => product.family === "del-taller" && product.image);
+  // El panel de familias del encabezado muestra solo las que tienen algo publicado con foto.
+  const summaries = familySummaries(products);
+  const panelFamilies = families
+    .map((family) => ({ ...family, count: summaries.get(family.slug)?.count ?? 0, images: summaries.get(family.slug)?.images ?? [] }))
+    .filter((family) => family.count > 0 && family.images.length > 0 && (family.slug !== "del-taller" || showWorkshop));
   const announcement = !anyOnlinePayment(settings)
     ? "Armás tu pedido acá, lo reservás por WhatsApp y retirás gratis en Independencia 784."
     : settings.delivery.correo
@@ -86,7 +93,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <Suspense fallback={null}>
               <PageProgress />
             </Suspense>
-            <SiteHeader announcement={announcement} showWorkshop={showWorkshop} />
+            <SiteHeader announcement={announcement} showWorkshop={showWorkshop} panelFamilies={panelFamilies} />
             <main id="contenido">{children}</main>
             <SiteFooter />
             <CartDrawer />

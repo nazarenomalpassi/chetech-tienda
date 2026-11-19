@@ -8,16 +8,33 @@ import { SplitText } from "gsap/SplitText";
 
 if (typeof window !== "undefined") gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText);
 
-// E13 · La portada se arma al scrollear. Los títulos suben renglón por renglón desde atrás de una
-// máscara, las tarjetas de cada tramo entran en cascada, los números cuentan y la marquesina acelera
-// con el scroll. Solo se anima lo que todavía no se vio: lo que ya está en pantalla queda quieto.
-// Con "reducir movimiento" no corre nada de esto y la página se lee igual.
-export function HomeMotion({ children }: { children: React.ReactNode }) {
+type Props = {
+  children: React.ReactNode;
+  /** Cambia cuando cambia el contenido sin cambiar de página (otro producto, otro filtro): se vuelve a armar. */
+  signature?: string;
+  className?: string;
+};
+
+// E13 · Las páginas se arman al scrollear. Lo que se marca con data-anim entra cuando llega a la
+// pantalla: "titulo" sube renglón por renglón desde atrás de una máscara, "grupo" hace entrar a sus
+// hijos en cascada, "bloque" sube entero, data-count cuenta hasta su número y "marquesina" acelera con
+// el scroll. Solo se anima lo que todavía no se vio: lo que ya está en pantalla al cargar queda quieto,
+// así nada parpadea. Con "reducir movimiento" no corre nada de esto y la página se lee igual.
+export function ScrollMotion({ children, signature, className }: Props) {
   const root = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
       const media = gsap.matchMedia();
+
+      // Si la página cambia de alto después de armarse (fotos, tipografías), se recalculan los puntos
+      // de entrada: nada queda esperando un scroll que ya no existe.
+      let refresh: ReturnType<typeof setTimeout> | undefined;
+      const observer = new ResizeObserver(() => {
+        clearTimeout(refresh);
+        refresh = setTimeout(() => ScrollTrigger.refresh(), 160);
+      });
+      if (root.current) observer.observe(root.current);
 
       media.add("(prefers-reduced-motion: no-preference)", () => {
         const below = (element: Element) => element.getBoundingClientRect().top > window.innerHeight * 0.92;
@@ -30,14 +47,17 @@ export function HomeMotion({ children }: { children: React.ReactNode }) {
               type: "lines",
               mask: "lines",
               autoSplit: true,
-              onSplit: (split) =>
-                gsap.from(split.lines, {
+              onSplit: (split) => {
+                // La máscara de cada renglón cortaba los acentos de las mayúsculas: se le da aire arriba.
+                gsap.set(split.masks, { paddingTop: "0.24em", marginTop: "-0.24em" });
+                return gsap.from(split.lines, {
                   yPercent: 108,
                   duration: 0.75,
                   ease: "power3.out",
                   stagger: 0.09,
                   scrollTrigger: { trigger: title, start: "top 88%", once: true },
-                }),
+                });
+              },
             });
           });
 
@@ -120,9 +140,18 @@ export function HomeMotion({ children }: { children: React.ReactNode }) {
           };
         }
       });
+
+      return () => {
+        clearTimeout(refresh);
+        observer.disconnect();
+      };
     },
-    { scope: root },
+    { scope: root, dependencies: [signature], revertOnUpdate: true },
   );
 
-  return <div ref={root}>{children}</div>;
+  return (
+    <div ref={root} className={className}>
+      {children}
+    </div>
+  );
 }

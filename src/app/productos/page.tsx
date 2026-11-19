@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { FamilyTabs } from "@/components/store/catalog/family-tabs";
+import { CountUp } from "@/components/store/count-up";
 import { ProductCard } from "@/components/store/product-card";
 import { SortSelect } from "@/components/store/sort-select";
-import { compatFilters, familyBySlug, needBySlug, priceRanges } from "@/config/catalog";
+import { compatFilters, families, familyBySlug, needBySlug, priceRanges } from "@/config/catalog";
 import { getCatalog } from "@/lib/catalog";
 import type { CatalogSort } from "@/lib/types";
 import { whatsappUrl } from "@/lib/whatsapp";
@@ -77,47 +79,59 @@ export default async function CatalogPage({ searchParams }: { searchParams: Sear
     search ? { label: `“${search}”`, href: hrefWith({ buscar: null }) } : null,
   ].filter(Boolean) as { label: string; href: string }[];
 
+  // Cada familia es un canal, como en el tele de la portada. Lo que se ve cambia entero cuando
+  // cambian los filtros: la clave hace que la franja y la grilla vuelvan a entrar.
+  const channel = family ? families.findIndex((item) => item.slug === family) + 1 : 0;
+  const signature = [family, need, search, compat, price, availableToday ? "hoy" : "", sort, result.page].join("|");
+  const tabs = [
+    { slug: null, name: "Todas", href: hrefWith({ familia: null, pagina: null }) },
+    ...result.families
+      .filter((item) => item.count > 0 || item.slug === family)
+      .map((item) => ({ slug: item.slug, name: item.name, count: item.count, href: hrefWith({ familia: item.slug, pagina: null }) })),
+  ];
+
   return (
     <div className={styles.page}>
-      <div className="page">
-        <nav aria-label="Ruta" className={styles.crumbs}>
-          <Link href="/">Inicio</Link>
-          <span aria-hidden>/</span>
-          {family || need || search ? <Link href="/productos">Productos</Link> : <span aria-current="page">Productos</span>}
-          {family || need || search ? (
-            <>
-              <span aria-hidden>/</span>
-              <span aria-current="page">{title}</span>
-            </>
-          ) : null}
-        </nav>
+      <div className={`oscuro ${styles.banner}`}>
+        <div className={styles.bannerShape} aria-hidden />
+        <div key={`${family}|${need}|${search}`} className={styles.retrace} aria-hidden />
+        <div className={`page ${styles.bannerInner}`}>
+          <nav aria-label="Ruta" className={styles.crumbs}>
+            <Link href="/">Inicio</Link>
+            <span aria-hidden>/</span>
+            {family || need || search ? <Link href="/productos">Productos</Link> : <span aria-current="page">Productos</span>}
+            {family || need || search ? (
+              <>
+                <span aria-hidden>/</span>
+                <span aria-current="page">{title}</span>
+              </>
+            ) : null}
+          </nav>
 
-        <header className={styles.head}>
-          <h1>{title}</h1>
-          <p>
-            {result.total} {result.total === 1 ? "producto" : "productos"}
-            {familyMeta ? `. ${familyMeta.description}` : ""}
-          </p>
-        </header>
+          <header key={`${family}|${need}|${search}`} className={styles.head}>
+            <p className={styles.channel} aria-hidden>
+              <span>{search || need ? ">>>" : `CH ${String(Math.max(channel, 0)).padStart(2, "0")}`}</span>
+              <span className={styles.signal}>
+                <i />
+                <i />
+                <i />
+                <i />
+              </span>
+            </p>
+            <h1>
+              <span>{title}</span>
+            </h1>
+            <p className={styles.summary}>
+              <CountUp value={result.total} name="catalogo" /> {result.total === 1 ? "producto" : "productos"}
+              {familyMeta ? `. ${familyMeta.description}` : ""}
+            </p>
+          </header>
 
-        <nav className={styles.families} aria-label="Familias">
-          <Link href={hrefWith({ familia: null, pagina: null })} aria-current={!family ? "page" : undefined}>
-            Todas
-          </Link>
-          {result.families
-            .filter((item) => item.count > 0 || item.slug === family)
-            .map((item) => (
-              <Link
-                key={item.slug}
-                href={hrefWith({ familia: item.slug, pagina: null })}
-                aria-current={family === item.slug ? "page" : undefined}
-              >
-                {item.name}
-                <span>{item.count}</span>
-              </Link>
-            ))}
-        </nav>
+          <FamilyTabs tabs={tabs} active={family ?? null} />
+        </div>
+      </div>
 
+      <div className={`page ${styles.body}`}>
         <div className={styles.toolbar}>
           <details className={styles.filters}>
             <summary>Filtrar</summary>
@@ -185,9 +199,15 @@ export default async function CatalogPage({ searchParams }: { searchParams: Sear
         ) : null}
 
         {result.products.length ? (
-          <div className={styles.grid}>
+          <div key={signature} className={styles.grid}>
             {result.products.map((product, index) => (
-              <ProductCard key={product.id} product={product} index={index} priority={index < 4} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                index={index}
+                priority={index < 4}
+                entrance={index < 8 ? "cascada" : "scroll"}
+              />
             ))}
           </div>
         ) : (

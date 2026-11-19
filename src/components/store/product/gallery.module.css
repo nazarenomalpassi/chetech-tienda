@@ -18,6 +18,83 @@
 
 .image {
   object-fit: cover;
+  transition: transform 0.3s var(--ease-out);
+}
+
+/* Lupa (solo con mouse): la foto se acerca hacia donde está el cursor y se recorre moviéndolo. */
+@media (hover: hover) and (pointer: fine) {
+  .stage[data-zoom="true"] {
+    cursor: zoom-in;
+  }
+
+  .stage[data-zoom="true"]:hover .image {
+    transform: scale(1.7);
+    transform-origin: var(--mx, 50%) var(--my, 50%);
+  }
+}
+
+/* Escáner: una línea recorre la foto al abrir la ficha y cada vez que se cambia de foto. */
+.sweep {
+  position: absolute;
+  inset: 0 -30%;
+  background: linear-gradient(
+    90deg,
+    transparent 0 34%,
+    rgb(16 16 16 / 0.08) 49.4%,
+    rgb(16 16 16 / 0.55) 49.75% 50%,
+    transparent 50.25% 100%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-62%);
+}
+
+.counterNumber {
+  display: inline-block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sweep {
+    animation: escaner 0.95s var(--ease-in-out) 0.12s backwards;
+  }
+
+  .counterNumber {
+    animation: numero 0.3s var(--ease-out);
+  }
+
+  .thumb {
+    transition:
+      border-color 0.15s ease,
+      transform 0.2s var(--ease-out);
+  }
+
+  .thumb:active {
+    transform: scale(0.94);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .thumb:hover {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes escaner {
+  from {
+    opacity: 1;
+    transform: translateX(-62%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(62%);
+  }
+}
+
+@keyframes numero {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
 }
 
 .video {
