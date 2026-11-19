@@ -145,6 +145,11 @@ export function isSellable(product: Product) {
   return Boolean(product.image) && product.price > 0;
 }
 
+/** Hay stock en el local: se puede retirar o despachar hoy. */
+export function isAvailableToday(product: Product) {
+  return product.status === "Disponible" || product.status === "Últimas unidades";
+}
+
 export function queryCatalog(all: Product[], query: CatalogQuery = {}): CatalogResult {
   const pageSize = Math.min(Math.max(Math.trunc(query.pageSize ?? PAGE_SIZE), 1), 48);
   const sort: CatalogSort = query.sort ?? "popular";
@@ -173,7 +178,9 @@ export function queryCatalog(all: Product[], query: CatalogQuery = {}): CatalogR
   const familyCounts = new Map<string, number>();
   for (const product of base) familyCounts.set(product.family, (familyCounts.get(product.family) ?? 0) + 1);
 
-  const filtered = query.family ? base.filter((product) => product.family === query.family) : base;
+  const inFamily = query.family ? base.filter((product) => product.family === query.family) : base;
+  const availableCount = inFamily.filter(isAvailableToday).length;
+  const filtered = query.availableToday ? inFamily.filter(isAvailableToday) : inFamily;
 
   const categoryCounts = new Map<string, { name: string; count: number }>();
   const conditionCounts = new Map<string, number>();
@@ -212,6 +219,7 @@ export function queryCatalog(all: Product[], query: CatalogQuery = {}): CatalogR
     pageSize,
     totalPages,
     hiddenWithoutPhoto,
+    stock: { available: availableCount, unavailable: inFamily.length - availableCount },
   };
 }
 

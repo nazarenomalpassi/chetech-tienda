@@ -8,6 +8,11 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 export default async function OrdersPage() {
   const account = await requireAccount("/cuenta/pedidos");
   const supabase = await createServerSupabaseClient();
+  // Si compró sin cuenta con este mail (ya verificado), esos pedidos aparecen acá.
+  await supabase.rpc("storefront_claim_guest_orders").then(
+    () => undefined,
+    () => undefined,
+  );
   const { data } = await supabase
     .from("storefront_orders")
     .select("id,order_number,status,total,currency,delivery_method,payment_method,created_at")

@@ -1,6 +1,7 @@
 // Mails de pedidos. Cada tipo de la cola (storefront_outbox.kind) tiene su asunto y su cuerpo.
 import { render, toPlainText } from "@react-email/render";
 import type { OrderPayload } from "@/lib/commerce/types";
+import { discountLines } from "@/lib/commerce/discounts";
 import { Button, Facts, MailLayout, P, Receipt, Title } from "@/lib/mail/layout";
 
 export type MailKind =
@@ -43,6 +44,7 @@ function receipt(order: OrderPayload, footer?: string) {
       orderNumber={order.order_number}
       items={order.items.map((item) => ({ name: item.name, quantity: item.quantity, subtotal: item.subtotal }))}
       shipping={order.shipping_cost}
+      discounts={discountLines(order)}
       total={order.total}
       footer={footer}
     />

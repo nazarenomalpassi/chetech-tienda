@@ -16,6 +16,7 @@ type Body = {
     address?: Record<string, unknown>;
   };
   payment_method?: unknown;
+  coupon?: unknown;
   notes?: unknown;
   marketing_consent?: unknown;
   attribution?: Record<string, unknown>;
@@ -84,6 +85,7 @@ export async function POST(request: Request) {
         },
       },
       payment_method: text(body.payment_method, 20),
+      coupon: text(body.coupon, 30),
       notes: text(body.notes, 1000),
       marketing_consent: body.marketing_consent === true,
       user_id: userId,

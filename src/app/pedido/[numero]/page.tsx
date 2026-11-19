@@ -3,10 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import QRCode from "qrcode";
 import { OrderActions } from "@/components/store/order/order-actions";
+import { SaveOrderAccount } from "@/components/store/order/save-order-account";
 import { siteConfig } from "@/config/site";
 import { getCustomerOrder } from "@/lib/commerce/customer-order";
+import { discountLines } from "@/lib/commerce/discounts";
 import { formatDateTime, formatPrice } from "@/lib/format";
 import { deliveryMethodLabels, orderStatusLabels, orderSteps, paymentMethodLabels } from "@/lib/orders";
+import { mailEnabled } from "@/lib/mail/outbox";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { whatsappUrl } from "@/lib/whatsapp";
 import styles from "./order.module.css";
 
@@ -48,6 +52,20 @@ export default async function OrderPage({ params, searchParams }: Props) {
       </div>
     );
   }
+
+  // Quien ya tiene sesión con el mismo mail verificado se queda con el pedido en su cuenta.
+  let signedIn = false;
+  try {
+    const supabase = await createServerSupabaseClient();
+    const { data } = await supabase.auth.getUser();
+    signedIn = Boolean(data.user);
+    if (signedIn && order.is_guest) await supabase.rpc("storefront_claim_guest_orders");
+  } catch {
+    signedIn = false;
+  }
+  // Crear la cuenta manda un mail de confirmación: se ofrece recién cuando los mails están configurados.
+  const offerAccount = order.is_guest && !signedIn && Boolean(token) && mailEnabled() && !["expired", "cancelled"].includes(order.status);
+  const canWithdraw = ["paid", "preparing", "shipped", "ready_for_pickup", "completed"].includes(order.status);
 
   const { steps, current, closed } = orderSteps(order);
   const qr = await QRCode.toString(`${siteConfig.baseUrl}/admin/pedidos?buscar=${order.order_number}`, {
@@ -127,6 +145,19 @@ export default async function OrderPage({ params, searchParams }: Props) {
               ))}
             </ol>
           </section>
+
+          {offerAccount && token ? (
+            <SaveOrderAccount orderNumber={order.order_number} token={token} email={order.customer_email} />
+          ) : null}
+
+          {canWithdraw ? (
+            <p className={styles.withdraw}>
+              ¿Te arrepentiste de la compra? Tenés 10 días desde que la recibís.{" "}
+              <Link href={`/arrepentimiento?pedido=${encodeURIComponent(order.order_number)}`} className="enlace">
+                Iniciar la devolución de este pedido
+              </Link>
+            </p>
+          ) : null}
         </div>
 
         {/* E11 · Comprobante: baja como papel que sale de una impresora y aparece el QR */}
@@ -174,6 +205,12 @@ export default async function OrderPage({ params, searchParams }: Props) {
                   <span className="price">{formatPrice(order.shipping_cost)}</span>
                 </li>
               ) : null}
+              {discountLines(order).map((discount) => (
+                <li key={discount.label}>
+                  <span>{discount.label}</span>
+                  <span className="price">− {formatPrice(discount.amount)}</span>
+                </li>
+              ))}
             </ul>
             <p className={styles.total}>
               <span>Total</span>

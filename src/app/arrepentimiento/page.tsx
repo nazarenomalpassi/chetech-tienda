@@ -9,7 +9,13 @@ export const metadata: Metadata = {
   alternates: { canonical: "/arrepentimiento" },
 };
 
-export default function WithdrawalPage() {
+type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> };
+
+export default async function WithdrawalPage({ searchParams }: Props) {
+  const query = await searchParams;
+  // Desde el comprobante llega el número de pedido ya cargado. Solo se acepta con el formato de la tienda.
+  const requested = typeof query.pedido === "string" ? query.pedido.trim().toUpperCase() : "";
+  const orderReference = /^CHT-\d{6}$/.test(requested) ? requested : "";
   return (
     <section className="section shell legal-form-page">
       <p className="eyebrow">Derecho de arrepentimiento</p>
@@ -19,7 +25,7 @@ export default function WithdrawalPage() {
         Completá los datos mínimos para que podamos identificar la operación y responderte.
       </p>
       <div className="legal-form-layout">
-        <LegalRequestForm kind="withdrawal" />
+        <LegalRequestForm kind="withdrawal" orderReference={orderReference} />
         <aside>
           <h2>Qué ocurre después</h2>
           <ol>

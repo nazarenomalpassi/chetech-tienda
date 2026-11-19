@@ -16,6 +16,10 @@ export type StoreSettings = {
     pickupPaymentMax: number | null;
     mercadopagoReservationMinutes: number;
     offlineReservationHours: number;
+    /** Porcentaje que se descuenta al pagar por transferencia. Arranca en 0. */
+    transferDiscountPercent: number;
+    /** Hay al menos un cupón vigente: recién ahí la compra muestra el campo. */
+    coupons: boolean;
   };
   delivery: {
     pickup: boolean;
@@ -39,6 +43,8 @@ export const defaultStoreSettings: StoreSettings = {
     pickupPaymentMax: null,
     mercadopagoReservationMinutes: 30,
     offlineReservationHours: 24,
+    transferDiscountPercent: 0,
+    coupons: false,
   },
   delivery: { pickup: true, local: false, localZones: [], correo: false, correoRates: {} },
   promo: { tvChannels: [], reelProductSlug: null, reelTitle: "" },
@@ -64,6 +70,8 @@ async function fetchSettings(): Promise<StoreSettings> {
         pickupPaymentMax: toNumber(row.pickup_payment_max),
         mercadopagoReservationMinutes: toNumber(row.mercadopago_reservation_minutes) ?? 30,
         offlineReservationHours: toNumber(row.offline_reservation_hours) ?? 24,
+        transferDiscountPercent: Math.min(Math.max(toNumber(row.transfer_discount_percent) ?? 0, 0), 30),
+        coupons: Boolean(row.coupons),
       };
       settings.delivery = {
         pickup: delivery.pickup !== false,
@@ -98,7 +106,7 @@ async function fetchSettings(): Promise<StoreSettings> {
   return settings;
 }
 
-const fetchSettingsCached = unstable_cache(fetchSettings, ["storefront-settings-v1"], {
+const fetchSettingsCached = unstable_cache(fetchSettings, ["storefront-settings-v2"], {
   revalidate: 60,
   tags: [STORE_SETTINGS_TAG],
 });

@@ -236,6 +236,13 @@ p {
 
 .btn[data-block="true"] {
   width: 100%;
+  /* Un botón a todo el ancho puede quedar angosto en el celular: el texto pasa a dos líneas
+     en lugar de empujar el diseño hacia afuera. */
+  padding-block: 12px;
+  white-space: normal;
+  text-align: center;
+  text-wrap: balance;
+  line-height: 1.2;
 }
 
 /* Enlace de texto */

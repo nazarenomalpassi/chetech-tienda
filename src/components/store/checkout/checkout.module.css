@@ -254,6 +254,7 @@
 /* Resumen como comprobante */
 .ticket {
   display: grid;
+  min-width: 0;
   gap: 14px;
   padding: 0 20px 20px;
   overflow: hidden;
@@ -335,4 +336,72 @@
 
 .empty p {
   color: var(--color-tinta-2);
+}
+
+/* Descuentos y cupón */
+.ticket .discount dd {
+  font-size: var(--text-16);
+  white-space: nowrap;
+}
+
+.coupon {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+.couponLabel {
+  color: var(--color-tinta-2);
+  font-size: var(--text-14);
+  font-weight: 600;
+}
+
+.couponRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  width: 100%;
+}
+
+.couponRow input {
+  min-width: 0;
+  min-height: var(--touch);
+  padding: 10px 14px;
+  border: 1.5px solid var(--color-acero);
+  border-radius: var(--radius-button);
+  background: var(--color-blanco);
+  color: var(--color-tinta);
+  font-size: var(--text-16);
+  letter-spacing: 0.06em;
+}
+
+.couponRow input:hover {
+  border-color: var(--color-tinta);
+}
+
+.couponRow input:focus-visible {
+  outline: none;
+  border-color: var(--color-tinta);
+  box-shadow: 0 0 0 2px var(--color-tinta);
+}
+
+.couponRow input[aria-invalid="true"] {
+  border-width: 2px;
+  border-color: var(--color-tinta);
+}
+
+.couponApplied {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  font-weight: 600;
+}
+
+.couponError {
+  color: var(--color-tinta);
+  font-size: var(--text-14);
+  font-weight: 600;
 }

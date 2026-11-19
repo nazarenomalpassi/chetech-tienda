@@ -75,6 +75,8 @@ export type CatalogQuery = {
   condition?: ProductCondition;
   priceRange?: string;
   search?: string;
+  /** Solo lo que hay en stock para llevar hoy. */
+  availableToday?: boolean;
   sort?: CatalogSort;
   page?: number;
   pageSize?: number;
@@ -91,6 +93,8 @@ export type CatalogResult = {
   totalPages: number;
   /** Productos que coinciden pero no se muestran porque todavía no tienen foto. */
   hiddenWithoutPhoto: number;
+  /** De lo que coincide (antes del filtro de stock), cuántos se pueden llevar hoy y cuántos no. */
+  stock: { available: number; unavailable: number };
 };
 
 export type CartItem = { product: Product; quantity: number };
