@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import {
-  ArrowLeft,
   CalendarDays,
   CheckCircle2,
   CircleAlert,
@@ -14,6 +12,7 @@ import {
   Wrench,
 } from "lucide-react";
 import { notFound, redirect } from "next/navigation";
+import { AccountHeading } from "../../account-heading";
 import { RepairFocusRefresh } from "@/components/repair-focus-refresh";
 import { TvCompanions } from "@/components/store/taller/tv-companions";
 import { siteConfig } from "@/config/site";
@@ -55,15 +54,12 @@ export default async function RepairDetailPage({ params }: { params: Promise<{ i
   return (
     <>
       <RepairFocusRefresh />
-      <Link className="account-back-link" href="/cuenta/reparaciones">
-        <ArrowLeft aria-hidden="true" />
-        Mis reparaciones
-      </Link>
-      <div className="account-heading repair-detail-heading">
-        <p className="eyebrow">{repair.repairNumber}</p>
-        <h1>Detalle de reparación</h1>
-        <p>{equipment}</p>
-      </div>
+      <AccountHeading
+        title={equipment}
+        back={{ href: "/cuenta/reparaciones", label: "Volver a reparaciones" }}
+      >
+        Orden {repair.repairNumber}
+      </AccountHeading>
 
       {repair.customerActionRequired && (
         <aside className="repair-action-banner" aria-label="Acción requerida">
@@ -265,7 +261,7 @@ export default async function RepairDetailPage({ params }: { params: Promise<{ i
           </span>
         </div>
         <a
-          className="button whatsapp"
+          className="btn" data-variant="whatsapp"
           href={repairWhatsAppUrl(repair)}
           target="_blank"
           rel="noreferrer"

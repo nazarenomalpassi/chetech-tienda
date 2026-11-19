@@ -2,6 +2,8 @@ import { deleteAddressAction, setDefaultAddressAction } from "@/app/account-acti
 import { AddressForm, type AddressRecord } from "@/components/account-forms";
 import { requireAccount } from "@/lib/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { AccountHeading } from "../account-heading";
+import styles from "../account.module.css";
 
 export default async function AddressesPage() {
   const account = await requireAccount("/cuenta/direcciones");
@@ -15,52 +17,47 @@ export default async function AddressesPage() {
   const addresses = (data ?? []) as AddressRecord[];
   return (
     <>
-      <div className="account-heading">
-        <p className="eyebrow">Direcciones</p>
-        <h1>Envíos más simples</h1>
-        <p>Podés guardar varias direcciones o elegir retiro en el local al comprar.</p>
-      </div>
-      <details className="account-disclosure" open={!addresses.length}>
+      <AccountHeading title="Direcciones">
+        Guardá dónde recibís tus compras. Si retirás en el local, no hace falta cargar ninguna.
+      </AccountHeading>
+      <details className={styles.disclosure} open={!addresses.length}>
         <summary>Agregar una dirección</summary>
         <AddressForm />
       </details>
-      <div className="address-list">
-        {addresses.map((address) => (
-          <article key={address.id}>
-            <div>
-              <span className="status-pill">
-                {address.is_default ? "Predeterminada" : address.label}
-              </span>
+      {addresses.length ? (
+        <ul className={styles.addresses}>
+          {addresses.map((address) => (
+            <li key={address.id} className={styles.address} data-default={address.is_default || undefined}>
+              <span className={styles.tag}>{address.is_default ? "Por defecto" : address.label}</span>
               <h2>{address.recipient_name}</h2>
               <p>
                 {address.street} {address.street_number}
                 {address.floor ? `, piso ${address.floor}` : ""}
                 {address.apartment ? `, depto. ${address.apartment}` : ""}
+                <br />
+                {address.city}, {address.province}, CP {address.postal_code}
               </p>
-              <p>
-                {address.city}, {address.province} · CP {address.postal_code}
-              </p>
-              <p>{address.phone}</p>
-            </div>
-            <div className="address-actions">
-              {!address.is_default && (
-                <form action={setDefaultAddressAction}>
+              {address.phone ? <p>{address.phone}</p> : null}
+              <div className={styles.actions}>
+                {!address.is_default ? (
+                  <form action={setDefaultAddressAction}>
+                    <input type="hidden" name="id" value={address.id} />
+                    <button className={styles.textButton}>Usar por defecto</button>
+                  </form>
+                ) : null}
+                <form action={deleteAddressAction}>
                   <input type="hidden" name="id" value={address.id} />
-                  <button className="text-button">Hacer predeterminada</button>
+                  <button className={styles.textButton}>Borrar</button>
                 </form>
-              )}
-              <details>
-                <summary>Editar</summary>
-                <AddressForm address={address} compact />
-              </details>
-              <form action={deleteAddressAction}>
-                <input type="hidden" name="id" value={address.id} />
-                <button className="text-button danger">Eliminar</button>
-              </form>
-            </div>
-          </article>
-        ))}
-      </div>
+                <details>
+                  <summary>Editar</summary>
+                  <AddressForm address={address} />
+                </details>
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </>
   );
 }

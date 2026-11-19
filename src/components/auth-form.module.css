@@ -1,0 +1,197 @@
+.page {
+  padding-block: var(--space-7) var(--space-9);
+}
+
+.layout {
+  display: grid;
+  grid-template-areas:
+    "head"
+    "card"
+    "extra";
+  gap: var(--space-6);
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .layout {
+    grid-template-areas:
+      "head card"
+      "extra card";
+    grid-template-columns: minmax(0, 1fr) minmax(380px, 440px);
+    grid-template-rows: auto 1fr;
+    column-gap: var(--space-9);
+    row-gap: var(--space-6);
+  }
+}
+
+.head {
+  grid-area: head;
+  display: grid;
+  gap: var(--space-3);
+  max-width: 34rem;
+}
+
+.head h1 {
+  font-size: var(--titulo-1);
+}
+
+.head p {
+  color: var(--color-tinta-2);
+  font-size: var(--text-18);
+}
+
+.extra {
+  grid-area: extra;
+  display: grid;
+  gap: var(--space-5);
+  max-width: 34rem;
+}
+
+.benefits {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.benefits li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: start;
+}
+
+.benefits svg {
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  stroke-width: 1.75;
+}
+
+.benefits strong {
+  display: block;
+}
+
+.benefits span {
+  color: var(--color-tinta-2);
+}
+
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  color: var(--color-tinta-3);
+  font-size: var(--text-14);
+}
+
+.note svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+}
+
+.card {
+  grid-area: card;
+  display: grid;
+  gap: var(--space-4);
+  padding: 0 var(--space-5) var(--space-5);
+  border: 1.5px solid var(--color-tinta);
+  background: var(--color-blanco);
+}
+
+.card > :global(.barras) {
+  width: 148px;
+  height: 18px;
+  margin-bottom: var(--space-1);
+}
+
+.names {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 420px) {
+  .names {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.password {
+  position: relative;
+}
+
+.password input {
+  padding-right: 52px;
+}
+
+.password button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: var(--touch);
+  height: 100%;
+  border: 0;
+  background: none;
+  color: var(--color-tinta-2);
+  cursor: pointer;
+}
+
+.password button:hover {
+  color: var(--color-tinta);
+}
+
+.password button:focus-visible {
+  outline: 2px solid var(--foco);
+  outline-offset: -4px;
+}
+
+.password svg {
+  width: 20px;
+  height: 20px;
+}
+
+.consents {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--color-tinta-2);
+  font-size: var(--text-14);
+}
+
+.check input {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  accent-color: var(--color-tinta);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--text-14);
+}
+
+.switch {
+  color: var(--color-tinta-2);
+  font-size: var(--text-14);
+  text-align: center;
+}
+
+/* Dentro de Mi cuenta el formulario no ocupa un área con nombre: si la tuviera, la grilla de la
+   cuenta abriría una columna de más. */
+.card[data-embedded] {
+  grid-area: auto;
+  max-width: 440px;
+}

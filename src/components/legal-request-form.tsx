@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
+import styles from "./legal.module.css";
 
 type RequestKind = "withdrawal" | "privacy";
 type SubmitState = {
@@ -41,111 +42,103 @@ export function LegalRequestForm({ kind, orderReference = "" }: { kind: RequestK
 
   if (state.status === "success")
     return (
-      <div className="request-confirmation" role="status">
-        <p className="eyebrow">Solicitud recibida</p>
+      <div className={styles.done} role="status">
         <h2>Tu constancia es {state.reference}</h2>
         <p>
-          Guardá este número. La solicitud quedó registrada con fecha y hora y será revisada por
-          Chetech.
+          Guardá este número. La solicitud quedó registrada con fecha y hora, y te respondemos por el canal que
+          elegiste.
         </p>
-        <Link className="button primary" href="/">
+        <Link className="btn" href="/">
           Volver al inicio
         </Link>
       </div>
     );
 
   return (
-    <form className="legal-request-form" onSubmit={submit} noValidate>
-      <div className="form-row">
-        <label>
-          Nombre
+    <form className={styles.form} onSubmit={submit} noValidate>
+      <div className="barras" aria-hidden />
+      <div className={styles.row}>
+        <label className="field">
+          <span>Nombre</span>
           <input name="firstName" required maxLength={80} autoComplete="given-name" />
         </label>
-        <label>
-          Apellido
+        <label className="field">
+          <span>Apellido</span>
           <input name="lastName" required maxLength={80} autoComplete="family-name" />
         </label>
       </div>
-      <label>
-        Correo electrónico o teléfono
-        <input
-          name="contact"
-          required
-          maxLength={160}
-          autoComplete="email"
-          aria-describedby="contact-help"
-        />
+      <label className="field">
+        <span>Mail o teléfono</span>
+        <input name="contact" required maxLength={160} autoComplete="email" aria-describedby="contact-help" />
+        <small id="contact-help">Lo usamos solo para identificar y responder esta solicitud.</small>
       </label>
-      <small id="contact-help">
-        Usaremos este dato solamente para identificar y responder esta solicitud.
-      </small>
-      <label>
-        Canal de respuesta preferido
+      <label className="field">
+        <span>¿Por dónde te respondemos?</span>
         <select name="preferredChannel" required defaultValue="email">
-          <option value="email">Correo electrónico</option>
+          <option value="email">Mail</option>
           <option value="whatsapp">WhatsApp</option>
-          <option value="phone">Teléfono</option>
+          <option value="phone">Llamada</option>
         </select>
       </label>
       {isWithdrawal ? (
         <>
-          <div className="form-row">
-            <label>
-              Número de pedido o referencia (si existe)
-              <input name="orderReference" maxLength={80} defaultValue={orderReference} />
+          <div className={styles.row}>
+            <label className="field">
+              <span>Número de pedido (si lo tenés)</span>
+              <input name="orderReference" maxLength={80} defaultValue={orderReference} placeholder="CHT-000123" />
             </label>
-            <label>
-              Fecha aproximada
+            <label className="field">
+              <span>Fecha aproximada de la compra</span>
               <input name="approximateDate" type="date" />
             </label>
           </div>
-          <label>
-            Producto
+          <label className="field">
+            <span>Producto</span>
             <input name="product" required maxLength={200} />
           </label>
-          <label>
-            Motivo (opcional)
+          <label className="field">
+            <span>Motivo (opcional)</span>
             <textarea name="reason" rows={4} maxLength={1000} />
           </label>
         </>
       ) : (
         <>
-          <label>
-            Tipo de solicitud
+          <label className="field">
+            <span>Qué necesitás</span>
             <select name="privacyRight" required defaultValue="access">
-              <option value="access">Acceso a mis datos</option>
-              <option value="rectification">Rectificación o actualización</option>
-              <option value="deletion">Supresión</option>
-              <option value="information">Información sobre el uso</option>
-              <option value="consent">Retiro de consentimiento</option>
+              <option value="access">Ver mis datos</option>
+              <option value="rectification">Corregir o actualizar mis datos</option>
+              <option value="deletion">Borrar mis datos</option>
+              <option value="information">Saber cómo se usan</option>
+              <option value="consent">Retirar mi consentimiento</option>
             </select>
           </label>
-          <label>
-            Detalle necesario para ubicar la información
+          <label className="field">
+            <span>Detalle para ubicar tus datos</span>
             <textarea name="reason" rows={4} maxLength={1000} required />
+            <small>No adjuntes el DNI ni documentos. Si hace falta verificar tu identidad, te lo pedimos aparte.</small>
           </label>
-          <p className="form-help">
-            No adjuntes DNI ni documentos sensibles. Si fuera necesaria una verificación adicional,
-            la coordinaremos de manera razonable.
-          </p>
         </>
       )}
-      <label className="honeypot" aria-hidden="true">
+      <label className={styles.honeypot} aria-hidden="true">
         Sitio web
         <input name="website" tabIndex={-1} autoComplete="off" maxLength={0} />
       </label>
-      <p className="form-privacy">
-        Al enviar, los datos se utilizarán para gestionar esta solicitud. Consultá la{" "}
-        <Link href="/privacidad">Política de privacidad</Link>.
+      <p className={styles.small}>
+        Usamos estos datos solo para esta solicitud. Más detalles en la{" "}
+        <Link href="/privacidad" className="enlace">
+          política de privacidad
+        </Link>
+        .
       </p>
-      <button className="button primary" type="submit" disabled={state.status === "sending"}>
-        {state.status === "sending" ? "Registrando…" : "Enviar solicitud"}
+      {state.status === "error" ? (
+        <p className="aviso" role="alert">
+          {state.message} Si sigue fallando, escribinos por mail o WhatsApp.
+        </p>
+      ) : null}
+      <button className="btn" data-size="large" data-block="true" type="submit" disabled={state.status === "sending"} aria-busy={state.status === "sending"}>
+        {state.status === "sending" ? "Enviando…" : "Enviar solicitud"}
       </button>
-      <div className="form-status" aria-live="polite">
-        {state.status === "error" && (
-          <p>{state.message} Si el problema continúa, escribinos por los canales de contacto.</p>
-        )}
-      </div>
     </form>
   );
 }

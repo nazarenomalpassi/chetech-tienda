@@ -12,6 +12,8 @@ import {
   UsersRound,
 } from "lucide-react";
 import { requireAdmin } from "@/lib/auth";
+// Estilos anteriores al rediseño que siguen usando las pantallas de Administración.
+import "@/styles/legacy/admin.css";
 
 const links = [
   ["/admin/dashboard", "Tablero", CircleGauge],
@@ -48,7 +50,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           Volver a mi cuenta
         </Link>
       </aside>
-      <main className="admin-content">{children}</main>
+      <div className="admin-content">{children}</div>
     </section>
   );
 }

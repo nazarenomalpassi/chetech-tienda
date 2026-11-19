@@ -1,0 +1,339 @@
+/* Páginas legales: texto largo para leer con calma. Columna angosta, letra de lectura y un índice
+   fijo en pantallas anchas para saltar entre secciones. */
+
+.page {
+  padding-block: var(--space-6) var(--space-9);
+}
+
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+  color: var(--color-tinta-3);
+  font-size: var(--text-14);
+}
+
+.crumbs a {
+  color: var(--color-tinta-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.head {
+  display: grid;
+  gap: var(--space-3);
+  max-width: 44rem;
+  margin-bottom: var(--space-7);
+}
+
+.head h1 {
+  font-size: var(--titulo-1);
+}
+
+.head p {
+  color: var(--color-tinta-2);
+  font-size: var(--text-18);
+}
+
+.head .meta {
+  color: var(--color-tinta-3);
+  font-size: var(--text-14);
+}
+
+/* Documento */
+.doc {
+  display: grid;
+  gap: var(--space-7);
+}
+
+@media (min-width: 1000px) {
+  .doc {
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: var(--space-9);
+    align-items: start;
+  }
+}
+
+.toc {
+  display: none;
+}
+
+@media (min-width: 1000px) {
+  .toc {
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-5));
+    display: grid;
+    gap: var(--space-3);
+  }
+}
+
+.toc p {
+  font-family: var(--font-display);
+  font-size: var(--rotulo);
+  text-transform: uppercase;
+}
+
+.toc ol {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-left: 1.5px solid var(--color-linea);
+}
+
+.toc a {
+  display: block;
+  padding: 6px 0 6px var(--space-3);
+  margin-left: -1.5px;
+  border-left: 1.5px solid transparent;
+  color: var(--color-tinta-2);
+  font-size: var(--text-14);
+  line-height: 1.35;
+}
+
+.toc a:hover {
+  border-left-color: var(--color-tinta);
+  color: var(--color-tinta);
+}
+
+.article {
+  display: grid;
+  gap: var(--space-7);
+  max-width: 44rem;
+}
+
+.section {
+  display: grid;
+  gap: var(--space-3);
+  scroll-margin-top: calc(var(--header-height) + var(--space-5));
+}
+
+.section h2 {
+  font-size: var(--titulo-3);
+}
+
+.section p,
+.section li {
+  color: var(--color-tinta-2);
+  font-size: var(--text-16);
+  line-height: 1.65;
+}
+
+.section ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: 1.2em;
+}
+
+.section li::marker {
+  color: var(--color-acero);
+}
+
+.help {
+  display: grid;
+  gap: var(--space-2);
+  max-width: 44rem;
+  padding: var(--space-5);
+  border: 1.5px solid var(--color-tinta);
+  background: var(--color-blanco);
+}
+
+.help strong {
+  font-family: var(--font-display);
+  font-size: var(--titulo-3);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.help p {
+  color: var(--color-tinta-2);
+}
+
+/* Centro legal: lista de documentos */
+.index {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1.5px solid var(--color-tinta);
+}
+
+@media (min-width: 800px) {
+  .index {
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--space-7);
+  }
+}
+
+.index a {
+  display: grid;
+  gap: var(--space-1);
+  min-height: 100%;
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--color-linea);
+}
+
+.index strong {
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.15s ease;
+}
+
+.index a:hover strong {
+  text-decoration-color: currentColor;
+}
+
+.index span {
+  color: var(--color-tinta-3);
+  font-size: var(--text-14);
+}
+
+/* Preguntas frecuentes */
+.faq {
+  display: grid;
+  max-width: 44rem;
+  border-top: 1.5px solid var(--color-tinta);
+}
+
+.faq details {
+  border-bottom: 1px solid var(--color-linea);
+}
+
+.faq summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: 56px;
+  padding: var(--space-3) 0;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq summary::after {
+  content: "+";
+  flex: none;
+  font-family: var(--font-display);
+  font-size: var(--text-22);
+  line-height: 1;
+}
+
+.faq details[open] summary::after {
+  content: "−";
+}
+
+.faq details p {
+  padding-bottom: var(--space-4);
+  color: var(--color-tinta-2);
+  line-height: 1.65;
+}
+
+/* Formularios de arrepentimiento y privacidad */
+.formLayout {
+  display: grid;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+@media (min-width: 960px) {
+  .formLayout {
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: var(--space-8);
+  }
+}
+
+.form {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 44rem;
+  padding: 0 var(--space-5) var(--space-5);
+  border: 1.5px solid var(--color-tinta);
+  background: var(--color-blanco);
+}
+
+.form > :global(.barras) {
+  width: 148px;
+  height: 18px;
+}
+
+.row {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 560px) {
+  .row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.small {
+  color: var(--color-tinta-3);
+  font-size: var(--text-14);
+}
+
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.side {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background: var(--color-tinta);
+  color: var(--color-blanco);
+}
+
+.side h2 {
+  font-size: var(--titulo-3);
+}
+
+.side p,
+.side li {
+  color: var(--color-plata);
+}
+
+.side ol {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: 1.3em;
+}
+
+.side a {
+  color: var(--color-blanco);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.done {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+  max-width: 44rem;
+  padding: var(--space-5);
+  border: 1.5px solid var(--color-tinta);
+  background: var(--color-blanco);
+}
+
+.done h2 {
+  font-size: var(--titulo-2);
+}
+
+.done p {
+  color: var(--color-tinta-2);
+}

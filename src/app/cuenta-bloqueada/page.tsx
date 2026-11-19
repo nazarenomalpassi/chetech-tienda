@@ -1,18 +1,25 @@
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
+import styles from "@/components/auth-form.module.css";
 
 export default function BlockedAccountPage() {
   return (
-    <section className="section shell empty-state">
-      <p className="eyebrow">Acceso restringido</p>
-      <h1>Tu cuenta no está activa</h1>
-      <p>
-        Para revisar el estado o ejercer tus derechos de privacidad, escribinos a{" "}
-        <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>.
-      </p>
-      <Link className="button primary" href="/">
-        Volver al inicio
-      </Link>
-    </section>
+    <div className={`page ${styles.page}`}>
+      <header className={styles.head}>
+        <h1>Tu cuenta no está activa</h1>
+        <p>
+          Para revisar qué pasó o pedir tus datos, escribinos a{" "}
+          <a href={`mailto:${siteConfig.email}`} className="enlace">
+            {siteConfig.email}
+          </a>
+          .
+        </p>
+        <p>
+          <Link className="btn" href="/">
+            Volver al inicio
+          </Link>
+        </p>
+      </header>
+    </div>
   );
 }

@@ -135,3 +135,22 @@ test("la tienda pública es en escala de grises, con la tipografía de la marca"
   assert.match(tokens, /--font-display: var\(--font-montech\)/);
   assert.match(fonts, /montech-v02-700\.woff2/);
 });
+
+test("los estilos anteriores al rediseño se cargan solo en su zona", async () => {
+  const globals = await source("src/app/globals.css");
+  assert.doesNotMatch(globals, /legacy/);
+
+  const zones = {
+    "src/app/admin/layout.tsx": "admin.css",
+    "src/app/servicio-tecnico/layout.tsx": "service.css",
+    "src/app/cuenta/reparaciones/layout.tsx": "repair.css",
+  };
+  for (const [layout, file] of Object.entries(zones)) {
+    const code = await source(layout);
+    assert.match(code, new RegExp(`import "@/styles/legacy/${file.replace(".", "\\.")}"`), `${layout} carga ${file}`);
+  }
+
+  // El seguimiento de reparaciones está a la vista del cliente: sus estados van en grises.
+  const repair = await source("src/styles/legacy/repair.css");
+  assert.doesNotMatch(repair, /#(?:fff3c5|fff5d2|f3e6b3|dbe9f4|d5efdc|f2d9d3|8baa13|a8cd11)/i);
+});

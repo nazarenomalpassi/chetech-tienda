@@ -1,174 +1,138 @@
 import type { Metadata } from "next";
-import {
-  Check,
-  MapPin,
-  MessageCircle,
-  PackageCheck,
-  ShieldCheck,
-  Truck,
-  Wrench,
-} from "lucide-react";
+import { MapPin, MessageCircle, PackageCheck, ShieldCheck, Truck, Wrench } from "lucide-react";
 import { HeroServiceCarousel } from "@/components/hero-service-carousel";
+import { siteConfig } from "@/config/site";
 import { whatsappUrl } from "@/lib/whatsapp";
+import styles from "./about.module.css";
 
 export const metadata: Metadata = {
   title: "Nosotros",
   description:
-    "Conocé Chetech: tecnología, productos y servicio técnico con atención a domicilio en Río Tercero y alcance en toda Argentina.",
+    "CheTech: servicio técnico y tienda de tecnología en Río Tercero, con retiro y entrega a domicilio en la ciudad y envíos a todo el país.",
+  alternates: { canonical: "/nosotros" },
 };
 
-const serviceBenefits = [
-  [
-    MapPin,
-    "Retiro y entrega sin costo",
-    "Dentro de Río Tercero coordinamos el retiro y la entrega del equipo a domicilio, sin costo adicional.",
-  ],
-  [
-    Wrench,
-    "Diagnóstico sin costo",
-    "Revisamos el equipo y te explicamos qué sucede antes de avanzar con cualquier reparación.",
-  ],
-  [
-    Truck,
-    "Alcance nacional",
-    "Trabajamos con comisionistas y coordinamos envíos para atender consultas y pedidos desde distintos puntos del país.",
-  ],
-  [
-    PackageCheck,
-    "Productos de primera calidad",
-    "Seleccionamos productos confiables, brindamos asesoramiento y realizamos envíos a toda la Argentina.",
-  ],
-] as const;
+const howWeWork = [
+  {
+    icon: Wrench,
+    title: "Diagnóstico sin costo",
+    text: "Revisamos el equipo y te explicamos qué tiene y cuánto sale antes de tocar nada.",
+  },
+  {
+    icon: MapPin,
+    title: "Retiro y entrega en Río Tercero",
+    text: "Dentro de la ciudad buscamos el equipo y te lo devolvemos en tu casa, sin costo.",
+  },
+  {
+    icon: Truck,
+    title: "Envíos a todo el país",
+    text: "Despachamos compras y coordinamos con comisionistas para atender reparaciones de otras ciudades.",
+  },
+  {
+    icon: PackageCheck,
+    title: "Productos confiables",
+    text: "Elegimos lo que vendemos y te asesoramos antes de comprar.",
+  },
+];
+
+const promises = [
+  { icon: MessageCircle, title: "Hablás con nosotros", text: "Sin intermediarios: hablás directo con el local." },
+  { icon: ShieldCheck, title: "Respaldamos lo que hacemos", text: "Cuidamos tus equipos, y los productos y reparaciones tienen garantía." },
+  { icon: Truck, title: "Nos ocupamos de la logística", text: "Retiros, entregas, comisionistas y envíos según dónde estés." },
+];
 
 export default function AboutPage() {
   return (
     <>
-      <section className="page-hero dark-grid">
-        <div className="shell">
-          <p className="kicker">Chetech / Río Tercero</p>
-          <h1>
-            Tecnología con
-            <br />
-            atención real.
-          </h1>
+      <section className={`page ${styles.intro}`}>
+        <div className={styles.introText}>
+          <h1>Tecnología con atención real</h1>
           <p>
-            Servicio técnico, productos seleccionados y una forma de trabajar pensada para que
-            resolver sea más simple.
+            En CheTech reparamos y vendemos tecnología en Río Tercero. Escuchamos lo que necesitás, revisamos cada caso
+            y te explicamos las opciones con claridad antes de avanzar.
+          </p>
+          <p>
+            Queremos que resolver sea simple: estar disponibles desde la primera consulta hasta que tenés el equipo o la
+            compra en la mano.
           </p>
         </div>
+        <HeroServiceCarousel intervalMs={4000} />
       </section>
 
-      <section className="section shell about-grid about-intro">
-        <HeroServiceCarousel intervalMs={3000} className="about-image" />
-        <div className="about-copy">
-          <p className="eyebrow">Nuestra forma de trabajar</p>
-          <h2>Claridad antes, durante y después.</h2>
-          <p>
-            En Chetech combinamos servicio técnico y venta de tecnología con atención directa.
-            Escuchamos lo que necesitás, revisamos cada caso y te explicamos las alternativas con
-            claridad antes de avanzar.
-          </p>
-          <p>
-            Nuestro principal objetivo es tu comodidad. Por eso buscamos estar disponibles en cada
-            etapa: desde la primera consulta hasta la entrega del equipo o la recepción de tu
-            compra.
-          </p>
-          <ul className="check-list">
-            <li>
-              <Check /> Retiro y entrega a domicilio sin costo en Río Tercero
+      <section className={`page ${styles.how}`} aria-labelledby="como-trabajamos">
+        <div className={styles.howHead}>
+          <h2 id="como-trabajamos">Cómo trabajamos</h2>
+          <p>Menos vueltas para vos: nos encargamos de coordinar y de avisarte en cada paso.</p>
+        </div>
+        <ul className={styles.list}>
+          {howWeWork.map(({ icon: Icon, title, text }) => (
+            <li key={title}>
+              <Icon aria-hidden />
+              <div>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </div>
             </li>
-            <li>
-              <Check /> Diagnóstico de reparaciones sin costo
-            </li>
-            <li>
-              <Check /> Atención y seguimiento directo
-            </li>
-            <li>
-              <Check /> Productos y reparaciones con garantía
-            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className={styles.promise} aria-labelledby="compromiso">
+        <div className={`page ${styles.promiseInner}`}>
+          <div className={styles.promiseText}>
+            <h2 id="compromiso">Que resolver sea fácil</h2>
+            <p>
+              Siempre hay alguien para orientarte. Nos ocupamos de la coordinación, el seguimiento y la información para
+              que decidas con tranquilidad.
+            </p>
+          </div>
+          <ul className={styles.list}>
+            {promises.map(({ icon: Icon, title, text }) => (
+              <li key={title}>
+                <Icon aria-hidden />
+                <div>
+                  <h3>{title}</h3>
+                  <p>{text}</p>
+                </div>
+              </li>
+            ))}
           </ul>
         </div>
       </section>
 
-      <section className="section surface about-services">
-        <div className="shell">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">Más cerca, estés donde estés</p>
-              <h2>Un servicio pensado alrededor tuyo.</h2>
-            </div>
-            <p>
-              Reducimos vueltas, acercamos soluciones y mantenemos una comunicación clara durante
-              todo el proceso.
-            </p>
-          </div>
-          <div className="about-service-grid">
-            {serviceBenefits.map(([Icon, title, text], index) => (
-              <article key={title}>
-                <div>
-                  <Icon />
-                  <span>0{index + 1}</span>
-                </div>
-                <h3>{title}</h3>
-                <p>{text}</p>
-              </article>
+      <section className={`page ${styles.visit}`} aria-labelledby="visitanos">
+        <div className={styles.visitText}>
+          <h2 id="visitanos">Pasá por el local</h2>
+          <p>Traé tu equipo para que lo revisemos, retirá una compra o consultanos lo que necesites.</p>
+          <a
+            className="btn"
+            data-variant="whatsapp"
+            href={whatsappUrl("Hola, CheTech. Quiero hacer una consulta.")}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Escribir por WhatsApp
+          </a>
+        </div>
+        <div className={styles.ticket}>
+          <div className="barras" aria-hidden />
+          <p className={styles.address}>
+            {siteConfig.address}, {siteConfig.location}
+          </p>
+          <dl className={styles.hours}>
+            {siteConfig.businessHours.map((item) => (
+              <div key={item.label}>
+                <dt>{item.label}</dt>
+                <dd>{item.value}</dd>
+              </div>
             ))}
-          </div>
+          </dl>
+          <p>
+            <a href={siteConfig.mapsUrl} target="_blank" rel="noreferrer" className="enlace">
+              Cómo llegar
+            </a>
+          </p>
         </div>
-      </section>
-
-      <section className="about-promise dark-grid">
-        <div className="shell about-promise-grid">
-          <div>
-            <p className="kicker">Nuestro compromiso</p>
-            <h2>Que resolver sea fácil.</h2>
-            <p>
-              Queremos que sientas que siempre hay alguien disponible para orientarte. Nos ocupamos
-              de la coordinación, el seguimiento y la información para que vos puedas decidir con
-              tranquilidad.
-            </p>
-          </div>
-          <div className="about-promise-list">
-            <article>
-              <MessageCircle />
-              <div>
-                <strong>Respuesta directa</strong>
-                <p>Hablás con nosotros, sin intermediarios innecesarios.</p>
-              </div>
-            </article>
-            <article>
-              <ShieldCheck />
-              <div>
-                <strong>Trabajo responsable</strong>
-                <p>Cuidamos tus equipos y respaldamos nuestros productos y reparaciones.</p>
-              </div>
-            </article>
-            <article>
-              <Truck />
-              <div>
-                <strong>Soluciones que llegan</strong>
-                <p>Coordinamos retiros, entregas, comisionistas y envíos según tu ubicación.</p>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section className="section shell about-final">
-        <p className="eyebrow">Estamos para ayudarte</p>
-        <h2>Contanos qué necesitás.</h2>
-        <p>
-          Ya sea una reparación, una consulta o un producto, te ayudamos a encontrar la mejor
-          alternativa y coordinamos la forma más cómoda de resolverlo.
-        </p>
-        <a
-          className="button primary"
-          href={whatsappUrl("Hola, Chetech. Quiero hacer una consulta.")}
-          target="_blank"
-          rel="noreferrer"
-        >
-          <MessageCircle /> Hablar por WhatsApp
-        </a>
       </section>
     </>
   );

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import styles from "./hero-service-carousel.module.css";
 
 const serviceSlides = [
   {
@@ -115,7 +116,7 @@ export function HeroServiceCarousel({
 
   return (
     <div
-      className={`tech-frame hero-service-carousel ${className}`.trim()}
+      className={`${styles.carousel} ${className}`.trim()}
       role="region"
       aria-roledescription="carrusel"
       aria-label="Servicios de reparación de Chetech"
@@ -166,17 +167,18 @@ export function HeroServiceCarousel({
           fill
           priority={index === 0}
           loading={index === 0 ? "eager" : "lazy"}
-          sizes="(max-width: 1050px) 100vw, 45vw"
+          sizes="(max-width: 900px) 100vw, 40vw"
           alt={slide.alt}
           aria-hidden={index !== activeSlide}
           draggable={false}
-          className={`hero-service-slide ${index === activeSlide ? "active" : ""}`}
+          className={styles.slide}
+          data-active={index === activeSlide}
         />
       ))}
 
       <button
         type="button"
-        className="hero-carousel-arrow hero-carousel-arrow-prev"
+        className={`${styles.arrow} ${styles.prev}`}
         aria-label="Mostrar servicio anterior"
         onClick={showPrevious}
       >
@@ -184,26 +186,24 @@ export function HeroServiceCarousel({
       </button>
       <button
         type="button"
-        className="hero-carousel-arrow hero-carousel-arrow-next"
+        className={`${styles.arrow} ${styles.next}`}
         aria-label="Mostrar servicio siguiente"
         onClick={showNext}
       >
         <ChevronRight aria-hidden="true" />
       </button>
 
-      <div className="hero-carousel-controls">
-        <div className="hero-carousel-dots" role="group" aria-label="Elegir servicio">
+      <div className={styles.dots} role="group" aria-label="Elegir servicio">
           {serviceSlides.map((slide, index) => (
             <button
               key={slide.src}
               type="button"
-              className={`hero-carousel-dot ${index === activeSlide ? "active" : ""}`}
+              className={styles.dot}
               aria-label={`Mostrar: ${slide.alt}`}
               aria-pressed={index === activeSlide}
               onClick={() => setActiveSlide(index)}
             />
           ))}
-        </div>
       </div>
     </div>
   );

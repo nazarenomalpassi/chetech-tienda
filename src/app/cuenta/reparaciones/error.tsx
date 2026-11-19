@@ -13,7 +13,7 @@ export default function RepairsError({
       <AlertTriangle aria-hidden="true" />
       <h2>No pudimos cargar tus reparaciones.</h2>
       <p>Puede ser un inconveniente momentáneo. Volvé a intentarlo en unos segundos.</p>
-      <button className="button primary" onClick={reset} type="button">
+      <button className="btn" onClick={reset} type="button">
         <RotateCcw aria-hidden="true" />
         Reintentar
       </button>

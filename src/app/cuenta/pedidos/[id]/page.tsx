@@ -4,6 +4,8 @@ import { formatPrice } from "@/lib/format";
 import { deliveryMethodLabels, orderStatusLabels } from "@/lib/orders";
 import { requireAccount } from "@/lib/auth";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { AccountHeading } from "../../account-heading";
+import styles from "../../account.module.css";
 
 type OrderItemRow = {
   id: string;
@@ -40,68 +42,56 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
   ) as OrderItemRow[];
   return (
     <>
-      <div className="account-heading">
-        <p className="eyebrow">{order.order_number}</p>
-        <h1>Detalle del pedido</h1>
-        <p>{formatDate(order.created_at, { dateStyle: "long", timeStyle: "short" })}</p>
-      </div>
-      <div className="order-detail-summary">
+      <AccountHeading title={`Pedido ${order.order_number}`} back={{ href: "/cuenta/pedidos", label: "Volver a pedidos" }}>
+        {formatDate(order.created_at, { dateStyle: "long", timeStyle: "short" })}
+      </AccountHeading>
+      <dl className={styles.summary}>
         <div>
-          <span>Estado</span>
-          <strong>{orderStatusLabels[order.status] ?? order.status}</strong>
+          <dt>Estado</dt>
+          <dd>{orderStatusLabels[order.status] ?? order.status}</dd>
         </div>
         <div>
-          <span>Entrega</span>
-          <strong>{deliveryMethodLabels[order.delivery_method] ?? order.delivery_method}</strong>
+          <dt>Entrega</dt>
+          <dd>{deliveryMethodLabels[order.delivery_method] ?? order.delivery_method}</dd>
         </div>
         <div>
-          <span>Total estimado</span>
-          <strong>{formatPrice(Number(order.total))}</strong>
+          <dt>Total</dt>
+          <dd>{formatPrice(Number(order.total))}</dd>
         </div>
-      </div>
-      <div className="order-items">
+      </dl>
+      <ul className={styles.rows}>
         {items.map((item) => (
-          <article key={item.id}>
-            <div>
-              <h2>{item.product_name_snapshot}</h2>
-            </div>
-            <span>
+          <li key={item.id} className={styles.row}>
+            <span className={styles.rowTitle}>{item.product_name_snapshot}</span>
+            <span className={styles.rowMeta}>
               {item.quantity} × {formatPrice(Number(item.unit_price_snapshot))}
             </span>
-            <strong>{formatPrice(Number(item.subtotal))}</strong>
-          </article>
+            <span className={styles.rowSide}>
+              <strong>{formatPrice(Number(item.subtotal))}</strong>
+            </span>
+          </li>
         ))}
-      </div>
-      {!!history?.length && (
-        <section className="account-order-updates" aria-labelledby="order-updates-title">
-          <div className="account-order-updates-heading">
-            <p className="eyebrow">Seguimiento</p>
-            <h2 id="order-updates-title">Novedades del pedido</h2>
+      </ul>
+      {history?.length ? (
+        <section className={styles.block} aria-labelledby="novedades">
+          <div className={styles.blockHead}>
+            <h2 id="novedades">Novedades</h2>
           </div>
-          <div className="account-order-updates-list">
-            {history.map((entry) => (
-              <article className="account-note" key={entry.id}>
-                <div>
-                  <strong>{orderStatusLabels[entry.new_status] ?? "Actualización"}</strong>
-                  <time dateTime={entry.created_at}>
-                    {formatDate(entry.created_at, {
-                      dateStyle: "medium",
-                      timeStyle: "short",
-                    })}
-                  </time>
-                </div>
-                <p>{entry.customer_visible_note}</p>
-              </article>
-            ))}
-          </div>
+          {history.map((entry) => (
+            <div className={styles.note} key={entry.id}>
+              <strong>{orderStatusLabels[entry.new_status] ?? "Novedad"}</strong>
+              <time dateTime={entry.created_at}>{formatDate(entry.created_at, { dateStyle: "medium", timeStyle: "short" })}</time>
+              <p>{entry.customer_visible_note}</p>
+            </div>
+          ))}
         </section>
-      )}
-      {order.customer_notes && (
-        <div className="account-note">
-          <strong>Tu observación</strong>
+      ) : null}
+      {order.customer_notes ? (
+        <div className={styles.note}>
+          <strong>Tu nota</strong>
           <p>{order.customer_notes}</p>
         </div>
-      )}
+      ) : null}
     </>
   );
 }

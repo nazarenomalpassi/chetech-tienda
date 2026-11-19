@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, CalendarDays, CircleAlert, Clock3, ShieldCheck, Wrench } from "lucide-react";
 import { redirect } from "next/navigation";
+import { AccountHeading } from "../account-heading";
 import { RepairFocusRefresh } from "@/components/repair-focus-refresh";
 import { requireAccount } from "@/lib/auth";
 import { formatDate, formatDateOnly } from "@/lib/date";
@@ -42,14 +43,9 @@ export default async function RepairsPage({
   return (
     <>
       <RepairFocusRefresh />
-      <div className="account-heading">
-        <p className="eyebrow">Mis reparaciones</p>
-        <h1>Seguimiento claro</h1>
-        <p>
-          Consultá el estado, las novedades públicas y los próximos pasos de los equipos asociados a
-          tu cuenta.
-        </p>
-      </div>
+      <AccountHeading title="Reparaciones">
+        El estado, las novedades del taller y el próximo paso de cada equipo que dejaste.
+      </AccountHeading>
 
       {!page.items.length && !cursor && (
         <div className="empty-state repair-empty-state">
@@ -58,8 +54,8 @@ export default async function RepairsPage({
           <p>
             Cuando ingreses un equipo a nuestro servicio técnico, vas a poder seguirlo desde acá.
           </p>
-          <Link className="button primary" href="/servicio-tecnico">
-            Conocer el servicio técnico <ArrowRight />
+          <Link className="btn" href="/servicio-tecnico">
+            Ver el servicio técnico
           </Link>
         </div>
       )}
@@ -69,7 +65,7 @@ export default async function RepairsPage({
           <Clock3 aria-hidden="true" />
           <h2>No hay reparaciones más antiguas.</h2>
           <p>Volvé al inicio del listado para consultar las novedades más recientes.</p>
-          <Link className="button primary" href="/cuenta/reparaciones">
+          <Link className="btn" href="/cuenta/reparaciones">
             Ver las más recientes
           </Link>
         </div>

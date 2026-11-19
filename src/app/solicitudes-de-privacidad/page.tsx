@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { LegalCrumbs } from "@/components/legal-document-page";
+import styles from "@/components/legal.module.css";
 import { LegalRequestForm } from "@/components/legal-request-form";
 import { legalConfig } from "@/config/legal";
 
@@ -11,28 +13,25 @@ export const metadata: Metadata = {
 
 export default function PrivacyRequestPage() {
   return (
-    <section className="section shell legal-form-page">
-      <p className="eyebrow">Tus datos, tus derechos</p>
-      <h1>Solicitud de privacidad.</h1>
-      <p className="lead">
-        Podés pedir acceso, rectificación, actualización, información sobre el uso o supresión.
-        Solicitamos solamente lo necesario y no entregamos datos sin verificar razonablemente la
-        identidad.
-      </p>
-      <div className="legal-form-layout">
+    <div className={`page ${styles.page}`}>
+      <LegalCrumbs current="Solicitudes de privacidad" />
+      <header className={styles.head}>
+        <h1>Solicitudes de privacidad</h1>
+        <p>
+          Podés pedir ver, corregir, actualizar o borrar tus datos, o saber cómo los usamos. Pedimos solo lo necesario y
+          no entregamos datos sin confirmar que sos vos.
+        </p>
+      </header>
+      <div className={styles.formLayout}>
         <LegalRequestForm kind="privacy" />
-        <aside>
-          <h2>Canal alternativo</h2>
+        <aside className={styles.side}>
+          <h2>Otra forma</h2>
           <p>
-            También podés enviar la solicitud a{" "}
-            <a href={`mailto:${legalConfig.privacyEmail}`}>{legalConfig.privacyEmail}</a>.
+            También podés mandar la solicitud a <a href={`mailto:${legalConfig.privacyEmail}`}>{legalConfig.privacyEmail}</a>.
           </p>
-          <p>
-            La constancia confirma la recepción; no implica una entrega automática de información ni
-            un rechazo.
-          </p>
+          <p>La constancia confirma que la recibimos. No significa que se entregue información ni que se rechace.</p>
         </aside>
       </div>
-    </section>
+    </div>
   );
 }

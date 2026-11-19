@@ -1,0 +1,118 @@
+/* Las fotos de servicio son cuadradas y traen el rótulo de la marca: el marco las muestra enteras,
+   con la esquina en chaflán de la papelería. */
+.carousel {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--color-carbon);
+  clip-path: var(--corte);
+  touch-action: pan-y;
+}
+
+.carousel:focus-visible {
+  outline: 3px solid var(--foco);
+  outline-offset: 4px;
+}
+
+.slide {
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.55s var(--ease-in-out);
+}
+
+.slide[data-active="true"] {
+  opacity: 1;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: var(--touch);
+  height: var(--touch);
+  padding: 0;
+  border: 1px solid rgb(255 255 255 / 0.3);
+  background: rgb(16 16 16 / 0.72);
+  color: var(--color-blanco);
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: opacity 0.18s ease;
+}
+
+.arrow svg {
+  width: 18px;
+  height: 18px;
+}
+
+.arrow:focus-visible {
+  outline: 2px solid var(--color-blanco);
+  outline-offset: 2px;
+}
+
+.prev {
+  left: 12px;
+}
+
+.next {
+  right: 12px;
+}
+
+@media (hover: hover) {
+  .arrow {
+    opacity: 0;
+  }
+
+  .carousel:hover .arrow,
+  .carousel:focus-within .arrow {
+    opacity: 1;
+  }
+}
+
+.dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  background: rgb(16 16 16 / 0.6);
+  transform: translateX(-50%);
+}
+
+.dot {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.dot::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  background: var(--color-acero);
+  transition: width 0.2s ease, background 0.2s ease;
+}
+
+.dot[aria-pressed="true"]::after {
+  width: 20px;
+  background: var(--color-blanco);
+}
+
+.dot:focus-visible {
+  outline: 2px solid var(--color-blanco);
+  outline-offset: -4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide,
+  .dot::after {
+    transition: none;
+  }
+}
