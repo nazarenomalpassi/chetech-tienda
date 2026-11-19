@@ -1,0 +1,113 @@
+# Operación de la tienda
+
+Cómo se prende cada parte de la tienda en Railway. Todo arranca apagado: la tienda funciona con reserva por
+WhatsApp hasta que se active al menos un medio de pago en **Administración → Configuración**.
+
+## Servicios y variables
+
+Servicio **Tienda** (proyecto `chetech` en Railway, rama `main`). Las claves de la base no se cargan a mano:
+`scripts/railway/with-supabase-keys.mjs` las deriva de `SUPABASE_ROOT_SECRET` al compilar y al arrancar
+(clave pública, clave de servicio y `CHECKOUT_ACCESS_SECRET` para los enlaces de pedido).
+
+| Variable | Para qué | Estado |
+| --- | --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | Dominio público, usado en mails, catálogos y Mercado Pago | Cargada |
+| `NEXT_PUBLIC_SUPABASE_URL` | Dirección pública de la base | Cargada |
+| `SUPABASE_ROOT_SECRET` | Secreto raíz de la base | Cargada |
+| `MERCADOPAGO_ACCESS_TOKEN` | Credencial de producción de Mercado Pago | Falta |
+| `MERCADOPAGO_WEBHOOK_SECRET` | Clave secreta de los avisos de pago (Tus integraciones → Webhooks) | Falta |
+| `MERCADOPAGO_COLLECTOR_ID` | Número de cuenta que cobra, para rechazar pagos a otra cuenta | Falta (opcional) |
+| `PAYMENTS_LIVE_ENABLED` | `true` cobra de verdad; sin ella Mercado Pago queda en modo de prueba | Falta, a propósito |
+| `RESEND_API_KEY` | Envío de mails de pedidos | Falta |
+| `MAIL_FROM` | Remitente. Por defecto `CheTech <hola@chetechstore.com>` | Opcional |
+| `MAIL_REPLY_TO` | Respuestas. Por defecto el Gmail del local | Opcional |
+| `ADMIN_EMAIL` | Dónde llega el aviso de pedido nuevo | Opcional |
+| `NEXT_PUBLIC_GA_ID` | Google Analytics 4 (`G-…`) | Falta |
+| `NEXT_PUBLIC_META_PIXEL_ID` | Píxel de Meta | Falta |
+| `META_CAPI_TOKEN` | Compras informadas a Meta desde el servidor | Falta (opcional) |
+
+Las `NEXT_PUBLIC_*` se fijan al compilar: después de cargarlas hay que volver a desplegar.
+
+## Mercado Pago
+
+1. Cargar `MERCADOPAGO_ACCESS_TOKEN` y `MERCADOPAGO_WEBHOOK_SECRET` en el servicio Tienda.
+2. En Mercado Pago → Tus integraciones → Webhooks, la dirección es
+   `https://chetechstore.com/api/payments/mercadopago/webhook`, evento **Pagos**.
+3. En Administración → Configuración activar **Ofrecer Mercado Pago**.
+4. Probar con una cuenta de prueba: pago aprobado, rechazado y repetido (ver lista de control de la Fase 3).
+5. Recién después, `PAYMENTS_LIVE_ENABLED=true` y una compra real de monto bajo, cobrada y devuelta.
+
+Un pedido pasa a pagado solo cuando el servidor consulta el pago y comprueba pedido, moneda, cuenta receptora
+y modo real. Si el monto no coincide o el stock ya no alcanza, el pedido queda marcado **Revisar** en Pedidos.
+
+## Mails
+
+### Pedidos (Resend)
+
+1. Crear la cuenta de Resend y verificar `chetechstore.com` (los registros DNS van en Cloudflare).
+2. Cargar `RESEND_API_KEY` en el servicio Tienda.
+
+Los mails esperan en `storefront_outbox` y salen después de cada compra, pago o acción de Administración.
+Los que tengan más de 48 horas se descartan (salvo el aviso para el local).
+
+### Cuentas (servicio de login)
+
+El servicio **Gotrue Auth** no tiene correo configurado: hoy una cuenta nueva no recibe el mail de
+confirmación. Con la clave de Resend, cargar en ese servicio:
+
+```
+GOTRUE_SMTP_HOST=smtp.resend.com
+GOTRUE_SMTP_PORT=465
+GOTRUE_SMTP_USER=resend
+GOTRUE_SMTP_PASS=<la misma RESEND_API_KEY>
+GOTRUE_SMTP_ADMIN_EMAIL=hola@chetechstore.com
+GOTRUE_SMTP_SENDER_NAME=CheTech
+GOTRUE_URI_ALLOW_LIST=https://chetechstore.com/**,https://www.chetechstore.com/**
+GOTRUE_MAILER_TEMPLATES_CONFIRMATION=https://chetechstore.com/emails/auth/confirmacion
+GOTRUE_MAILER_TEMPLATES_RECOVERY=https://chetechstore.com/emails/auth/recuperacion
+GOTRUE_MAILER_TEMPLATES_INVITE=https://chetechstore.com/emails/auth/invitacion
+GOTRUE_MAILER_TEMPLATES_MAGIC_LINK=https://chetechstore.com/emails/auth/enlace-magico
+GOTRUE_MAILER_TEMPLATES_EMAIL_CHANGE=https://chetechstore.com/emails/auth/cambio-de-mail
+GOTRUE_MAILER_SUBJECTS_CONFIRMATION=Confirmá tu mail para terminar
+GOTRUE_MAILER_SUBJECTS_RECOVERY=Cambiá tu contraseña de CheTech
+GOTRUE_MAILER_SUBJECTS_INVITE=Te invitaron a CheTech
+GOTRUE_MAILER_SUBJECTS_MAGIC_LINK=Tu enlace para entrar a CheTech
+GOTRUE_MAILER_SUBJECTS_EMAIL_CHANGE=Confirmá tu mail nuevo
+```
+
+El servicio de login también lo usa el sistema de gestión: el cambio afecta a los dos (para bien).
+
+## Cobros, entregas y portada
+
+Todo se edita en **Administración → Configuración** y la tienda lo toma en menos de un minuto:
+
+- Transferencia: alias o CVU obligatorio para activarla. Reserva en horas hábiles del local.
+- Pago al retirar: solo con retiro, con monto máximo opcional.
+- Entrega CheTech: una fila por zona con su precio.
+- Correo Argentino: tarifa fija por paquete chico, mediano y grande. Los productos marcados “no viaja” no se ofrecen.
+- Canales del televisor de la portada y producto del video de la semana (lo usa `/ig`).
+
+## Vencimientos
+
+`pg_cron` corre `storefront-expire-orders` cada 5 minutos: vence reservas sin pagar, libera stock y encola
+los recordatorios. Se puede revisar con `select * from cron.job;`.
+
+## Promoción
+
+- Enlace de la biografía de Instagram: `https://chetechstore.com/ig` (cuenta como origen Instagram).
+- Enlaces medibles: agregar `?utm_source=instagram&utm_medium=historia&utm_campaign=<campaña>&utm_content=<pieza>`.
+- Catálogos: `https://chetechstore.com/feeds/meta.xml` (Meta Commerce Manager) y
+  `https://chetechstore.com/feeds/google.xml` (Merchant Center). Se actualizan cada hora.
+- Tablero por origen: Administración → Tablero.
+
+## Pruebas y mantenimiento
+
+```
+npm test          # pagos, horarios, origen de visitas, claves de pedido y contrato de la tienda
+npm run lint
+npm run build
+npm run css:prune # borra de legacy.css las reglas que ya no usa ninguna página
+```
+
+La prueba en seco de la base (`supabase/tests/storefront_v3_commerce_dry_run.sql`) corre todo dentro de una
+transacción y la revierte: se puede repetir sin dejar rastros.
