@@ -100,7 +100,7 @@ begin
   end if;
   if v_subtotal < v_coupon.min_subtotal then
     return jsonb_build_object('ok', false, 'error', 'Ese cupón es para compras desde $ '
-      || to_char(v_coupon.min_subtotal, 'FM999G999G999') || '.');
+      || replace(to_char(v_coupon.min_subtotal, 'FM999G999G999'), ',', '.') || '.');
   end if;
 
   -- Un pedido vencido o cancelado devuelve el uso.
