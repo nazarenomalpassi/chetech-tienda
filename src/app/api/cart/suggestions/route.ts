@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import { getProducts } from "@/lib/catalog";
 import { isSellable, sortProducts } from "@/lib/catalog-query";
+import { rateLimit } from "@/lib/rate-limit";
 
 // "Sumá también": productos chicos que más se venden en el local (pilas, cables, adaptadores).
 export async function GET(request: Request) {
+  const limited = rateLimit(request, "cart-suggestions", 60, 60_000);
+  if (limited) return limited;
   const exclude = new Set(
     (new URL(request.url).searchParams.get("exclude") ?? "").split(",").filter(Boolean).slice(0, 30),
   );

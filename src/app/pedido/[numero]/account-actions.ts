@@ -4,6 +4,7 @@ import { legalConfig } from "@/config/legal";
 import { siteConfig } from "@/config/site";
 import { getCustomerOrder } from "@/lib/commerce/customer-order";
 import { passwordError } from "@/lib/password";
+import { limitAction } from "@/lib/rate-limit";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export type OrderAccountState = { message?: string; error?: string };
@@ -35,6 +36,8 @@ export async function createAccountFromOrderAction(
     return { error: "Necesitamos que aceptes los términos y la política de privacidad." };
   const invalidPassword = passwordError(password);
   if (invalidPassword) return { error: invalidPassword };
+  const limited = await limitAction("signup", 5, 10 * 60_000);
+  if (limited) return { error: limited };
 
   // La clave del enlace prueba que quien crea la cuenta es quien hizo el pedido.
   const order = token ? await getCustomerOrder(orderNumber, token) : null;
