@@ -30,6 +30,7 @@
     "test:storefront-ui": "node --test scripts/storefront-ui-contract.test.mjs",
     "test:railway-keys": "node --test scripts/railway/with-supabase-keys.test.mjs",
     "test": "node --conditions=react-server --import tsx --test tests/*.test.ts && npm run test:railway-keys && npm run test:storefront-ui",
+    "test:e2e": "playwright test",
     "css:prune": "node scripts/prune-legacy-css.mjs --write"
   },
   "dependencies": {
@@ -50,7 +51,9 @@
     "unzipper": "0.12.5"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/qrcode": "1.5.6",
@@ -58,6 +61,7 @@
     "@types/react-dom": "^19.3.0",
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
+    "playwright-core": "1.63.0",
     "postcss": "8.5.10",
     "prettier": "3.9.6",
     "tailwindcss": "^4",

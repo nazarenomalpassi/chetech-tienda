@@ -73,8 +73,10 @@
 
 /* Entrada: primero el título, enseguida el tele y el texto. Una sola vez por carga. */
 @media (prefers-reduced-motion: no-preference) {
+  /* El título es lo primero que se lee y lo más grande de la pantalla: sube, pero sin pasar por
+     transparente. Se ve desde el primer cuadro, también en un celular lento. */
   .title {
-    animation: subir 0.7s var(--ease-out) both;
+    animation: asentar 0.7s var(--ease-out) both;
   }
 
   .set {
@@ -94,6 +96,12 @@
   from {
     opacity: 0;
     transform: translateY(22px);
+  }
+}
+
+@keyframes asentar {
+  from {
+    transform: translateY(18px);
   }
 }
 
@@ -196,7 +204,13 @@
   .shapeB {
     animation: deriva-b 21s ease-in-out infinite alternate;
   }
+}
 
+/* El pulso de las pistas y el parpadeo de los nodos no los puede animar la placa de video (cambian el
+   trazo y el relleno), así que el navegador redibuja el fondo en cada cuadro. En una compu no se nota;
+   en un celular gasta batería todo el tiempo que la portada está abierta. Por eso corren solo donde hay
+   mouse: en el celular las pistas quedan dibujadas y quietas. */
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
   .tracePulse path {
     animation: pulso 6s linear infinite;
   }

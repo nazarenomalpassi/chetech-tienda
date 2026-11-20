@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Search } from "lucide-react";
@@ -18,6 +19,10 @@ import { whatsappUrl } from "@/lib/whatsapp";
 import styles from "./home.module.css";
 
 export const revalidate = 60;
+
+// La portada se declara a sí misma como la dirección principal (sin esto, Google podía tomar como
+// distintas las visitas que llegan con parámetros de campaña).
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default async function HomePage() {
   const [products, settings] = await Promise.all([getProducts(), getStoreSettings()]);

@@ -16,21 +16,6 @@ export const montech = localFont({
   fallback: ["Arial Narrow", "Arial", "sans-serif"],
 });
 
-// Las páginas de servicio técnico, cuenta y legales se dibujaron para una letra condensada. Esta versión
-// de MONTECH ocupa menos (mismo archivo, glifos al 72 %) para que sus títulos no se desborden.
-export const montechCompacta = localFont({
-  src: [
-    { path: "../fonts/montech-v02-400.woff2", weight: "400", style: "normal" },
-    { path: "../fonts/montech-v02-600.woff2", weight: "600", style: "normal" },
-    { path: "../fonts/montech-v02-700.woff2", weight: "700 900", style: "normal" },
-  ],
-  variable: "--font-montech-compacta",
-  display: "swap",
-  fallback: ["Arial Narrow", "Arial", "sans-serif"],
-  adjustFontFallback: false,
-  declarations: [{ prop: "size-adjust", value: "72%" }],
-});
-
 // Texto corrido: nombres de producto, descripciones y formularios. MONTECH no tiene minúsculas, así que
 // la lectura larga va en una sans de dibujo técnico que la acompaña.
 export const plex = IBM_Plex_Sans({

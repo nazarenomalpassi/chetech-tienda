@@ -57,6 +57,12 @@
   outline: none;
 }
 
+/* El campo no lleva marco propio: el foco se ve en la línea de abajo, que se oscurece y se engrosa. */
+.form:has(.input:focus-visible) {
+  border-bottom-color: var(--color-tinta);
+  box-shadow: 0 1px 0 var(--color-tinta);
+}
+
 .input::placeholder {
   color: var(--color-tinta-3);
   opacity: 0.7;

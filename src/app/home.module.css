@@ -70,6 +70,12 @@
   }
 }
 
+/* Con el tele en pausa (su botón ⏸, que se alcanza con el teclado) la marquesina también se detiene:
+   nada se mueve solo en la portada si la persona no quiere. */
+:global(section[data-movimiento="pausado"]) ~ div .tickerTrack {
+  animation-play-state: paused;
+}
+
 /* Hay cuatro copias del texto: al correr un cuarto, el dibujo vuelve a empezar sin salto. */
 @keyframes marquesina {
   to {

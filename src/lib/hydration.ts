@@ -7,4 +7,6 @@ export const isHydrated = () => hydrated;
 
 export function markHydrated() {
   hydrated = true;
+  // También queda a la vista en la página: las pruebas esperan esta marca antes de tocar un botón.
+  document.documentElement.dataset.hidratada = "";
 }

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Search, X } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
+import { useDialogFocus } from "@/lib/use-dialog-focus";
 import { needs } from "@/config/catalog";
 import { formatPrice } from "@/lib/format";
 import styles from "./search-overlay.module.css";
@@ -17,11 +18,14 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
   const router = useRouter();
   const reduce = useReducedMotion();
   const inputRef = useRef<HTMLInputElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Result[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const listId = useId();
+
+  useDialogFocus(overlayRef, open);
 
   useEffect(() => {
     if (!open) return;
@@ -69,6 +73,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
     <AnimatePresence>
       {open ? (
         <motion.div
+          ref={overlayRef}
           className={styles.overlay}
           role="dialog"
           aria-modal="true"

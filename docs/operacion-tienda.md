@@ -141,5 +141,21 @@ npm run build
 npm run css:prune # borra de src/styles/legacy/*.css las reglas que ya no usa ninguna página
 ```
 
+### Pruebas en el navegador
+
+La carpeta `e2e/` recorre la tienda como un cliente, en celular y en escritorio (Playwright):
+
+- **Compra:** elige un producto, lo suma al carrito, cambia la cantidad y llega al formulario de
+  "Finalizar compra". No envía el pedido: no deja nada en la base ni manda mensajes.
+- **Celular:** ninguna página pública se pasa de 320 ni de 390 px de ancho.
+- **Accesibilidad:** reglas automáticas de WCAG 2.2 A y AA (contraste, nombres de botones y campos) en las
+  páginas principales, y que el carrito se pueda abrir, recorrer y cerrar con el teclado.
+
+```
+npx playwright install chromium                         # una sola vez: baja el navegador
+npm run build && npm run test:e2e                       # contra la versión local
+BASE_URL=https://chetechstore.com npm run test:e2e      # contra la tienda publicada
+```
+
 La prueba en seco de la base (`supabase/tests/storefront_v3_commerce_dry_run.sql`) corre todo dentro de una
 transacción y la revierte: se puede repetir sin dejar rastros.

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ProductCard } from "@/components/store/product-card";
 import styles from "@/components/store/landing.module.css";
+import { LabelGuide } from "@/components/store/label-guide";
 import { WaitlistForm } from "@/components/store/waitlist-form";
 import { getBoardProducts } from "@/lib/catalog";
 import { isSellable, normalizeText } from "@/lib/catalog-query";
@@ -86,6 +87,7 @@ export default async function BoardsPage({ searchParams }: { searchParams: Promi
         </section>
         <section className={styles.card} aria-labelledby="foto-placa">
           <h2 id="foto-placa">¿No sabés qué placa es?</h2>
+          <LabelGuide />
           <ol className={styles.steps}>
             <li>Sacale una foto a la etiqueta de atrás de la tele.</li>
             <li>Si podés, otra a la placa, donde se vea el código.</li>

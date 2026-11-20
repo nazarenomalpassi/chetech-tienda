@@ -5,9 +5,16 @@ export function lqip(src: string | undefined | null) {
   return `url("/_next/image?url=${encodeURIComponent(src)}&w=32&q=75")`;
 }
 
-/** Marca la foto como cargada para que se apague la versión borrosa de atrás. */
+/**
+ * Marca la foto como cargada para que se apague la versión borrosa de atrás. Si la foto ya estaba en
+ * pantalla hacía rato (llegó antes de que la página empezara a andar, o venía de la caché), se marca
+ * "antes": los estilos no la vuelven a hacer aparecer, porque parpadearía.
+ */
 export function markLoaded(event: React.SyntheticEvent<HTMLImageElement>) {
-  event.currentTarget.dataset.loaded = "true";
+  const image = event.currentTarget;
+  const entry = performance.getEntriesByName(image.currentSrc).pop() as PerformanceResourceTiming | undefined;
+  const alreadyThere = entry ? performance.now() - entry.responseEnd > 400 : false;
+  image.dataset.loaded = alreadyThere ? "antes" : "true";
 }
 
 /** Un video se puede reproducir en la página solo si es un archivo; Instagram y YouTube van como enlace. */

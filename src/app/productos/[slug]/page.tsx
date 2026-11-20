@@ -82,7 +82,14 @@ export default async function ProductPage({ params }: Props) {
       price: product.price,
       availability:
         product.status === "Sin stock" ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
-      seller: { "@type": "Organization", name: "CheTech" },
+      seller: { "@type": "ElectronicsStore", "@id": `${siteConfig.baseUrl}/#business`, name: "CheTech" },
+      // Garantía escrita, en meses (la misma que se lee en la ficha).
+      hasWarrantyPromise: product.warrantyMonths
+        ? {
+            "@type": "WarrantyPromise",
+            durationOfWarranty: { "@type": "QuantitativeValue", value: product.warrantyMonths, unitCode: "MON" },
+          }
+        : undefined,
       hasMerchantReturnPolicy: {
         "@type": "MerchantReturnPolicy",
         applicableCountry: "AR",
