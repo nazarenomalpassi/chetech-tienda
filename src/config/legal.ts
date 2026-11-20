@@ -1,8 +1,8 @@
 import { siteConfig } from "@/config/site";
 
 export const legalConfig = {
-  version: "1.0",
-  lastUpdated: "17 de julio de 2026",
+  version: "1.1",
+  lastUpdated: "20 de noviembre de 2026",
   professionalReviewPending: true,
   commercialName: siteConfig.name,
   legalHolder: siteConfig.legalName,
@@ -56,7 +56,7 @@ export const legalDocuments: Record<string, LegalDocument> = {
       {
         title: "Cómo se forma la compra",
         paragraphs: [
-          "El carrito web constituye una solicitud de compra o consulta. Para finalizarlo se requiere una cuenta verificada y se genera un número de pedido asociado al cliente antes de continuar por WhatsApp. La operación queda sujeta a confirmación de stock, precio, forma de pago y modalidad o costo de envío. El pedido se considera aceptado cuando Chetech lo confirma. Esta modalidad no limita los derechos que correspondan una vez perfeccionada la compra.",
+          "El carrito web arma una solicitud de compra que se envía por WhatsApp. No hace falta tener cuenta. La operación queda sujeta a la confirmación de stock, precio, forma de pago y modalidad o costo de envío. El pedido se considera aceptado cuando CheTech lo confirma. Esta modalidad no limita los derechos que correspondan una vez perfeccionada la compra.",
         ],
       },
       {
@@ -114,7 +114,7 @@ export const legalDocuments: Record<string, LegalDocument> = {
           "Contenido del carrito guardado localmente y, para cuentas autenticadas, sincronizado con la cuenta para conservarlo entre dispositivos.",
           "Aceptación de términos y privacidad, y consentimiento comercial opcional con sus fechas y versiones.",
           "Número de teléfono, perfil y contenido de la conversación cuando el usuario continúa por WhatsApp.",
-          "Datos técnicos que Vercel, Supabase o servicios de seguridad puedan procesar, como dirección IP, navegador, cookies estrictamente necesarias y registros técnicos.",
+          "Datos técnicos que Railway (servidores y base de datos) o servicios de seguridad puedan procesar, como dirección IP, navegador, cookies estrictamente necesarias y registros técnicos.",
         ],
       },
       {
@@ -132,7 +132,7 @@ export const legalDocuments: Record<string, LegalDocument> = {
       {
         title: "Proveedores y transferencias",
         paragraphs: [
-          "La infraestructura utiliza Vercel y Supabase; las conversaciones se realizan mediante WhatsApp/Meta. Estos proveedores pueden procesar información fuera de Argentina. Sus condiciones, ubicaciones y garantías contractuales deben revisarse periódicamente; no se comparten datos con fines publicitarios propios mientras no se active una herramienta de analítica o marketing con consentimiento.",
+          "La infraestructura utiliza Railway (servidores y base de datos); las conversaciones se realizan mediante WhatsApp/Meta. Estos proveedores pueden procesar información fuera de Argentina. Sus condiciones, ubicaciones y garantías contractuales deben revisarse periódicamente; no se comparten datos con fines publicitarios propios mientras no se active una herramienta de analítica o marketing con consentimiento.",
         ],
       },
       {
@@ -169,7 +169,7 @@ export const legalDocuments: Record<string, LegalDocument> = {
       {
         title: "Carrito local",
         paragraphs: [
-          "El carrito se guarda en localStorage con la clave chetech-storefront-cart-v2. localStorage no es una cookie: es almacenamiento dentro del navegador. Contiene productos y cantidades para mantener la selección entre visitas, pero no guarda automáticamente nombre, correo, teléfono ni el mensaje enviado a WhatsApp.",
+          "El carrito se guarda en localStorage con la clave chetech-storefront-cart-v3. localStorage no es una cookie: es almacenamiento dentro del navegador. Contiene productos y cantidades para mantener la selección entre visitas, pero no guarda automáticamente nombre, correo, teléfono ni el mensaje enviado a WhatsApp. También se guarda en el navegador de dónde llegaste a la tienda (por ejemplo, una historia de Instagram) durante 30 días, para saber qué publicaciones traen visitas. No incluye datos personales.",
         ],
       },
       {
