@@ -18,10 +18,11 @@ Servicio **Tienda** (proyecto `chetech` en Railway, rama `main`). Las claves de 
 | `MERCADOPAGO_WEBHOOK_SECRET` | Clave secreta de los avisos de pago (Tus integraciones → Webhooks) | Falta |
 | `MERCADOPAGO_COLLECTOR_ID` | Número de cuenta que cobra, para rechazar pagos a otra cuenta | Falta (opcional) |
 | `PAYMENTS_LIVE_ENABLED` | `true` cobra de verdad; sin ella Mercado Pago queda en modo de prueba | Falta, a propósito |
-| `RESEND_API_KEY` | Envío de mails de pedidos | Falta |
+| `RESEND_API_KEY` | Envío de mails de pedidos | Cargada |
 | `MAIL_FROM` | Remitente. Por defecto `CheTech <hola@chetechstore.com>` | Opcional |
 | `MAIL_REPLY_TO` | Respuestas. Por defecto el Gmail del local | Opcional |
 | `ADMIN_EMAIL` | Dónde llega el aviso de pedido nuevo | Opcional |
+| `MAIL_ASSET_URL` | De dónde toman los mails el logo y las fotos. Por defecto la dirección de la tienda | Opcional |
 | `NEXT_PUBLIC_GA_ID` | Google Analytics 4 (`G-…`) | Falta |
 | `NEXT_PUBLIC_META_PIXEL_ID` | Píxel de Meta | Falta |
 | `META_CAPI_TOKEN` | Compras informadas a Meta desde el servidor | Falta (opcional) |
@@ -73,6 +74,27 @@ Además de los mails de pedidos, por la misma cola salen (`src/lib/mail/notices.
 Mientras `RESEND_API_KEY` no esté cargada estos avisos no se encolan: el día que se active no sale una
 tanda de mails viejos. Lo que entró antes se ve igual en Administración.
 
+### Diseño y pruebas
+
+**Administración → Mails** muestra los 21 mails con un pedido de ejemplo y dos productos reales del
+catálogo: cuándo sale cada uno, el asunto, cómo se ve en celular y en compu, y la versión solo texto. Cada
+uno tiene **Mandarme una prueba** (llega al mail de quien está en Administración con "[Prueba]" en el
+asunto) y arriba está **Mandarme los 21**. Las pruebas salen directo por Resend, sin pasar por la cola, y
+cuentan para el límite del plan gratis (100 por día).
+
+Cómo están hechos (`src/lib/mail/layout.tsx`):
+
+- Tablas y estilos en línea, 600 px de ancho, letras del sistema: así se ven igual en Gmail, Outlook y
+  Apple Mail. Ninguno pesa más de 16 KB, lejos del recorte de Gmail (102 KB).
+- Logo, isotipo y código de barras son PNG con el fondo incluido (`public/mail/`), para que el modo oscuro
+  de los programas de mail no los deje invisibles.
+- Las fotos de productos pasan por `/api/mail/foto`, que las entrega en JPG de 112 o 480 px: Outlook no
+  muestra WebP. Solo acepta fotos públicas del depósito de la tienda.
+- `/mail/*` y `/api/mail/foto` mandan `Cross-Origin-Resource-Policy: cross-origin` (el resto del sitio
+  usa `same-origin`): sin eso, los programas que cargan las imágenes desde su propia página no las
+  mostrarían.
+- Los mails de compra llevan al pie el enlace al botón de arrepentimiento.
+
 ## Lista de espera y solicitudes
 
 - **Administración → Lista de espera:** quién pidió que le avisen (un producto, una tele revisada o una
@@ -115,6 +137,11 @@ GOTRUE_MAILER_SUBJECTS_INVITE=Te invitaron a CheTech
 GOTRUE_MAILER_SUBJECTS_MAGIC_LINK=Tu enlace para entrar a CheTech
 GOTRUE_MAILER_SUBJECTS_EMAIL_CHANGE=Confirmá tu mail nuevo
 ```
+
+Las plantillas se arman en `src/lib/mail/auth-templates.tsx` y el servicio de login las guarda un rato
+en memoria: un cambio de diseño puede tardar en llegarle (o se reinicia **Gotrue Auth**). Los enlaces
+vencen a las 24 horas (`GOTRUE_MAILER_OTP_EXP` sin cargar); si algún día se cambia, hay que cambiar
+también el texto "vence en 24 horas".
 
 El servicio de login también lo usa el sistema de gestión: sus mails de login salen igual, con la
 plantilla de CheTech, y la lista de direcciones permitidas incluye las de gestión para que sus enlaces

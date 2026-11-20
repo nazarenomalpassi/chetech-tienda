@@ -8,6 +8,7 @@ import {
   Cpu,
   FolderTree,
   Inbox,
+  Mail,
   PackageCheck,
   QrCode,
   TicketPercent,
@@ -31,6 +32,7 @@ const links = [
   ["/admin/solicitudes", "Solicitudes", Inbox],
   ["/admin/clientes", "Clientes", UsersRound],
   ["/admin/enlaces", "Enlaces y QR", QrCode],
+  ["/admin/mails", "Mails", Mail],
   ["/admin/cupones", "Cupones", TicketPercent],
   ["/admin/configuracion", "Configuración", Cog],
 ] as const;

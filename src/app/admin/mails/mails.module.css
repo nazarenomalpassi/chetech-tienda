@@ -1,0 +1,230 @@
+/* Administración → Mails: la lista de los mails de la tienda y la vista de cada uno. */
+
+.status {
+  margin: 0;
+  font-size: var(--text-14);
+  font-weight: 600;
+}
+
+.status:empty {
+  display: none;
+}
+
+.status[data-kind="error"] {
+  color: var(--color-rojo);
+}
+
+.status[data-kind="ok"] {
+  color: var(--color-verde);
+}
+
+.setup {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-3) var(--space-5);
+  margin: 0 0 var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-linea);
+  background: var(--color-blanco);
+}
+
+.setup div {
+  min-width: 0;
+}
+
+.setup dt {
+  color: var(--color-tinta-3);
+  font-size: var(--text-14);
+}
+
+.setup dd {
+  margin: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.group {
+  margin: 0 0 var(--space-6);
+}
+
+.group h2 {
+  margin: 0;
+  font-size: var(--text-18);
+}
+
+.group > p {
+  margin: var(--space-1) 0 var(--space-3);
+  color: var(--color-tinta-2);
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--color-linea);
+}
+
+.list li {
+  border-bottom: 1px solid var(--color-linea);
+}
+
+.list a {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-1) var(--space-4);
+  align-items: center;
+  min-height: var(--touch);
+  padding: var(--space-3) var(--space-2);
+  color: var(--color-tinta);
+  text-decoration: none;
+}
+
+.list a:hover,
+.list a:focus-visible {
+  background: var(--color-blanco);
+}
+
+.name {
+  font-weight: 700;
+}
+
+.when {
+  grid-column: 1;
+  color: var(--color-tinta-2);
+  font-size: var(--text-14);
+}
+
+.subjectLine {
+  grid-column: 1;
+  color: var(--color-tinta-3);
+  font-size: var(--text-14);
+  overflow-wrap: anywhere;
+}
+
+.go {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  color: var(--color-tinta-3);
+  font-size: var(--text-14);
+  font-weight: 600;
+}
+
+.testForm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+}
+
+.note {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--color-tinta-2);
+  font-size: var(--text-14);
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-4);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-3) var(--space-5);
+  margin: 0 0 var(--space-4);
+}
+
+.facts dt {
+  color: var(--color-tinta-3);
+  font-size: var(--text-14);
+}
+
+.facts dd {
+  margin: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.preview {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-5);
+}
+
+.switch {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.switch button {
+  min-height: var(--touch);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--color-linea);
+  background: var(--color-blanco);
+  color: var(--color-tinta);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.switch button[aria-pressed="true"] {
+  border-color: var(--color-tinta);
+  background: var(--color-tinta);
+  color: var(--color-blanco);
+}
+
+.stage {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-4) 0;
+  background: var(--color-pared);
+  overflow-x: auto;
+}
+
+.stage iframe {
+  max-width: 100%;
+  border: 0;
+  background: var(--color-blanco);
+}
+
+.text summary {
+  min-height: var(--touch);
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.text pre {
+  margin: var(--space-2) 0 0;
+  padding: var(--space-4);
+  border: 1px solid var(--color-linea);
+  background: var(--color-blanco);
+  font: inherit;
+  font-size: var(--text-14);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: var(--space-5) 0 0;
+}
+
+@media (max-width: 720px) {
+  .switch {
+    display: none;
+  }
+
+  .stage {
+    padding: 0;
+  }
+}

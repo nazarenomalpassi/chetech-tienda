@@ -16,14 +16,22 @@ const analytics = {
     process.env.NEXT_PUBLIC_GA_ID
       ? "https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com"
       : "",
-    process.env.NEXT_PUBLIC_META_PIXEL_ID ? "https://www.facebook.com https://connect.facebook.net" : "",
+    process.env.NEXT_PUBLIC_META_PIXEL_ID
+      ? "https://www.facebook.com https://connect.facebook.net"
+      : "",
   ],
   img: [
-    process.env.NEXT_PUBLIC_GA_ID ? "https://www.googletagmanager.com https://*.google-analytics.com" : "",
+    process.env.NEXT_PUBLIC_GA_ID
+      ? "https://www.googletagmanager.com https://*.google-analytics.com"
+      : "",
     process.env.NEXT_PUBLIC_META_PIXEL_ID ? "https://www.facebook.com" : "",
   ],
 };
-const extra = (list: string[]) => list.filter(Boolean).map((item) => ` ${item}`).join("");
+const extra = (list: string[]) =>
+  list
+    .filter(Boolean)
+    .map((item) => ` ${item}`)
+    .join("");
 
 const contentSecurityPolicy = [
   "default-src 'self'",
@@ -74,6 +82,16 @@ const nextConfig: NextConfig = {
           { key: "X-Permitted-Cross-Domain-Policies", value: "none" },
           { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
         ],
+      },
+      // Las imágenes de los mails se cargan desde Gmail, Outlook o Apple Mail, que no son este sitio.
+      // Esta regla va última para pisar el same-origin de arriba solo en esas rutas.
+      {
+        source: "/mail/:path*",
+        headers: [{ key: "Cross-Origin-Resource-Policy", value: "cross-origin" }],
+      },
+      {
+        source: "/api/mail/foto",
+        headers: [{ key: "Cross-Origin-Resource-Policy", value: "cross-origin" }],
       },
     ];
   },
