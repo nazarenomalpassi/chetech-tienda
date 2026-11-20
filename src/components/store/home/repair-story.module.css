@@ -21,9 +21,11 @@
     gap: 64px;
   }
 
+  /* El televisor queda fijo debajo de todo lo que esa página deja pegado arriba: el encabezado y, si
+     hay, su barra de categorías (--pin-extra). */
   .section[data-enhanced="true"] .tvColumn {
     position: sticky;
-    top: calc(var(--header-height) + 90px);
+    top: calc(var(--site-header-stack) + var(--pin-extra, 0px) + 55px);
   }
 
   .section[data-enhanced="true"] .steps li {
@@ -43,7 +45,7 @@
 
   .section[data-enhanced="true"] .tvColumn {
     position: sticky;
-    top: calc(var(--header-height) + 8px);
+    top: calc(var(--site-header-stack) + var(--pin-extra, 0px));
     z-index: 2;
     margin-inline: calc(var(--page-inset) * -1);
     padding: 10px var(--page-inset);
@@ -58,6 +60,13 @@
 
   .section[data-enhanced="true"] .steps li {
     padding: 22px 0;
+  }
+}
+
+/* En pantallas bajas el televisor fijo se achica para que los pasos se sigan leyendo debajo */
+@media (max-width: 899px) and (max-height: 700px) {
+  .section[data-enhanced="true"] .tv {
+    max-width: 300px;
   }
 }
 

@@ -64,6 +64,8 @@
   --page-width: 1240px;
   --page-inset: clamp(16px, 4vw, 40px);
   --header-height: 56px;
+  /* Franja de avisos que va arriba de la barra del encabezado. */
+  --strip-height: 34px;
   --touch: 44px;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -120,7 +122,10 @@
   --site-wide-content-width: 1360px;
   --site-page-inset: calc(var(--page-inset) * 2);
   --site-wide-page-inset: 48px;
-  --site-header-stack: calc(var(--header-height) + 36px + env(safe-area-inset-top));
+  /* Alto total del encabezado fijo: franja + barra + su línea de abajo. Lo que queda pegado al
+     desplazar (barras de categorías, columnas fijas) arranca desde acá. */
+  --site-header-stack: calc(var(--strip-height) + var(--header-height) + 1px);
+  --service-local-nav-height: 53px;
   --service-rail-height: 55px;
   --control-height: 48px;
 }

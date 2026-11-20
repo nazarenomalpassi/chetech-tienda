@@ -9,7 +9,8 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  scroll-padding-top: calc(var(--header-height) + 16px);
+  /* Al saltar a una parte de la página, el destino queda debajo del encabezado fijo, no tapado. */
+  scroll-padding-top: calc(var(--site-header-stack) + 12px);
   /* La barra de desplazamiento reserva su lugar: el contenido no salta al abrir el carrito. */
   scrollbar-gutter: stable;
   /* Lo que asoma al estirar la página en el celular (arriba el encabezado, abajo el pie) es negro. */
@@ -481,6 +482,15 @@ p {
   --color-blanco: #222222;
   --color-linea: #3a3a3a;
   background: #1a1a1a;
+}
+
+/* Al imprimir, lo que todavía esperaba su entrada al desplazar sale igual en el papel. */
+@media print {
+  [data-anim],
+  [data-anim] > * {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 /* Movimiento reducido: todo aparece sin animación */

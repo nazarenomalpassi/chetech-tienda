@@ -11,9 +11,27 @@ const steps = [
   { title: "Entrega", text: "La retirás en el local o te la llevamos." },
 ];
 
+type Props = {
+  /** Botones al pie de los pasos. */
+  actions?: React.ReactNode;
+  /** Título y bajada. Sin estos, van los de la portada. */
+  title?: string;
+  lead?: string;
+  /** Clase del contenedor que alinea el tramo con el resto de la página. */
+  container?: string;
+  /** Alto de lo que esa página deja fijo debajo del encabezado (por ejemplo, la barra de categorías). */
+  pinOffset?: string;
+};
+
 // E3 · De rota a reparada: el televisor queda fijo mientras se desplaza la página y la imagen se
 // limpia hasta verse perfecta. GSAP se descarga recién cuando el tramo se acerca.
-export function RepairStory({ actions }: { actions: React.ReactNode }) {
+export function RepairStory({
+  actions,
+  title = "De rota a reparada",
+  lead = "Somos el taller de televisores de Río Tercero. Arreglamos teles, microondas, parlantes, celulares y notebooks, y seguís cada paso desde tu cuenta.",
+  container = "page",
+  pinOffset,
+}: Props) {
   const sectionRef = useRef<HTMLElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
 
@@ -68,9 +86,15 @@ export function RepairStory({ actions }: { actions: React.ReactNode }) {
   }, []);
 
   return (
-    <section ref={sectionRef} className={`oscuro ${styles.section}`} aria-labelledby="taller-titulo" data-step="0">
+    <section
+      ref={sectionRef}
+      className={`oscuro ${styles.section}`}
+      aria-labelledby="taller-titulo"
+      data-step="0"
+      style={pinOffset ? ({ "--pin-extra": pinOffset } as React.CSSProperties) : undefined}
+    >
       <div ref={pinRef} className={styles.pin}>
-        <div className={`page ${styles.grid}`}>
+        <div className={`${container} ${styles.grid}`}>
           <div className={styles.tvColumn} aria-hidden>
             {(["before", "after"] as const).map((role) => (
               <figure key={role} className={styles.tvFigure} data-role={role}>
@@ -92,11 +116,8 @@ export function RepairStory({ actions }: { actions: React.ReactNode }) {
           </div>
 
           <div className={styles.copy}>
-            <h2 id="taller-titulo">De rota a reparada</h2>
-            <p className={styles.lead}>
-              Somos el taller de televisores de Río Tercero. Arreglamos teles, microondas, parlantes, celulares y
-              notebooks, y seguís cada paso desde tu cuenta.
-            </p>
+            <h2 id="taller-titulo">{title}</h2>
+            <p className={styles.lead}>{lead}</p>
             <ol className={styles.steps}>
               {steps.map((step, index) => (
                 <li key={step.title} data-index={index}>
@@ -108,7 +129,7 @@ export function RepairStory({ actions }: { actions: React.ReactNode }) {
                 </li>
               ))}
             </ol>
-            <div className={styles.actions}>{actions}</div>
+            {actions ? <div className={styles.actions}>{actions}</div> : null}
           </div>
         </div>
       </div>
