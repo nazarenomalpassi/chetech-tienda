@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { AccountProvider } from "@/components/account-provider";
 import { CartProvider } from "@/components/cart-provider";
 import { Analytics } from "@/components/store/analytics";
-import { CartDrawer } from "@/components/store/cart-drawer";
+import { CartDrawerLazy } from "@/components/store/cart-drawer-lazy";
 import { PageProgress } from "@/components/store/page-progress";
 import { SiteFooter } from "@/components/store/site-footer";
 import { SiteHeader } from "@/components/store/site-header";
@@ -11,7 +11,7 @@ import { VisitTracker } from "@/components/store/visit-tracker";
 import { families } from "@/config/catalog";
 import { siteConfig, tagline } from "@/config/site";
 import { getProducts } from "@/lib/catalog";
-import { montech, montechCompacta, plex } from "@/lib/fonts";
+import { montech, plex } from "@/lib/fonts";
 import { familySummaries } from "@/lib/home";
 import { anyOnlinePayment, getStoreSettings } from "@/lib/store-settings";
 import "./globals.css";
@@ -79,7 +79,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   };
 
   return (
-    <html lang="es-AR" className={`${montech.variable} ${montechCompacta.variable} ${plex.variable}`}>
+    <html lang="es-AR" className={`${montech.variable} ${plex.variable}`}>
       <body>
         <script
           type="application/ld+json"
@@ -96,7 +96,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <SiteHeader announcement={announcement} showWorkshop={showWorkshop} panelFamilies={panelFamilies} />
             <main id="contenido">{children}</main>
             <SiteFooter />
-            <CartDrawer />
+            <CartDrawerLazy />
             <Suspense fallback={null}>
               <VisitTracker />
             </Suspense>

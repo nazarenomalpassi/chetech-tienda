@@ -116,7 +116,8 @@
   --acid: var(--color-tinta);
   --acid-ink: var(--color-blanco);
   --radius: var(--radius-button);
-  --display: var(--font-montech-compacta), "Arial Narrow", Arial, sans-serif;
+  /* La letra compacta solo existe dentro de .zona-compacta (ver más abajo); afuera queda la normal. */
+  --display: var(--font-montech-compacta, var(--font-montech)), "Arial Narrow", Arial, sans-serif;
   --body: var(--font-body);
   --site-content-width: var(--page-width);
   --site-wide-content-width: 1360px;
@@ -128,4 +129,11 @@
   --service-local-nav-height: 53px;
   --service-rail-height: 55px;
   --control-height: 48px;
+}
+
+/* Servicio técnico, seguimiento de reparaciones y Administración traen su letra compacta en su propio
+   layout (así no se descarga en el resto de la tienda). La variable se vuelve a armar acá adentro, donde
+   esa letra ya está definida. */
+.zona-compacta {
+  --display: var(--font-montech-compacta), "Arial Narrow", Arial, sans-serif;
 }

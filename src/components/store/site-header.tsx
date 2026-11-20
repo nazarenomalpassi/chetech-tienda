@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -10,10 +11,16 @@ import { navigation } from "@/config/site";
 import { useAccountSummary } from "@/components/account-provider";
 import { useCart } from "@/components/cart-provider";
 import { FamilyPanel, type PanelFamily } from "@/components/store/family-panel";
-import { SearchOverlay } from "@/components/store/search-overlay";
 import { markHydrated } from "@/lib/hydration";
 import { useDialogFocus } from "@/lib/use-dialog-focus";
 import styles from "./site-header.module.css";
+
+// El buscador a pantalla completa y la biblioteca que lo anima (Motion) se descargan aparte: no hacen
+// falta para ver la página.
+const SearchOverlay = dynamic(
+  () => import("@/components/store/search-overlay").then((mod) => mod.SearchOverlay),
+  { ssr: false },
+);
 
 type Props = {
   announcement: string;
@@ -57,6 +64,9 @@ export function SiteHeader({ announcement, showWorkshop, panelFamilies }: Props)
   const menuPanelRef = useRef<HTMLDivElement>(null);
   const menuCloseRef = useRef<HTMLButtonElement>(null);
   const [searchOpen, setSearchOpen] = useState(false);
+  // El buscador se monta la primera vez que hace falta (o cuando el navegador queda libre) y ya no se desmonta.
+  const [searchReady, setSearchReady] = useState(false);
+  if (searchOpen && !searchReady) setSearchReady(true);
   const [panelOpen, setPanelOpen] = useState(false);
   const panelTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -121,6 +131,17 @@ export function SiteHeader({ announcement, showWorkshop, panelFamilies }: Props)
       window.removeEventListener("keydown", onKey);
     };
   }, [menuOpen]);
+
+  // Con el navegador libre se deja listo, así el primer toque en la lupa abre al instante.
+  useEffect(() => {
+    const load = () => setSearchReady(true);
+    if (typeof window.requestIdleCallback === "function") {
+      const handle = window.requestIdleCallback(load, { timeout: 5000 });
+      return () => window.cancelIdleCallback(handle);
+    }
+    const timer = window.setTimeout(load, 3000);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -265,7 +286,7 @@ export function SiteHeader({ announcement, showWorkshop, panelFamilies }: Props)
         </div>
       </div>
 
-      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
+      {searchReady ? <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} /> : null}
     </>
   );
 }

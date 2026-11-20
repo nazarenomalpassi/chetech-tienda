@@ -173,7 +173,7 @@
   opacity: 0;
 }
 
-.image[data-loaded] {
+.image[data-loaded="true"] {
   animation: foto-aparece 0.2s var(--ease-out);
 }
 
@@ -185,7 +185,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .image[data-loaded] {
+  .image[data-loaded="true"] {
     animation: none;
   }
 

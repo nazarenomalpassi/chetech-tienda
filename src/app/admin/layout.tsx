@@ -18,6 +18,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import styles from "./admin-nav.module.css";
 // Estilos anteriores al rediseño que siguen usando las pantallas de Administración.
 import "@/styles/legacy/admin.css";
+import { montechCompacta } from "@/lib/fonts-compacta";
 
 const links = [
   ["/admin/dashboard", "Tablero", CircleGauge],
@@ -56,7 +57,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const admin = await requireAdmin();
   const counts = await pendingCounts();
   return (
-    <section className="admin-area">
+    <section className={`admin-area zona-compacta ${montechCompacta.variable}`}>
       <aside className="admin-sidebar">
         <div>
           <p className="eyebrow">Chetech</p>

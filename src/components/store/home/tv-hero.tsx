@@ -53,7 +53,8 @@ export function TvHero({
   const indexRef = useRef(0);
   const tunedIndex = useRef(0);
   const tuneIn = useRef<gsap.core.Timeline | null>(null);
-  const progress = useRef<gsap.core.Tween | null>(null);
+  // La barra del canal en curso: una animación del navegador (no de GSAP), ver más abajo.
+  const progress = useRef<Animation | null>(null);
   const noise = useRef<{ frames: ImageData[]; context: CanvasRenderingContext2D | null; tick: (() => void) | null }>({
     frames: [],
     context: null,
@@ -67,8 +68,22 @@ export function TvHero({
 
   const syncPlayback = useCallback(() => {
     const state = hold.current;
-    progress.current?.paused(state.offscreen || state.hidden || state.hover || state.focus);
+    const animation = progress.current;
+    if (!animation) return;
+    if (state.offscreen || state.hidden || state.hover || state.focus) animation.pause();
+    else if (animation.playState === "paused") animation.play();
   }, []);
+
+  const stopProgress = useCallback(() => {
+    const animation = progress.current;
+    if (!animation) return;
+    animation.onfinish = null;
+    animation.cancel();
+    progress.current = null;
+  }, []);
+
+  // Al salir de la portada, la barra en curso se cancela (si no, cambiaría de canal sin tele).
+  useEffect(() => stopProgress, [stopProgress]);
 
   const go = useCallback(
     (direction: 1 | -1, manual: boolean) => {
@@ -180,8 +195,7 @@ export function TvHero({
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const changed = tunedIndex.current !== index;
       tunedIndex.current = index;
-      progress.current?.kill();
-      progress.current = null;
+      stopProgress();
 
       const segments = gsap.utils.toArray<HTMLElement>("[data-tv='tramo']");
       gsap.set(segments, { scaleX: (position: number) => (position < index ? 1 : 0) });
@@ -192,11 +206,16 @@ export function TvHero({
       }
 
       if (auto && total > 1 && segments[index]) {
-        progress.current = gsap.fromTo(
-          segments[index],
-          { scaleX: 0 },
-          { scaleX: 1, duration: CHANNEL_SECONDS, ease: "none", onComplete: () => go(1, false) },
-        );
+        // La barra avanza con una animación del navegador, que corre fuera del hilo principal: entre un
+        // canal y otro la página no ejecuta nada por cuadro (con GSAP se despertaba 60 veces por segundo
+        // todo el tiempo que la portada estaba abierta). Al terminar, cambia de canal.
+        const animation = segments[index].animate([{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }], {
+          duration: CHANNEL_SECONDS * 1000,
+          easing: "linear",
+          fill: "forwards",
+        });
+        animation.onfinish = () => go(1, false);
+        progress.current = animation;
         syncPlayback();
       } else if (segments[index]) {
         gsap.set(segments[index], { scaleX: 1 });

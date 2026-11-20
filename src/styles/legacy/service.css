@@ -294,7 +294,8 @@ body {
   grid-column: 1 / -1;
   grid-row: 1;
   min-width: 0;
-  animation: service-tech-lab-enter 0.55s ease-out both;
+  /* El título sube sin pasar por transparente: es lo principal de la pantalla y se ve desde el primer cuadro. */
+  animation: service-tech-title-enter 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 .service-tech-lab-heading h1 {
   margin: 0;
@@ -1718,8 +1719,8 @@ body {
    --------------------------------------------------------------------------------------------- */
 
 /* La cabecera de cada categoría entra como la del servicio: el texto sube en cascada. El título sube
-   desde atrás de una máscara y la foto se asienta, los dos sin pasar por transparente: son lo más
-   grande de la pantalla y tienen que verse desde el primer cuadro. */
+   y la foto se asienta, los dos sin pasar por transparente: son lo más grande de la pantalla y tienen
+   que verse desde el primer cuadro. */
 .service-tech-hero--detail .service-tech-hero-copy > :not(h1) {
   animation: service-tech-lab-enter 0.55s ease-out both;
 }
@@ -1737,11 +1738,9 @@ body {
 }
 @keyframes service-tech-title-enter {
   from {
-    clip-path: inset(0 0 100% 0);
-    transform: translate3d(0, 0.5em, 0);
+    transform: translate3d(0, 18px, 0);
   }
   to {
-    clip-path: inset(-0.3em);
     transform: translate3d(0, 0, 0);
   }
 }
