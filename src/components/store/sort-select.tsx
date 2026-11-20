@@ -21,6 +21,7 @@ export function SortSelect({ value }: { value: CatalogSort }) {
     <label className={styles.sort}>
       <span>Ordenar por</span>
       <select
+        aria-label="Ordenar por"
         value={value}
         onChange={(event) => {
           const next = new URLSearchParams(searchParams.toString());

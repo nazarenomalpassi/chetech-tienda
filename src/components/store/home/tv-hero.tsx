@@ -316,7 +316,13 @@ export function TvHero({
   };
 
   return (
-    <section className={`oscuro ${styles.hero}`} aria-labelledby="hero-titulo" ref={root}>
+    <section
+      className={`oscuro ${styles.hero}`}
+      aria-labelledby="hero-titulo"
+      ref={root}
+      // El botón de pausa del tele frena todo lo que se mueve solo en la portada: también la marquesina.
+      data-movimiento={auto ? undefined : "pausado"}
+    >
       <div className={`page ${styles.grid}`}>
         <div className={styles.title}>{title}</div>
         <div className={styles.copy}>{children}</div>
@@ -466,21 +472,20 @@ export function TvHero({
 
           {total > 1 ? (
             <div className={styles.remote} role="group" aria-label="Control del televisor">
-              <button type="button" onClick={() => go(-1, true)} aria-label="Canal anterior">
+              <button type="button" onClick={() => go(-1, true)} aria-label="P−: canal anterior">
                 P−
               </button>
-              <button type="button" className={styles.ok} onClick={buy} aria-label={current ? `Comprar ${current.product.name}` : "Comprar"}>
+              <button type="button" className={styles.ok} onClick={buy} aria-label={current ? `OK: comprar ${current.product.name}` : "OK: comprar"}>
                 OK
               </button>
-              <button type="button" onClick={() => go(1, true)} aria-label="Canal siguiente">
+              <button type="button" onClick={() => go(1, true)} aria-label="P+: canal siguiente">
                 P+
               </button>
               <button
                 type="button"
                 className={styles.toggle}
                 onClick={() => setAuto((value) => !value)}
-                aria-pressed={!auto}
-                aria-label={auto ? "Pausar el cambio de canal" : "Reanudar el cambio de canal"}
+                aria-label={auto ? "Pausar el movimiento" : "Reanudar el movimiento"}
               >
                 {auto ? <Pause aria-hidden size={16} /> : <Play aria-hidden size={16} />}
               </button>

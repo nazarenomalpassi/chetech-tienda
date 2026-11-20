@@ -10,7 +10,8 @@
 .sort select {
   min-height: var(--touch);
   padding: 0 34px 0 12px;
-  border: 1.5px solid var(--color-linea);
+  /* El borde tiene que distinguirse del fondo (3:1), igual que el de los campos de los formularios. */
+  border: 1.5px solid var(--color-acero);
   border-radius: var(--radius-button);
   background:
     url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%2315181a' stroke-width='2' fill='none'/></svg>")

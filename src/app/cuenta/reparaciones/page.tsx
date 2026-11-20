@@ -85,10 +85,7 @@ export default async function RepairsPage({
                   className={`repair-card ${finalized ? "is-finalized" : "is-active"}`}
                   key={repair.publicId}
                 >
-                  <Link
-                    aria-label={`Ver reparación ${repair.repairNumber}: ${formatRepairEquipment(repair)}`}
-                    href={`/cuenta/reparaciones/${repair.publicId}`}
-                  >
+                  <Link href={`/cuenta/reparaciones/${repair.publicId}`}>
                     <div className="repair-card-topline">
                       <span>{repair.repairNumber}</span>
                       <span className="repair-lifecycle">

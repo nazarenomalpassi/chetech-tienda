@@ -12,6 +12,7 @@ import { useCart } from "@/components/cart-provider";
 import { FamilyPanel, type PanelFamily } from "@/components/store/family-panel";
 import { SearchOverlay } from "@/components/store/search-overlay";
 import { markHydrated } from "@/lib/hydration";
+import { useDialogFocus } from "@/lib/use-dialog-focus";
 import styles from "./site-header.module.css";
 
 type Props = {
@@ -53,6 +54,8 @@ function NavLinks({ onNavigate, panel }: { onNavigate?: () => void; panel?: Pane
 
 export function SiteHeader({ announcement, showWorkshop, panelFamilies }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuPanelRef = useRef<HTMLDivElement>(null);
+  const menuCloseRef = useRef<HTMLButtonElement>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
   const panelTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -103,10 +106,14 @@ export function SiteHeader({ announcement, showWorkshop, panelFamilies }: Props)
     },
   };
 
+  // Menú del celular con teclado: el foco entra al abrir, da la vuelta adentro y vuelve al botón al cerrar.
+  useDialogFocus(menuPanelRef, menuOpen);
+
   useEffect(() => {
     if (!menuOpen) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    menuCloseRef.current?.focus();
     const onKey = (event: KeyboardEvent) => event.key === "Escape" && setMenuOpen(false);
     window.addEventListener("keydown", onKey);
     return () => {
@@ -167,7 +174,7 @@ export function SiteHeader({ announcement, showWorkshop, panelFamilies }: Props)
                 type="button"
                 className={styles.searchButton}
                 onClick={() => setSearchOpen(true)}
-                aria-label="Buscar un producto o modelo"
+                aria-label="Buscá un producto o modelo"
               >
                 <Search aria-hidden size={20} />
                 <span className={styles.searchPlaceholder}>Buscá un producto o modelo</span>
@@ -217,10 +224,16 @@ export function SiteHeader({ announcement, showWorkshop, panelFamilies }: Props)
         inert={!menuOpen}
       >
         <button type="button" className={styles.menuScrim} aria-label="Cerrar menú" onClick={() => setMenuOpen(false)} tabIndex={-1} />
-        <div className={`oscuro ${styles.menuPanel}`} role="dialog" aria-modal="true" aria-label="Menú">
+        <div ref={menuPanelRef} className={`oscuro ${styles.menuPanel}`} role="dialog" aria-modal="true" aria-label="Menú">
           <div className={styles.menuHead}>
             <Image src="/brand/chetech-logo-blanco.svg" alt="CheTech" width={137} height={24} />
-            <button type="button" className={styles.iconButton} aria-label="Cerrar menú" onClick={() => setMenuOpen(false)}>
+            <button
+              ref={menuCloseRef}
+              type="button"
+              className={styles.iconButton}
+              aria-label="Cerrar menú"
+              onClick={() => setMenuOpen(false)}
+            >
               <X aria-hidden size={22} />
             </button>
           </div>

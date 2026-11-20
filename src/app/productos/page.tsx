@@ -184,7 +184,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: Sear
         </div>
 
         {activeFilters.length ? (
-          <div className={styles.active} aria-label="Filtros aplicados">
+          <div className={styles.active} role="group" aria-label="Filtros aplicados">
             {activeFilters.map((filter) => (
               <Link key={filter.label} href={filter.href} className={styles.activeChip}>
                 {filter.label}
@@ -198,6 +198,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: Sear
           </div>
         ) : null}
 
+        {result.products.length ? <h2 className="visually-hidden">Productos</h2> : null}
         {result.products.length ? (
           <div key={signature} className={styles.grid}>
             {result.products.map((product, index) => (

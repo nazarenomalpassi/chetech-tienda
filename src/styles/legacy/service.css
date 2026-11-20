@@ -18,6 +18,17 @@
 html {
   scrollbar-gutter: stable;
 }
+/* Estas páginas dejan fijas, debajo del encabezado, la barra de categorías y (en cada categoría) la de
+   secciones. Al saltar a una parte o al moverse con el teclado, el destino queda debajo de todas, no
+   tapado por ellas. */
+html:has(.service-tech-rail) {
+  scroll-padding-top: calc(var(--site-header-stack) + var(--service-rail-height) + 12px);
+}
+html:has(.service-tech-local-nav) {
+  scroll-padding-top: calc(
+    var(--site-header-stack) + var(--service-rail-height) + var(--service-local-nav-height) + 12px
+  );
+}
 .button {
   min-height: var(--control-height);
   padding: 0 20px;
@@ -87,11 +98,6 @@ html {
     animation: none !important;
   }
 }
-:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 2px;
-  box-shadow: 0 0 0 5px var(--acid);
-}
 .button:disabled:hover {
   transform: none;
 }
@@ -134,6 +140,13 @@ body {
 .service-tech-eyebrow {
   color: #5d6569;
 }
+/* Sobre los tramos negros ese gris no alcanzaba el contraste mínimo para leerse: va en gris claro. */
+.service-tech-hero .service-tech-eyebrow,
+.service-tech-trust .service-tech-eyebrow,
+.service-tech-diagnostics .service-tech-eyebrow,
+.service-tech-cta .service-tech-eyebrow {
+  color: #a2a7a7;
+}
 .service-tech-kicker {
   color: var(--acid);
 }
@@ -172,6 +185,7 @@ body {
   /* Sobre negro el acento es blanco: si no, el rótulo y el botón principal no se distinguen del fondo. */
   --acid: var(--color-blanco);
   --acid-ink: var(--color-tinta);
+  --foco: #f4f4f4;
 }
 .service-tech-hero::before {
   content: "";
@@ -310,6 +324,7 @@ body {
   animation: service-tech-lab-enter 0.6s 0.08s ease-out both;
   --acid: var(--color-blanco);
   --acid-ink: var(--color-tinta);
+  --foco: #f4f4f4;
 }
 .service-tech-lab-workbench::before {
   content: "";
@@ -366,6 +381,7 @@ body {
   animation: service-tech-lab-enter 0.45s ease-out both;
   --acid: var(--color-blanco);
   --acid-ink: var(--color-tinta);
+  --foco: #f4f4f4;
 }
 .service-tech-lab-tags li::before {
   content: "";
@@ -403,6 +419,7 @@ body {
   animation: service-tech-lab-enter 0.6s 0.16s ease-out both;
   --acid: var(--color-blanco);
   --acid-ink: var(--color-tinta);
+  --foco: #f4f4f4;
 }
 .service-tech-lab-panel::before {
   content: "";
@@ -479,6 +496,7 @@ body {
   backdrop-filter: blur(12px);
   --acid: var(--color-blanco);
   --acid-ink: var(--color-tinta);
+  --foco: #f4f4f4;
 }
 .service-tech-rail .service-tech-shell {
   display: flex;
@@ -529,7 +547,6 @@ body {
 }
 .service-tech-categories {
   background: var(--paper);
-  scroll-margin-top: var(--service-rail-height);
   --acid: var(--color-tinta);
   --acid-ink: var(--color-blanco);
 }
@@ -563,6 +580,7 @@ body {
     border-color 0.28s ease;
   --acid: var(--color-blanco);
   --acid-ink: var(--color-tinta);
+  --foco: #f4f4f4;
 }
 .service-tech-card::after {
   content: "";
@@ -587,6 +605,7 @@ body {
   background: #15181a;
   --acid: var(--color-blanco);
   --acid-ink: var(--color-tinta);
+  --foco: #f4f4f4;
 }
 .service-tech-card-media::after {
   content: "";
@@ -702,6 +721,7 @@ body {
   color: white;
   --acid: var(--color-blanco);
   --acid-ink: var(--color-tinta);
+  --foco: #f4f4f4;
 }
 .service-tech-trust::before,
 .service-tech-diagnostics::before,
@@ -751,7 +771,6 @@ body {
 }
 .service-tech-process {
   background: #e8eae7;
-  scroll-margin-top: var(--service-rail-height);
   --acid: var(--color-tinta);
   --acid-ink: var(--color-blanco);
 }
@@ -869,7 +888,6 @@ body {
 }
 .service-tech-faq {
   background: var(--paper);
-  scroll-margin-top: var(--service-rail-height);
   --acid: var(--color-tinta);
   --acid-ink: var(--color-blanco);
 }
@@ -929,6 +947,7 @@ body {
   color: white;
   --acid: var(--color-blanco);
   --acid-ink: var(--color-tinta);
+  --foco: #f4f4f4;
 }
 .service-tech-cta-inner {
   display: grid;
@@ -993,6 +1012,7 @@ body {
   clip-path: polygon(7% 0, 100% 0, 100% 88%, 88% 100%, 0 100%, 0 8%);
   --acid: var(--color-blanco);
   --acid-ink: var(--color-tinta);
+  --foco: #f4f4f4;
 }
 .service-tech-detail-visual img {
   filter: grayscale(1) contrast(1.06);
@@ -1033,18 +1053,12 @@ body {
   letter-spacing: 0.045em;
   text-transform: uppercase;
 }
-/* En las páginas de cada categoría hay una segunda barra fija (Soluciones, Fallas…): al saltar a una
-   sección se suma su alto, así el título no queda tapado. */
-.service-tech-local-nav ~ section {
-  scroll-margin-top: calc(var(--service-rail-height) + var(--service-local-nav-height));
-}
 .service-tech-local-nav a:hover {
   color: var(--ink);
   box-shadow: inset 0 -2px var(--acid);
 }
 .service-tech-solutions {
   background: var(--paper);
-  scroll-margin-top: var(--service-rail-height);
   --acid: var(--color-tinta);
   --acid-ink: var(--color-blanco);
 }
@@ -1117,9 +1131,9 @@ body {
   background:
     radial-gradient(circle at 90% 30%, rgba(255, 255, 255, 0.07), transparent 30%), #090b0d;
   color: white;
-  scroll-margin-top: var(--service-rail-height);
   --acid: var(--color-blanco);
   --acid-ink: var(--color-tinta);
+  --foco: #f4f4f4;
 }
 .service-tech-diagnostics-grid {
   display: grid;
@@ -1163,6 +1177,7 @@ body {
   box-shadow: 0 30px 70px rgba(0, 0, 0, 0.25);
   --acid: var(--color-blanco);
   --acid-ink: var(--color-tinta);
+  --foco: #f4f4f4;
 }
 .service-tech-diagnostic-panel > div:first-child > svg {
   width: 34px;
@@ -1273,6 +1288,7 @@ body {
   background: #111416;
   --acid: var(--color-blanco);
   --acid-ink: var(--color-tinta);
+  --foco: #f4f4f4;
 }
 .service-tech-related-grid img {
   filter: grayscale(1);
@@ -1460,19 +1476,16 @@ body {
     left: 11px;
     right: 11px;
     bottom: 10px;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    overscroll-behavior-inline: contain;
-    scrollbar-width: none;
-  }
-  .service-tech-lab-tags::-webkit-scrollbar {
-    display: none;
+    /* Si no entran en una fila pasan a dos: antes quedaban en una fila que había que deslizar y a la
+       que no se llegaba con el teclado. */
+    gap: 5px;
   }
   .service-tech-lab-tags li {
     flex: 0 0 auto;
     min-height: 28px;
     padding-inline: 8px;
     font-size: 11px;
+    letter-spacing: 0.05em;
   }
   .service-tech-lab-panel {
     width: calc(100% - 16px);

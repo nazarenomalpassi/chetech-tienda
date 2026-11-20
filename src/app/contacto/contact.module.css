@@ -196,8 +196,10 @@
   outline: none;
 }
 
+/* El marco del foco va por fuera de la tarjeta, sobre la página clara: siempre en negro. (Con el color
+   de foco de la tarjeta negra de WhatsApp salía blanco sobre gris claro y no se veía.) */
 .channel:has(.channelLink:focus-visible) {
-  outline: 3px solid var(--foco, var(--color-tinta));
+  outline: 3px solid var(--color-negro);
   outline-offset: 2px;
 }
 

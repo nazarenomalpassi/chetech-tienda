@@ -84,11 +84,6 @@ html {
     animation: none !important;
   }
 }
-:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 2px;
-  box-shadow: 0 0 0 5px var(--acid);
-}
 .button:disabled:hover {
   transform: none;
 }
@@ -508,7 +503,8 @@ button:disabled {
   grid-template-columns: 1fr 1fr;
   gap: 22px;
 }
-.repair-budget-panel dt {
+.repair-budget-panel dt,
+.repair-budget-panel .eyebrow {
   color: #abb2b5;
 }
 .repair-budget-panel dd {

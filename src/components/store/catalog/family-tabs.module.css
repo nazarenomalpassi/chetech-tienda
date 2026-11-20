@@ -85,6 +85,11 @@
   outline-offset: -4px;
 }
 
+/* La pestaña elegida es blanca: ahí el foco del teclado va en negro, si no no se ve. */
+.track a[data-shown="true"]:focus-visible {
+  outline-color: var(--color-pared);
+}
+
 @media (hover: hover) and (pointer: fine) {
   .track a:not([data-shown="true"]):hover {
     border-color: var(--color-tinta);

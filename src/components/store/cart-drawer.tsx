@@ -8,6 +8,7 @@ import { Minus, Plus, Trash2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/components/cart-provider";
 import { formatPrice } from "@/lib/format";
+import { useDialogFocus } from "@/lib/use-dialog-focus";
 import type { Product } from "@/lib/types";
 import styles from "./cart-drawer.module.css";
 
@@ -23,6 +24,7 @@ export function CartDrawer() {
   const [panelVisible, setPanelVisible] = useState(false);
   const [suggestions, setSuggestions] = useState<Product[]>([]);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     closeDrawer();
@@ -47,6 +49,9 @@ export function CartDrawer() {
     }
     setPanelVisible(true);
   }, [drawerOpen, lastAdded, reduce]);
+
+  // Va antes de mover el foco al panel: así recuerda el botón que lo abrió y se lo devuelve al cerrar.
+  useDialogFocus(panelRef, panelVisible);
 
   useEffect(() => {
     if (!panelVisible) return;
@@ -124,6 +129,7 @@ export function CartDrawer() {
               transition={{ duration: 0.2 }}
             />
             <motion.aside
+              ref={panelRef}
               className={styles.panel}
               role="dialog"
               aria-modal="true"
