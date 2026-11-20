@@ -58,9 +58,15 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const localBusiness = {
     "@context": "https://schema.org",
     "@type": "ElectronicsStore",
+    // El mismo identificador que usan la página de servicio técnico y las fichas: Google los une.
+    "@id": `${siteConfig.baseUrl}/#business`,
     name: "CheTech",
     description: siteConfig.description,
     url: siteConfig.baseUrl,
+    logo: `${siteConfig.baseUrl}/brand/icono-512.png`,
+    image: `${siteConfig.baseUrl}/brand/icono-512.png`,
+    hasMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${siteConfig.address}, Río Tercero, Córdoba`)}`,
+    areaServed: { "@type": "City", name: "Río Tercero" },
     telephone: `+${siteConfig.whatsapp}`,
     address: {
       "@type": "PostalAddress",
