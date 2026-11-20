@@ -114,6 +114,7 @@ export const legalDocuments: Record<string, LegalDocument> = {
           "Contenido del carrito guardado localmente y, para cuentas autenticadas, sincronizado con la cuenta para conservarlo entre dispositivos.",
           "Aceptación de términos y privacidad, y consentimiento comercial opcional con sus fechas y versiones.",
           "Número de teléfono, perfil y contenido de la conversación cuando el usuario continúa por WhatsApp.",
+          "Nombre opcional, correo o WhatsApp y lo que buscás cuando te anotás para que te avisemos si entra un producto, una tele o una placa.",
           "Datos técnicos que Railway (servidores y base de datos) o servicios de seguridad puedan procesar, como dirección IP, navegador, cookies estrictamente necesarias y registros técnicos.",
         ],
       },
@@ -132,7 +133,7 @@ export const legalDocuments: Record<string, LegalDocument> = {
       {
         title: "Proveedores y transferencias",
         paragraphs: [
-          "La infraestructura utiliza Railway (servidores y base de datos); las conversaciones se realizan mediante WhatsApp/Meta. Estos proveedores pueden procesar información fuera de Argentina. Sus condiciones, ubicaciones y garantías contractuales deben revisarse periódicamente; no se comparten datos con fines publicitarios propios mientras no se active una herramienta de analítica o marketing con consentimiento.",
+          "La infraestructura utiliza Railway (servidores y base de datos). Los mails de la cuenta, de los pedidos y de los avisos se envían mediante Resend, que recibe la dirección de correo y el contenido de cada mail. Las conversaciones se realizan mediante WhatsApp/Meta. Estos proveedores pueden procesar información fuera de Argentina. Sus condiciones, ubicaciones y garantías contractuales deben revisarse periódicamente; no se comparten datos con fines publicitarios propios mientras no se active una herramienta de analítica o marketing con consentimiento.",
         ],
       },
       {
