@@ -1,7 +1,8 @@
 import { siteConfig } from "@/config/site";
 
 export const legalConfig = {
-  version: "1.1",
+  version: "1.2",
+  // Al publicar: poner la fecha del día en que se activan los cobros online.
   lastUpdated: "20 de noviembre de 2026",
   professionalReviewPending: true,
   commercialName: siteConfig.name,
@@ -45,7 +46,7 @@ export const legalDocuments: Record<string, LegalDocument> = {
   "terminos-y-condiciones": {
     slug: "terminos-y-condiciones",
     title: "Términos y condiciones",
-    summary: "Información aplicable al uso del catálogo y a las compras coordinadas con Chetech.",
+    summary: "Información aplicable al uso del catálogo y a las compras hechas en la tienda.",
     sections: [
       {
         title: "Identificación y alcance",
@@ -56,15 +57,17 @@ export const legalDocuments: Record<string, LegalDocument> = {
       {
         title: "Cómo se forma la compra",
         paragraphs: [
-          "El carrito web arma una solicitud de compra que se envía por WhatsApp. No hace falta tener cuenta. La operación queda sujeta a la confirmación de stock, precio, forma de pago y modalidad o costo de envío. El pedido se considera aceptado cuando CheTech lo confirma. Esta modalidad no limita los derechos que correspondan una vez perfeccionada la compra.",
+          "Podés comprar sin crear una cuenta. Al confirmar el pedido elegís cómo recibirlo (retiro en Independencia 784, entrega en la zona o Correo Argentino) y cómo pagarlo (Mercado Pago, transferencia o pago al retirar), entre las opciones disponibles en ese momento. Antes de confirmar ves el total con el envío incluido.",
+          "Mientras esperamos el pago reservamos el stock durante el plazo que se informa al confirmar el pedido. Si el pago no llega en ese plazo, la reserva se libera. El pedido queda confirmado cuando se acredita el pago o, en el pago al retirar, cuando lo retirás y pagás. Te avisamos por mail cada cambio de estado del pedido.",
+          "Esta modalidad no limita los derechos que correspondan una vez perfeccionada la compra.",
         ],
       },
       {
         title: "Información previa",
         items: [
           "Nombre, condición, precio publicado y disponibilidad orientativa del producto.",
-          "Cantidad, subtotal y total estimado del carrito.",
-          "Costo de envío a confirmar según destino; nunca se informa como gratuito si no fue confirmado.",
+          "Cantidad, subtotal, costo de envío y total final antes de confirmar.",
+          "Costo de envío calculado según la zona o el tamaño del paquete y mostrado antes de pagar; nunca se informa como gratuito si no lo es.",
           "Garantía, cambios, devoluciones y canales de contacto accesibles antes de enviar la solicitud.",
         ],
       },
@@ -111,6 +114,7 @@ export const legalDocuments: Record<string, LegalDocument> = {
           "Datos de cuenta: nombre, apellido, correo, estado de verificación, teléfono opcional, fechas de registro y último acceso.",
           "Direcciones que el cliente decida guardar para entregas. Se puede comprar con retiro sin guardar una dirección.",
           "Pedidos, productos, cantidades, precios históricos, modalidad, contacto y observaciones incluidos al finalizar el carrito.",
+          "Datos del pago que informa Mercado Pago (estado, monto y número de operación). La tienda no recibe los datos de tu tarjeta.",
           "Contenido del carrito guardado localmente y, para cuentas autenticadas, sincronizado con la cuenta para conservarlo entre dispositivos.",
           "Aceptación de términos y privacidad, y consentimiento comercial opcional con sus fechas y versiones.",
           "Número de teléfono, perfil y contenido de la conversación cuando el usuario continúa por WhatsApp.",
@@ -133,7 +137,7 @@ export const legalDocuments: Record<string, LegalDocument> = {
       {
         title: "Proveedores y transferencias",
         paragraphs: [
-          "La infraestructura utiliza Railway (servidores y base de datos). Los mails de la cuenta, de los pedidos y de los avisos se envían mediante Resend, que recibe la dirección de correo y el contenido de cada mail. Las conversaciones se realizan mediante WhatsApp/Meta. Estos proveedores pueden procesar información fuera de Argentina. Sus condiciones, ubicaciones y garantías contractuales deben revisarse periódicamente; no se comparten datos con fines publicitarios propios mientras no se active una herramienta de analítica o marketing con consentimiento.",
+          "La infraestructura utiliza Railway (servidores y base de datos). Los pagos online se procesan en Mercado Pago. Los mails de la cuenta, de los pedidos y de los avisos se envían mediante Resend, que recibe la dirección de correo y el contenido de cada mail. Las conversaciones se realizan mediante WhatsApp/Meta. Estos proveedores pueden procesar información fuera de Argentina. Sus condiciones, ubicaciones y garantías contractuales deben revisarse periódicamente; no se comparten datos con fines publicitarios propios mientras no se active una herramienta de analítica o marketing con consentimiento.",
         ],
       },
       {
@@ -190,20 +194,21 @@ export const legalDocuments: Record<string, LegalDocument> = {
   envios: {
     slug: "envios",
     title: "Envíos y entregas",
-    summary: "Cómo coordinamos envíos nacionales y retiros en Río Tercero.",
+    summary: "Retiro en el local, entrega en la zona y envíos a todo el país.",
     sections: [
       {
         title: "Modalidades",
         items: [
-          "Retiro coordinado en Independencia 784, Río Tercero.",
-          "Envíos a distintas localidades de Argentina mediante la opción acordada con el cliente.",
+          "Retiro sin costo en Independencia 784, Río Tercero, en el horario del local.",
+          "Entrega en Río Tercero y zonas cercanas, con el costo de cada zona.",
+          "Envío a todo el país por Correo Argentino.",
           "Retiro o entrega de equipos de servicio técnico sujeto a coordinación y cobertura.",
         ],
       },
       {
         title: "Costo y plazo",
         paragraphs: [
-          "Costo de envío a confirmar según destino. El costo y el plazo estimado se informan antes del pago. No se mostrará envío gratuito salvo que exista una condición comercial real y confirmada.",
+          "El costo del envío se calcula según la zona o el tamaño del paquete y se muestra antes de pagar. Cuando despachamos, te mandamos el número de seguimiento por mail. No se mostrará envío gratuito salvo que exista una condición comercial real y confirmada.",
         ],
       },
       {
@@ -279,18 +284,18 @@ export const legalDocuments: Record<string, LegalDocument> = {
   "medios-de-pago": {
     slug: "medios-de-pago",
     title: "Medios de pago y facturación",
-    summary: "La modalidad se confirma antes de perfeccionar la compra.",
+    summary: "Cómo se puede pagar y cómo se documenta la compra.",
     sections: [
       {
         title: "Confirmación",
         paragraphs: [
-          "Los medios de pago disponibles se coordinan por WhatsApp antes de abonar. La tienda no solicita ni almacena datos completos de tarjetas y no cuenta actualmente con una pasarela de pago integrada.",
+          "Podés pagar con Mercado Pago, con transferencia bancaria o, si retirás en el local, al retirar, entre las opciones disponibles al confirmar el pedido. Los pagos con Mercado Pago se procesan en su plataforma: la tienda no ve ni guarda los datos de tu tarjeta.",
         ],
       },
       {
         title: "Importes",
         paragraphs: [
-          `Los precios se expresan en ${siteConfig.currency}. El total del carrito es estimado hasta que Chetech confirme precio, stock, modalidad de entrega y costo de envío.`,
+          `Los precios se expresan en ${siteConfig.currency}. El total que ves al confirmar, con el envío incluido, es el que pagás. Si se aplica un cupón o un descuento por transferencia, se muestra separado antes de pagar.`,
         ],
       },
       {
