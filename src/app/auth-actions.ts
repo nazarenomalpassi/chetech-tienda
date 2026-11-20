@@ -7,6 +7,7 @@ import { safeReturnPath } from "@/lib/auth";
 import { legalConfig } from "@/config/legal";
 import { siteConfig } from "@/config/site";
 import { passwordError } from "@/lib/password";
+import { limitAction } from "@/lib/rate-limit";
 
 export type AuthActionState = { message?: string; error?: string };
 
@@ -48,6 +49,9 @@ export async function loginAction(
   const password = value(formData, "password", 200);
   const next = safeReturnPath(formData.get("next"), "/cuenta");
   if (!validEmail(email) || !password) return { error: "Revisá el correo y la contraseña." };
+  // Freno a quien prueba contraseñas: 8 intentos cada 5 minutos por conexión.
+  const limited = await limitAction("login", 8, 5 * 60_000);
+  if (limited) return { error: limited };
 
   const supabase = await createServerSupabaseClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -76,6 +80,8 @@ export async function signupAction(
   if (invalidPassword) return { error: invalidPassword };
   if (!termsAccepted)
     return { error: "Necesitamos que aceptes los términos y la política de privacidad." };
+  const limited = await limitAction("signup", 5, 10 * 60_000);
+  if (limited) return { error: limited };
 
   const supabase = await createServerSupabaseClient();
   const origin = await requestOrigin();
@@ -104,6 +110,8 @@ export async function recoverPasswordAction(
 ): Promise<AuthActionState> {
   const email = value(formData, "email", 254).toLowerCase();
   if (!validEmail(email)) return { error: "Ingresá un correo válido." };
+  const limited = await limitAction("recover", 4, 10 * 60_000);
+  if (limited) return { error: limited };
   const supabase = await createServerSupabaseClient();
   const origin = await requestOrigin();
   await supabase.auth.resetPasswordForEmail(email, {
@@ -121,6 +129,8 @@ export async function resendVerificationAction(
 ): Promise<AuthActionState> {
   const email = value(formData, "email", 254).toLowerCase();
   if (!validEmail(email)) return { error: "Ingresá un correo válido." };
+  const limited = await limitAction("resend-verification", 4, 10 * 60_000);
+  if (limited) return { error: limited };
   const supabase = await createServerSupabaseClient();
   const origin = await requestOrigin();
   const { error } = await supabase.auth.resend({

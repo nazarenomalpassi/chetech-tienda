@@ -1,4 +1,3 @@
-import type { CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -22,6 +21,9 @@ import {
 } from "lucide-react";
 import { ServiceAccordion, type ServiceAccordionItem } from "@/components/service-accordion";
 import { ServiceRepairsCta } from "@/components/service-repairs-cta";
+import { RepairStory } from "@/components/store/home/repair-story";
+import { PointerField } from "@/components/store/pointer-field";
+import { ScrollMotion } from "@/components/store/scroll-motion";
 import {
   generalServiceFaqs,
   getServiceCategory,
@@ -49,9 +51,9 @@ function ServiceIcon({ iconKey }: { iconKey: ServiceIconKey }) {
   return <Icon aria-hidden="true" />;
 }
 
-function revealDelay(index: number) {
-  return { "--reveal-delay": `${Math.min(index, 5) * 65}ms` } as CSSProperties;
-}
+// El movimiento de estas páginas es el mismo del resto de la tienda (ver ScrollMotion): los títulos
+// marcados con data-anim="titulo" suben renglón por renglón, los grupos entran en cascada y los bloques
+// sueltos suben enteros. Las tarjetas con data-cursor llevan una luz que acompaña al mouse.
 
 function ServiceCategoryRail({ activeSlug }: { activeSlug?: ServiceCategory["slug"] }) {
   return (
@@ -169,25 +171,24 @@ function LandingHero() {
 function ServiceCategoryGrid() {
   return (
     <section className="service-tech-section service-tech-categories" id="servicios">
-      <div className="service-tech-shell">
-        <div className="service-tech-heading" data-reveal>
+      <PointerField className="service-tech-shell">
+        <div className="service-tech-heading">
           <div>
             <p className="service-tech-eyebrow">Elegí el tipo de equipo</p>
-            <h2>Un servicio para cada tecnología.</h2>
+            <h2 data-anim="titulo">Un servicio para cada tecnología.</h2>
           </div>
-          <p>
+          <p data-anim="bloque">
             Ingresá a cada categoría para conocer soluciones, fallas frecuentes y la forma de
             trabajo. Si no encontrás tu equipo, también podemos evaluarlo.
           </p>
         </div>
-        <div className="service-tech-category-grid">
+        <div className="service-tech-category-grid" data-anim="grupo">
           {serviceCategories.map((category, index) => (
             <Link
               className="service-tech-card"
               href={category.href}
               key={category.slug}
-              data-reveal
-              style={revealDelay(index)}
+              data-cursor
             >
               <span className="service-tech-card-media">
                 <Image
@@ -213,7 +214,7 @@ function ServiceCategoryGrid() {
             </Link>
           ))}
         </div>
-      </div>
+      </PointerField>
     </section>
   );
 }
@@ -244,27 +245,29 @@ function ServiceTrust() {
 
   return (
     <section className="service-tech-trust" aria-labelledby="service-trust-title">
-      <div className="service-tech-shell">
-        <div className="service-tech-heading service-tech-heading--dark" data-reveal>
+      <PointerField className="service-tech-shell">
+        <div className="service-tech-heading service-tech-heading--dark">
           <div>
             <p className="service-tech-eyebrow">Servicio pensado para vos</p>
-            <h2 id="service-trust-title">Tecnología con trato directo.</h2>
+            <h2 id="service-trust-title" data-anim="titulo">
+              Tecnología con trato directo.
+            </h2>
           </div>
-          <p>
+          <p data-anim="bloque">
             Nuestro objetivo es que entiendas qué pasa con tu equipo y puedas decidir con
             información concreta.
           </p>
         </div>
-        <div className="service-tech-trust-grid">
-          {items.map(({ icon: Icon, title, text }, index) => (
-            <article data-reveal style={revealDelay(index)} key={title}>
+        <div className="service-tech-trust-grid" data-anim="grupo">
+          {items.map(({ icon: Icon, title, text }) => (
+            <article key={title} data-cursor>
               <Icon aria-hidden="true" />
               <h3>{title}</h3>
               <p>{text}</p>
             </article>
           ))}
         </div>
-      </div>
+      </PointerField>
     </section>
   );
 }
@@ -286,12 +289,12 @@ function RepairProcess({ compact = false }: { compact?: boolean }) {
     >
       <div className="service-tech-shell">
         <div className="service-tech-process-layout">
-          <div className="service-tech-process-intro" data-reveal>
+          <div className="service-tech-process-intro">
             <p className="service-tech-eyebrow">Cómo trabajamos</p>
-            <h2 id={compact ? "detail-process-title" : "service-process-title"}>
+            <h2 id={compact ? "detail-process-title" : "service-process-title"} data-anim="titulo">
               Un proceso claro, de la consulta a la entrega.
             </h2>
-            <p>
+            <p data-anim="bloque">
               Abrí cada etapa para conocer qué registramos, cuándo presupuestamos y cómo podés
               seguir la reparación.
             </p>
@@ -327,10 +330,10 @@ function ServiceFaq({
   return (
     <section className="service-tech-section service-tech-faq" id="preguntas">
       <div className="service-tech-shell service-tech-faq-layout">
-        <div data-reveal>
+        <div>
           <p className="service-tech-eyebrow">Preguntas frecuentes</p>
-          <h2>{title}</h2>
-          <p>
+          <h2 data-anim="titulo">{title}</h2>
+          <p data-anim="bloque">
             Cada reparación depende del equipo y de la falla. Estas respuestas explican el criterio
             general sin reemplazar el diagnóstico.
           </p>
@@ -356,10 +359,10 @@ function ServiceCta({ category }: { category?: ServiceCategory }) {
 
   return (
     <section className="service-tech-cta">
-      <div className="service-tech-shell service-tech-cta-inner" data-reveal>
+      <div className="service-tech-shell service-tech-cta-inner">
         <div>
           <p className="service-tech-eyebrow">Contanos qué falla</p>
-          <h2>
+          <h2 data-anim="titulo">
             {category
               ? `Consultá por ${category.shortTitle.toLowerCase()}.`
               : "Empecemos por tu equipo."}
@@ -369,7 +372,7 @@ function ServiceCta({ category }: { category?: ServiceCategory }) {
             inicial sirve para orientarte y coordinar el diagnóstico.
           </p>
         </div>
-        <div className="service-tech-cta-actions">
+        <div className="service-tech-cta-actions" data-anim="bloque">
           <a
             className="button whatsapp"
             href={whatsappUrl(message)}
@@ -440,17 +443,17 @@ function DetailHero({ category }: { category: ServiceCategory }) {
 function ServiceSolutions({ category }: { category: ServiceCategory }) {
   return (
     <section className="service-tech-section service-tech-solutions" id="soluciones">
-      <div className="service-tech-shell">
-        <div className="service-tech-heading" data-reveal>
+      <PointerField className="service-tech-shell">
+        <div className="service-tech-heading">
           <div>
             <p className="service-tech-eyebrow">Qué podemos revisar</p>
-            <h2>Soluciones organizadas por necesidad.</h2>
+            <h2 data-anim="titulo">Soluciones organizadas por necesidad.</h2>
           </div>
-          <p>{category.description}</p>
+          <p data-anim="bloque">{category.description}</p>
         </div>
-        <div className="service-tech-solution-grid">
-          {category.serviceGroups.map((group, index) => (
-            <article data-reveal style={revealDelay(index)} key={group.title}>
+        <div className="service-tech-solution-grid" data-anim="grupo">
+          {category.serviceGroups.map((group) => (
+            <article key={group.title} data-cursor>
               <CircuitBoard aria-hidden="true" />
               <h3>{group.title}</h3>
               <p>{group.summary}</p>
@@ -465,7 +468,7 @@ function ServiceSolutions({ category }: { category: ServiceCategory }) {
             </article>
           ))}
         </div>
-      </div>
+      </PointerField>
     </section>
   );
 }
@@ -475,22 +478,20 @@ function CommonProblems({ category }: { category: ServiceCategory }) {
     <section className="service-tech-diagnostics" id="fallas">
       <div className="service-tech-shell">
         <div className="service-tech-diagnostics-grid">
-          <div data-reveal>
+          <div>
             <p className="service-tech-eyebrow">Fallas frecuentes</p>
-            <h2>Señales que conviene revisar.</h2>
-            <p>
+            <h2 data-anim="titulo">Señales que conviene revisar.</h2>
+            <p data-anim="bloque">
               Un mismo síntoma puede tener causas distintas. Por eso usamos estas señales como punto
               de partida y confirmamos la solución después del diagnóstico.
             </p>
-            <ul className="service-tech-problem-list">
-              {category.commonProblems.map((problem, index) => (
-                <li data-reveal style={revealDelay(index)} key={problem}>
-                  {problem}
-                </li>
+            <ul className="service-tech-problem-list" data-anim="grupo">
+              {category.commonProblems.map((problem) => (
+                <li key={problem}>{problem}</li>
               ))}
             </ul>
           </div>
-          <aside className="service-tech-diagnostic-panel" data-reveal="right">
+          <aside className="service-tech-diagnostic-panel" data-anim="bloque">
             <div>
               <Gauge aria-hidden="true" />
               <p className="service-tech-eyebrow">Criterio técnico</p>
@@ -534,19 +535,21 @@ function RelatedServices({ category }: { category: ServiceCategory }) {
   return (
     <section className="service-tech-section service-tech-related" aria-labelledby="related-title">
       <div className="service-tech-shell">
-        <div className="service-tech-heading" data-reveal>
+        <div className="service-tech-heading">
           <div>
             <p className="service-tech-eyebrow">También puede servirte</p>
-            <h2 id="related-title">Servicios relacionados.</h2>
+            <h2 id="related-title" data-anim="titulo">
+              Servicios relacionados.
+            </h2>
           </div>
           <Link className="service-tech-inline-link" href="/servicio-tecnico">
             Ver todas las categorías
             <ArrowRight aria-hidden="true" />
           </Link>
         </div>
-        <div className="service-tech-related-grid">
-          {related.map((item, index) => (
-            <Link href={item.href} key={item.slug} data-reveal style={revealDelay(index)}>
+        <div className="service-tech-related-grid" data-anim="grupo">
+          {related.map((item) => (
+            <Link href={item.href} key={item.slug}>
               <span>
                 <Image
                   src={item.image}
@@ -570,15 +573,39 @@ function RelatedServices({ category }: { category: ServiceCategory }) {
 
 export function ServiceLanding() {
   return (
-    <>
+    <ScrollMotion>
       <LandingHero />
       <ServiceCategoryRail />
       <ServiceCategoryGrid />
       <ServiceTrust />
+      {/* E3 · De rota a reparada: el mismo tramo de la portada, antes del detalle de cada etapa. El
+          televisor queda fijo debajo del encabezado y de la barra de categorías. */}
+      <RepairStory
+        container="service-tech-shell"
+        pinOffset="var(--service-rail-height)"
+        lead="Así pasa un equipo por el taller. No arreglamos nada sin tu visto bueno y te avisamos cuando está listo."
+        actions={
+          <>
+            <a
+              className="btn"
+              href={whatsappUrl(
+                "Hola, Chetech. Quiero pedir un presupuesto. El equipo es: ____ y la falla es: ____.",
+              )}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Pedir presupuesto
+            </a>
+            <Link className="btn" data-variant="secondary" href="/cuenta/reparaciones">
+              Seguí tu reparación
+            </Link>
+          </>
+        }
+      />
       <RepairProcess />
       <ServiceFaq items={generalServiceFaqs} idPrefix="service-general-faq" />
       <ServiceCta />
-    </>
+    </ScrollMotion>
   );
 }
 
@@ -586,7 +613,7 @@ export function ServiceDetailLayout({ category }: { category: ServiceCategory })
   const faqItems = [...category.faqs, ...generalServiceFaqs.slice(0, 5)];
 
   return (
-    <>
+    <ScrollMotion signature={category.slug}>
       <DetailHero category={category} />
       <ServiceCategoryRail activeSlug={category.slug} />
       <nav className="service-tech-local-nav" aria-label={`Contenido de ${category.title}`}>
@@ -607,6 +634,6 @@ export function ServiceDetailLayout({ category }: { category: ServiceCategory })
       />
       <RelatedServices category={category} />
       <ServiceCta category={category} />
-    </>
+    </ScrollMotion>
   );
 }

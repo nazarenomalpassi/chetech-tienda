@@ -1,6 +1,8 @@
 import { createHmac } from "node:crypto";
-import { NextRequest, NextResponse } from "next/server";
+import { after, NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { enqueueNotice, processOutbox } from "@/lib/mail/outbox";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -24,6 +26,12 @@ function text(value: unknown, max: number) {
 }
 
 export async function POST(request: NextRequest) {
+  const limited = rateLimit(request, "legal-requests", 5, 60_000);
+  if (limited)
+    return NextResponse.json(
+      { message: "Demasiados intentos. Esperá un minuto y probá de nuevo." },
+      { status: 429, headers: limited.headers },
+    );
   const contentType = request.headers.get("content-type") ?? "";
   if (!contentType.startsWith("application/json"))
     return NextResponse.json({ message: "Solicitud inválida." }, { status: 415 });
@@ -118,6 +126,30 @@ export async function POST(request: NextRequest) {
       : {};
   if (!payload.reference)
     return NextResponse.json({ message: "No pudimos generar la constancia." }, { status: 503 });
+
+  // La constancia ya se muestra en pantalla. Además: aviso para el local (para que la responda) y, si
+  // dejó un mail, la misma constancia por correo. Sale apenas termina la respuesta.
+  const reference = payload.reference;
+  after(async () => {
+    const createdAt = new Date().toISOString();
+    const type = requestType as "withdrawal" | "privacy";
+    await enqueueNotice({
+      kind: "admin_consumer_request",
+      to: "admin",
+      dedupeKey: `solicitud-aviso:${reference}`,
+      payload: { reference, requestType: type, name: `${firstName} ${lastName}`, createdAt },
+    });
+    if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(contact)) {
+      await enqueueNotice({
+        kind: "consumer_request_received",
+        to: contact,
+        dedupeKey: `solicitud-constancia:${reference}`,
+        payload: { reference, requestType: type, name: firstName, createdAt },
+      });
+    }
+    await processOutbox(5).catch((cause) => console.error("Cola de mails", cause));
+  });
+
   return NextResponse.json(
     { reference: payload.reference },
     { status: 201, headers: { "Cache-Control": "no-store" } },

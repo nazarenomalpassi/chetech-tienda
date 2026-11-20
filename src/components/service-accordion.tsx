@@ -33,6 +33,7 @@ export function ServiceAccordion({
       className={`service-tech-accordion service-tech-accordion--${variant}`}
       role="group"
       aria-label={ariaLabel}
+      data-anim="grupo"
     >
       {items.map((item, index) => {
         const expanded = openIndex === index;

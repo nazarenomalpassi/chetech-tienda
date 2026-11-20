@@ -1,10 +1,15 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
+import { runBackgroundWork } from "@/lib/background";
+import { rateLimit } from "@/lib/rate-limit";
 import { createServiceClient } from "@/lib/supabase/service";
 
 const BOT = /bot|crawl|spider|preview|facebookexternalhit|whatsapp|slurp|headless|lighthouse/i;
 
 export async function POST(request: Request) {
   if (BOT.test(request.headers.get("user-agent") ?? "")) return new NextResponse(null, { status: 204 });
+  if (rateLimit(request, "visit", 20, 60_000)) return new NextResponse(null, { status: 204 });
+  // Cada visita nueva da la ocasión de mandar los mails en cola y revisar la lista de espera.
+  after(runBackgroundWork);
   const service = createServiceClient();
   if (!service) return new NextResponse(null, { status: 204 });
   let body: Record<string, unknown> = {};

@@ -155,14 +155,8 @@ button:disabled {
   --catalog-sidebar-width: 256px;
   --catalog-layout-gap: 24px;
 }
-@media (max-width: 1100px) {
-  :root {
-    --site-header-stack: 110px;
-  }
-}
 @media (max-width: 760px) {
   :root {
-    --site-header-stack: calc(96px + env(safe-area-inset-top));
     --site-page-inset: 28px;
     --site-wide-page-inset: 28px;
   }
