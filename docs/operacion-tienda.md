@@ -44,8 +44,17 @@ y modo real. Si el monto no coincide o el stock ya no alcanza, el pedido queda m
 
 ### Pedidos (Resend)
 
-1. Crear la cuenta de Resend y verificar `chetechstore.com` (los registros DNS van en Cloudflare).
-2. Cargar `RESEND_API_KEY` en el servicio Tienda.
+Activo desde el 20 de noviembre de 2026.
+
+- Dominio `chetechstore.com` verificado en Resend, región São Paulo (`sa-east-1`), sin seguimiento de
+  aperturas ni de clics.
+- Registros en Cloudflare, todos "DNS only": `resend._domainkey` (TXT, firma DKIM), `send` y `rsend`
+  (CNAME de envío, hacia `*.forge.rmta.net`) y `_dmarc` (TXT, `v=DMARC1; p=none;`).
+- Clave de API "Tienda y login (Railway)": solo puede enviar, y solo desde `chetechstore.com`. Está en
+  `RESEND_API_KEY` del servicio Tienda. Para cambiarla, se crea una nueva en Resend, se pega ahí y se
+  borra la vieja: el login la toma sola de la tienda.
+- Remitente: `CheTech <hola@chetechstore.com>`. Las respuestas van a `chetech.reparaciones@gmail.com`
+  (`MAIL_REPLY_TO`). El dominio no recibe mails: no tiene MX.
 
 Los mails esperan en `storefront_outbox` y salen después de cada compra, pago o acción de Administración.
 Además, mientras entran visitas la tienda vacía la cola una vez por minuto (`src/lib/background.ts`): así
@@ -84,17 +93,17 @@ réplica: alcanza mientras la tienda corra con una sola.
 
 ### Cuentas (servicio de login)
 
-El servicio **Gotrue Auth** no tiene correo configurado: hoy una cuenta nueva no recibe el mail de
-confirmación. Con la clave de Resend, cargar en ese servicio:
+El servicio **Gotrue Auth** manda sus mails por Resend desde el 20 de noviembre de 2026 (confirmación de
+cuenta, recuperar contraseña, invitación, enlace mágico y cambio de mail). Tiene cargado:
 
 ```
 GOTRUE_SMTP_HOST=smtp.resend.com
 GOTRUE_SMTP_PORT=465
 GOTRUE_SMTP_USER=resend
-GOTRUE_SMTP_PASS=<la misma RESEND_API_KEY>
+GOTRUE_SMTP_PASS=${{Tienda.RESEND_API_KEY}}   (referencia: toma la clave del servicio Tienda)
 GOTRUE_SMTP_ADMIN_EMAIL=hola@chetechstore.com
 GOTRUE_SMTP_SENDER_NAME=CheTech
-GOTRUE_URI_ALLOW_LIST=https://chetechstore.com/**,https://www.chetechstore.com/**
+GOTRUE_URI_ALLOW_LIST=https://chetechstore.com/**,https://www.chetechstore.com/**,https://gestion.chetechstore.com/**,https://sistema-de-gestion-production-bc36cfd9.up.railway.app/**
 GOTRUE_MAILER_TEMPLATES_CONFIRMATION=https://chetechstore.com/emails/auth/confirmacion
 GOTRUE_MAILER_TEMPLATES_RECOVERY=https://chetechstore.com/emails/auth/recuperacion
 GOTRUE_MAILER_TEMPLATES_INVITE=https://chetechstore.com/emails/auth/invitacion
@@ -107,7 +116,9 @@ GOTRUE_MAILER_SUBJECTS_MAGIC_LINK=Tu enlace para entrar a CheTech
 GOTRUE_MAILER_SUBJECTS_EMAIL_CHANGE=Confirmá tu mail nuevo
 ```
 
-El servicio de login también lo usa el sistema de gestión: el cambio afecta a los dos (para bien).
+El servicio de login también lo usa el sistema de gestión: sus mails de login salen igual, con la
+plantilla de CheTech, y la lista de direcciones permitidas incluye las de gestión para que sus enlaces
+sigan volviendo ahí. Cada envío se ve en Resend → Emails.
 
 ## Cobros, entregas y portada
 
