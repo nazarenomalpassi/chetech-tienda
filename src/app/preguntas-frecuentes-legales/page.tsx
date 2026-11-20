@@ -10,11 +10,11 @@ export const metadata: Metadata = {
 const questions = [
   [
     "¿El carrito confirma la compra?",
-    "No. El carrito genera una solicitud y un total estimado. Chetech confirma stock, precio, pago y entrega por WhatsApp.",
+    "Sí, cuando confirmás y pagás. Con Mercado Pago el pedido se confirma al acreditarse el pago; con transferencia, cuando la vemos acreditada; con pago al retirar, al momento de retirarlo.",
   ],
   [
     "¿Cómo se calcula el envío?",
-    "El costo de envío se confirma según destino antes del pago. No se informa como gratuito salvo que exista una promoción real.",
+    "Según la zona o el tamaño del paquete, y se muestra antes de pagar. No se informa como gratuito salvo que exista una promoción real.",
   ],
   [
     "¿Los productos y reparaciones tienen garantía?",
