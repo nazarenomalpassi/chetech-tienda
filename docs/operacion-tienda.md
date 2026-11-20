@@ -48,7 +48,39 @@ y modo real. Si el monto no coincide o el stock ya no alcanza, el pedido queda m
 2. Cargar `RESEND_API_KEY` en el servicio Tienda.
 
 Los mails esperan en `storefront_outbox` y salen después de cada compra, pago o acción de Administración.
+Además, mientras entran visitas la tienda vacía la cola una vez por minuto (`src/lib/background.ts`): así
+los recordatorios que encola la base con su reloj no esperan al próximo pedido.
 Los que tengan más de 48 horas se descartan (salvo el aviso para el local).
+
+Además de los mails de pedidos, por la misma cola salen (`src/lib/mail/notices.tsx`):
+
+| Mail | Para quién | Cuándo |
+| --- | --- | --- |
+| Aviso de ingreso | Cliente que dejó su mail en la lista de espera | Cuando se publica lo que pidió |
+| Constancia de la solicitud | Cliente que pidió arrepentimiento o un trámite de privacidad con su mail | Al enviar el formulario |
+| Aviso de lista de espera | El local (`ADMIN_EMAIL`) | Cuando alguien se anota |
+| Aviso de solicitud | El local (`ADMIN_EMAIL`) | Cuando entra un arrepentimiento o un pedido de privacidad |
+
+Mientras `RESEND_API_KEY` no esté cargada estos avisos no se encolan: el día que se active no sale una
+tanda de mails viejos. Lo que entró antes se ve igual en Administración.
+
+## Lista de espera y solicitudes
+
+- **Administración → Lista de espera:** quién pidió que le avisen (un producto, una tele revisada o una
+  placa), con botones para escribirle por WhatsApp o mail y marcarlo como avisado. Arriba quedan los que
+  ya tienen stock. El mail automático solo sale cuando no hay dudas (ver `src/lib/waitlist-match.ts`):
+  un producto puntual que vuelve a tener stock, o una tele o placa publicada después del pedido. Si la
+  persona escribió qué tele busca o dejó WhatsApp, se le escribe a mano.
+- **Administración → Solicitudes:** arrepentimientos y pedidos de privacidad con su número de constancia.
+  Desde ahí se contacta a la persona y se cambia el estado (recibida, en revisión, respondida, cerrada).
+
+El menú de Administración muestra cuántas hay sin atender.
+
+## Límite de intentos
+
+`src/lib/rate-limit.ts` frena por conexión los intentos repetidos: ingreso (8 cada 5 minutos), registro,
+recuperar contraseña, reenvío de verificación, búsqueda, carrito y formularios. Es en memoria y por
+réplica: alcanza mientras la tienda corra con una sola.
 
 ### Cuentas (servicio de login)
 
@@ -103,10 +135,10 @@ los recordatorios. Se puede revisar con `select * from cron.job;`.
 ## Pruebas y mantenimiento
 
 ```
-npm test          # pagos, horarios, origen de visitas, claves de pedido y contrato de la tienda
+npm test          # pagos, horarios, origen de visitas, claves de pedido, lista de espera y contrato de la tienda
 npm run lint
 npm run build
-npm run css:prune # borra de legacy.css las reglas que ya no usa ninguna página
+npm run css:prune # borra de src/styles/legacy/*.css las reglas que ya no usa ninguna página
 ```
 
 La prueba en seco de la base (`supabase/tests/storefront_v3_commerce_dry_run.sql`) corre todo dentro de una
